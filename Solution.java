@@ -101,7 +101,62 @@ public class Solution {
 		
         return null;
     }
-	//
+	//46. Permutations
+	public static void dfs(int i,int []nums,List<List<Integer>> result){
+		if(i==nums.length){
+			ArrayList<Integer> t = new ArrayList<Integer>();
+			for(int j=0;j<nums.length;j++){
+				t.add(nums[j]);
+			}
+			result.add(t);
+			return ;
+		}
+		
+		for(int j=i;j<nums.length;j++){
+			int t = nums[i];
+			nums[i] = nums[j];
+			nums[j] = t;
+			dfs(i+1,nums,result);
+			t = nums[i];
+			nums[i] = nums[j];
+			nums[j] = t;
+		}
+	}
+	
+	public static List<List<Integer>> permute(int[] nums) {
+		List<List<Integer>> result = new ArrayList<List<Integer>>();
+		if(nums.length == 0){
+			ArrayList<Integer> s = new ArrayList<Integer>();
+			result.add(s);
+			
+			return result;
+		}
+		dfs(0,nums,result);
+		return result;
+    }
+	//46-2.
+	public static List<List<Integer>> permute2(int[] nums) {
+	    List<List<Integer>> result = new ArrayList<List<Integer>>();
+	    List<Integer> element = new ArrayList<Integer>();
+	    generate(result, element, nums, 0);
+	    return result;
+	}
+
+	private static void generate(List<List<Integer>> result, List<Integer> element, int[] nums, int n){
+	    if(n==nums.length){
+	        result.add(element);
+	        return;
+	    }
+
+	    int size = element.size();
+	    for(int i = 0; i <= size; i++){
+	        List<Integer> temp = new ArrayList<Integer>(element);//将以前的element装入 
+	        temp.add(i,nums[n]);//将i位置放入nums在n（n动态变化）的值
+	        System.out.println(i+"for:" + temp + "*|*" + result +"*|*"   + (n+1)+"*|*"+size);
+	        generate(result, temp, nums, n+1);//n+1是为了动态插入
+	    }
+	    return;
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
@@ -113,6 +168,13 @@ public class Solution {
 		/*int [] pre = {1,2,3,4,5,6,7,8,9};
 		int [] ino = {2,4,3,1,6,5,8,7,9};
 		buildTree(pre,ino);*/
+		//46.testCase
+		/*int [] nums = {1,2,3};
+		List<List<Integer>> re = new ArrayList<List<Integer>>();
+		re = permute2(nums);
+		System.out.println(re);
+		System.out.println(re.toArray().length);*/
+		
 		
 	}
 
