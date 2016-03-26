@@ -157,6 +157,101 @@ public class Solution {
 	    }
 	    return;
 	}
+	//67. Add Binary
+	public static String addBinary(String a, String b) {
+		
+		char [] ac = null;
+		char [] bc = null;
+		
+		int p=0;
+		char[] ta = a.toCharArray();
+		char[] tb = b.toCharArray();
+		while(ta[p]!='1'){ta[p]='\0';p++;if(p==a.length()) break;}
+		p=0;
+		while(tb[p]!='1'){tb[p]='\0';p++;if(p==b.length()) break;}
+		String at = String.valueOf(ta).trim();
+		String bt = String.valueOf(tb).trim();
+		ac = at.toCharArray();
+		bc = bt.toCharArray();
+		if(ac.length == 0){
+			if(bc.length == 0)
+				return "0";
+			return bt;
+		}
+		else if(bc.length == 0){
+			return at;
+		}
+		if(at.length()<bt.length()){
+			ac = bt.toCharArray();
+			bc = at.toCharArray();
+		}
+		else {
+			ac = at.toCharArray();
+			bc = bt.toCharArray();
+		}
+		int l = ac.length;
+		char [] result = new char[l+1];
+		int flag= 0;
+		int c = l - bc.length;
+		for(int i=l-1;i>=0;i--){
+			if(i-c>=0){
+				if(Integer.parseInt(ac[i]+"")+Integer.parseInt(bc[i-c]+"")+flag == 1){
+					result[i+1] = '1';
+					flag = 0;
+				}
+				else if(Integer.parseInt(ac[i]+"")+Integer.parseInt(bc[i-c]+"")+flag == 0 ){
+					result[i+1] = '0';
+					flag = 0;
+				}
+				else if(Integer.parseInt(ac[i]+"")+Integer.parseInt(bc[i-c]+"")+flag == 2 ){
+					result[i+1] = '0';
+					flag = 1;
+				}
+				else if(Integer.parseInt(ac[i]+"")+Integer.parseInt(bc[i-c]+"")+flag == 3 ){
+					result[i+1] = '1';
+					flag = 1;
+				}
+			}
+			else {
+				if(Integer.parseInt(ac[i]+"")+flag == 1){
+					result[i+1] = '1';
+					flag = 0;
+				}
+				else if(Integer.parseInt(ac[i]+"")+flag == 0 ){
+					result[i+1] = '0';
+					flag = 0;
+				}
+				else if(Integer.parseInt(ac[i]+"")+flag == 2 ){
+					result[i+1] = '0';
+					flag = 1;
+				}
+			}
+		}
+		if(flag == 1) result[0] = '1';
+        return String.valueOf(result).trim();
+    }
+	//67-2. Add Binary
+	public static String addBinary2(String a, String b) {
+	    if(a == null || b ==null)
+	        return a == null? b: a;
+
+	    int carry =0;
+	    StringBuilder sb = new StringBuilder();        
+
+	    for(int i = a.length()-1, j = b.length() -1;  i >=0 || j >=0 || carry >0 ; i --, j --){
+	        int sum = 0;
+	        sum += (i >=0) ? a.charAt(i) - '0' : 0;
+	        sum += (j >=0) ? b.charAt(j) - '0' : 0;
+	        sum += carry;
+
+	        carry = sum /2;
+	        sum %=2;
+	        sb.append(sum);
+	    }
+
+	    return sb.reverse().toString();
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
@@ -164,10 +259,12 @@ public class Solution {
 		List<Integer> l = new ArrayList<Integer>();
 		l = spiralOrder(matrix);
 		System.out.println(l);*/
+		
 		//105.testCase
 		/*int [] pre = {1,2,3,4,5,6,7,8,9};
 		int [] ino = {2,4,3,1,6,5,8,7,9};
 		buildTree(pre,ino);*/
+		
 		//46.testCase
 		/*int [] nums = {1,2,3};
 		List<List<Integer>> re = new ArrayList<List<Integer>>();
@@ -175,7 +272,10 @@ public class Solution {
 		System.out.println(re);
 		System.out.println(re.toArray().length);*/
 		
+		//addBinary("101","1");
 		
+		String s = addBinary2("00001","000010");
+		System.out.print(s);
 	}
 
 }
