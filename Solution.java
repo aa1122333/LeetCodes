@@ -252,6 +252,17 @@ public class Solution {
 	    return sb.reverse().toString();
 	}
 	
+	//123 BestTimeToBuy
+	public static int maxProfit(int[] prices) {
+		int []state = {-99999,0,-99999,0};
+		for(int i = 0;i<prices.length;i++){
+			state[3] = state[3]>(prices[i]+state[2])?state[3]:(state[2]+prices[i]);
+			state[2] = state[2]>(state[1]-prices[i])?state[2]:(state[1]-prices[i]);
+			state[1] = state[1]>(state[0]+prices[i])?state[1]:(state[0]+prices[i]);
+			state[0] = state[0]>-prices[i]?state[0]:-prices[i];
+		}
+		return state[3];
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
@@ -273,9 +284,10 @@ public class Solution {
 		System.out.println(re.toArray().length);*/
 		
 		//addBinary("101","1");
-		
-		String s = addBinary2("00001","000010");
-		System.out.print(s);
+		/*String s = addBinary2("00001","000010");
+		System.out.print(s);*/
+		//123testCase
+		/*System.out.println(maxProfit(new int[]{0,1,4,2,1,7,5,3,7,1,3}));*/
 	}
 
 }
