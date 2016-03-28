@@ -263,6 +263,20 @@ public class Solution {
 		}
 		return state[3];
     }
+	//168. Excel Sheet Column Title
+	public static String convertToTitle(int n) {
+		char[] p = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
+		char[] s = new char[10];
+		int i=0;
+		while((n-1)/26>0){
+			s[i] = p[(n-1)%26];
+			i++;
+			n=(n-1)/26;
+		}
+		s[i]=p[(n-1)%26];
+		StringBuffer sb = new StringBuffer(String.valueOf(s).trim());
+        return String.valueOf(sb.reverse());
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
@@ -288,6 +302,17 @@ public class Solution {
 		System.out.print(s);*/
 		//123testCase
 		/*System.out.println(maxProfit(new int[]{0,1,4,2,1,7,5,3,7,1,3}));*/
+		
+		//168.testCase
+		System.out.println(convertToTitle(52));
+		System.out.println(convertToTitle(53));
+		System.out.println(convertToTitle(25));
+		System.out.println(convertToTitle(26));
+		System.out.println(convertToTitle(27));
+		System.out.println(convertToTitle(54));
+		System.out.println(convertToTitle(55));
+		System.out.println(convertToTitle(78));
+		System.out.println(convertToTitle(83838833));
 	}
 
 }
