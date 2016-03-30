@@ -277,6 +277,166 @@ public class Solution {
 		StringBuffer sb = new StringBuffer(String.valueOf(s).trim());
         return String.valueOf(sb.reverse());
     }
+	//224. Basic Calculator
+	public static int calculate(String s) {
+		if(s.length() == 0) return 0;
+		char[] a = s.replaceAll(" ","").toCharArray();
+		Stack<String>num = new Stack<String>();
+		Stack<Character>cal = new Stack<Character>();
+		for(int i=a.length-1;i>=0;i--){
+			String t = "";
+			while(Character.isDigit(a[i])){
+				t=a[i]+t;
+				i--;
+				if(i<0) break;
+			}
+			if(t!=null && t!="") num.add(t);
+			if(i>=0){
+				if(a[i]=='('){
+					while(cal.peek()!=')'){
+						num.add(String.valueOf(cal.pop()));
+					}
+					cal.pop();
+				}else cal.add(a[i]);
+			}
+		}
+		while(!cal.isEmpty()){
+			num.add(String.valueOf(cal.pop()));
+		}
+		Stack<String> pre = new Stack<String>();
+		Stack<Integer> u = new Stack<Integer>();
+		while(!num.isEmpty()){
+			pre.push(num.pop());
+		}
+		while(!pre.isEmpty()){
+			if(Character.isDigit(pre.peek().charAt(0))){
+				u.push(Integer.parseInt(pre.pop()));
+			}
+			else {
+				if(pre.peek().equals("+")){
+					pre.pop();
+					int x1 = u.pop();
+					int x2 = u.pop();
+					u.push(x1+x2);
+				}else if(pre.peek().equals("-")){
+					pre.pop();
+					int x1 = u.pop();
+					int x2 = u.pop();
+					u.push(x1-x2);
+				}
+			}
+		}
+        return u.peek();
+    }
+	//224-2. Basic Calculator
+	public static int calculate2(String s) {
+		int [] p = {0};
+		return s.length()==0?0:eval("("+s+")",p);
+	}
+	public static int eval(String s,int[] p){
+		int i = p[0];
+		int val = 0;
+		int oper = 1;
+		int num = 0;
+		while(i<s.length()){
+			char m = s.charAt(i);
+			switch(m){
+			case '+': val = val + num*oper;oper = 1;num = 0;i++;break; 
+			case '-': val = val + num*oper;oper =-1;num = 0;i++;break;
+			case '(': p[0] = i+1;val = val + oper*eval(s,p);i = p[0];break;
+			case ')': p[0] = i+1;return val + num*oper;
+			case ' ': i++;continue;
+			default : num = num*10 + m - '0';i++;
+			}
+		}
+		return val;
+	}
+	//62. Unique Paths
+	public static int uniquePaths(int m, int n) {
+		int [][] p = new int [m][n];
+		for(int i = m-1;i>=0;i--){
+			p[i][n-1]=1;
+		}
+		for(int j=n-1;j>=0;j--){
+			p[m-1][j]=1;
+		}
+		for(int i = m-2;i>=0;i--){
+			for(int j = n-2;j>=0;j--){
+				p[i][j] = p[i+1][j]+p[i][j+1];
+			}
+		}
+		return p[0][0];
+	}
+	//62-2. Unique Paths
+	public int uniquePaths2(int m, int n) {
+        if(m == 1 || n == 1)
+            return 1;
+        m--;
+        n--;
+        if(m < n) {              // Swap, so that m is the bigger number
+            m = m + n;
+            n = m - n;
+            m = m - n;
+        }
+        long res = 1;
+        int j = 1;
+        for(int i = m+1; i <= m+n; i++, j++){       // Instead of taking factorial, keep on multiply & divide
+            res *= i;
+            res /= j;
+        }
+
+        return (int)res;
+    }
+	//279. Perfect Squares 
+	/* TLE
+	 * public static int numSquares(int n) {
+		if(n == 0) return 0;
+
+		int length = 99999;
+		for(int j=1;j*j<=n;j++){
+			int t = n % (j*j);
+			int u = n / (j*j);
+			int l = numSquares(t)+u;
+			length=length>l?l:length;
+		}
+		return length;
+    }
+*/
+	public static ArrayList<Integer> nums = new ArrayList<Integer>();
+	public static int numSquares(int n) {
+		if(nums.size() == 0)
+			nums.add(0);
+		while(nums.size()<=n){;
+			int m = nums.size();
+			int l = Integer.MAX_VALUE;
+			for(int j=1;j*j<=m;j++){
+				l = Math.min(nums.get(m-j*j)+1, l);
+			}
+			nums.add(l);
+		}
+		return nums.get(n);
+	}
+	//330. Patching Array using https://leetcode.com/discuss/82822/solution-explanation
+	public int minPatches(int[] nums, int n) {
+		Long miss = 1L;int i=0;int addnum=0;
+		while(miss<=n){
+			if(i<nums.length&&nums[i]<=miss){
+				miss+=nums[i++];
+			}
+			else {
+				miss+=miss;
+				addnum++;
+			}
+		}
+        return addnum;
+    }
+	//223. Rectangle Area
+	public int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+		int left = Math.max(A,E), right = Math.max(Math.min(C,G), left);
+	    int bottom = Math.max(B,F), top = Math.max(Math.min(D,H), bottom);
+	    return (C-A)*(D-B) - (right-left)*(top-bottom) + (G-E)*(H-F);
+        
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
@@ -304,7 +464,7 @@ public class Solution {
 		/*System.out.println(maxProfit(new int[]{0,1,4,2,1,7,5,3,7,1,3}));*/
 		
 		//168.testCase
-		System.out.println(convertToTitle(52));
+/*		System.out.println(convertToTitle(52));
 		System.out.println(convertToTitle(53));
 		System.out.println(convertToTitle(25));
 		System.out.println(convertToTitle(26));
@@ -312,7 +472,15 @@ public class Solution {
 		System.out.println(convertToTitle(54));
 		System.out.println(convertToTitle(55));
 		System.out.println(convertToTitle(78));
-		System.out.println(convertToTitle(83838833));
+		System.out.println(convertToTitle(83838833));*/
+		//224.testCase
+		//System.out.println(calculate("(1+(4+ 5+2)-3)+(6+8)"));
+		//System.out.println(calculate2("1+2-(3+4-5)+((9+10)-11)"));
+		//62.testCase
+		//System.out.println(uniquePaths(69,99));
+		//279.testCase
+		for(int i=0;i<5000;i++)
+		System.out.println(numSquares(i));
 	}
 
 }
