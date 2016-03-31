@@ -384,7 +384,7 @@ public class Solution {
             res *= i;
             res /= j;
         }
-
+        
         return (int)res;
     }
 	//279. Perfect Squares 
@@ -437,6 +437,132 @@ public class Solution {
 	    return (C-A)*(D-B) - (right-left)*(top-bottom) + (G-E)*(H-F);
         
     }
+	//164. Maximum Gap -- bucket sort
+	public  static int maximumGap(int[] nums) {
+		if(nums.length <2) return 0;
+		int length = nums.length;
+		List<Integer> bucket0 = new ArrayList<Integer>();
+        List<Integer> bucket1 = new ArrayList<Integer>();
+        List<Integer> sorted = new ArrayList<Integer>(length);
+        for(int i : nums) {
+            sorted.add(i);
+        }
+        int mask = 1;
+        while(mask > 0) {
+            for(int i = 0; i < length; i ++) {
+	            int n = sorted.get(i);
+	            if((n & mask) == 0) {
+	                 bucket0.add(n);
+	            } else {
+	                 bucket1.add(n);
+	            }
+            }
+            sorted.clear();
+            sorted.addAll(bucket0);
+            sorted.addAll(bucket1);
+            bucket0.clear();
+            bucket1.clear();
+            mask <<= 1;
+        }
+        int maxDiff = 0;
+        for(int i = 1; i < length; i ++) {
+            int n = sorted.get(i) - sorted.get(i - 1);
+            if(n > maxDiff) maxDiff = n;
+        }
+        return maxDiff;
+    }
+	//93. Restore IP Addresses --useless for some conditions like 010000
+	public static List<String> restoreIpAddresses(String s) {
+		List<String> ips = new ArrayList<String>();
+		if(s.length()<4) return ips;
+		findIps(ips,s,0,0,"");
+        return ips;
+    }
+	
+	public static void findIps(List<String> ips,String s,int n,int l,String str){
+		if(n == 3 && l<s.length() && Integer.valueOf(s.substring(l, s.length()))<=255){
+			ips.add(str+s.substring(l, s.length()));
+			return;
+		}
+		for(int i=l+1;i<s.length()&&i<=l+3;i++){
+			String t = null;
+			if(Integer.valueOf(s.substring(l, i))<=255){
+				String strt = str+s.substring(l, i)+".";
+				if(n+1<=4 && (4-n)*3>=s.length()-i){
+					findIps(ips,s,n+1,i,strt);
+				}
+			}
+		}
+		return ;
+	}
+	//93-2
+	public static List<String> restoreIpAddresses2(String s) {
+		List<String> ips = new ArrayList<String>();
+		for(int a=1;a<=3;a++)
+			for(int b=1;b<=3;b++)
+				for(int c=1;c<=3;c++)
+					for(int d=1;d<=3;d++){
+						if(a+b+c+d==s.length()){
+							int aa = Integer.parseInt(s.substring(0, a));
+							int bb = Integer.parseInt(s.substring(a,a+b));
+							int cc = Integer.parseInt(s.substring(a+b,a+b+c));
+							int dd = Integer.parseInt(s.substring(a+b+c,a+b+c+d));
+							String sol = aa+"."+bb+"."+cc+"."+dd;
+							if(sol.length()==s.length()+3 && aa<=255 && bb<=255&& cc<=255&& dd<=255){
+								ips.add(sol);
+							}
+						}
+					}
+		return ips;
+	}
+	//257. Binary Tree Paths
+	public static List<String> binaryTreePaths(TreeNode root) {
+		List<String> s = new ArrayList<String>();
+		if(root == null) return s;
+		else dfs_257(s, root, "\"");
+        return s;
+    }
+	public static void dfs_257(List<String> s,TreeNode t,String a){
+		if(t.left == null && t.right == null){
+			s.add(a+String.valueOf(t.val)+"\"");
+			return ;
+		}
+		String aa = a+String.valueOf(t.val)+"->";
+		if(t.left!=null) dfs_257(s, t.left, aa);
+		if(t.right!=null) dfs_257(s, t.right, aa);
+		return ;
+	}
+	//199. Binary Tree Right Side View
+	public static List<Integer> rightSideView(TreeNode root) {
+		List<Integer> r = new ArrayList<Integer>();
+		if(root == null) return r;
+		dfs_199(r,0,root);
+        return r;
+    }
+	public static void dfs_199(List<Integer> r,int i,TreeNode t){
+		if(r.size()<=i)
+			r.add(i, t.val);
+		if(t.right!=null)
+			dfs_199(r,i+1,t.right);
+		if(t.left!=null)
+			dfs_199(r,i+1,t.left);
+		return ;
+	}
+	//334. Increasing Triplet Subsequence
+	public static boolean increasingTriplet(int[] nums) {
+        int x = Integer.MAX_VALUE;
+        int y = Integer.MAX_VALUE;
+        for(int n:nums){
+        	if(n<x){
+        		x = n;
+        	}
+        	else if(n<y){
+        		y = n;
+        	}
+        	else return true;
+        }
+        return false;
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
@@ -479,8 +605,33 @@ public class Solution {
 		//62.testCase
 		//System.out.println(uniquePaths(69,99));
 		//279.testCase
-		for(int i=0;i<5000;i++)
-		System.out.println(numSquares(i));
+		/*for(int i=0;i<5000;i++)
+		System.out.println(numSquares(i));*/
+		//164.testCase
+		/*int []num = {45,87,41,12,24,35,57,79,95,54,19,50,10,67};
+		
+        System.out.println(maximumGap(num));*/
+		/*System.out.println(restoreIpAddresses2("25525511135"));*/
+		//257.testCase
+/*		TreeNode t = new TreeNode(5);
+		t.left = new TreeNode(4);
+		t.right = new TreeNode(3);
+		t.left.left = new TreeNode(2);
+		t.right.right = new TreeNode(1);
+		System.out.println(binaryTreePaths(t));*/
+		//199.testCase
+		/*TreeNode t = new TreeNode(5);
+		t.left = new TreeNode(4);
+		t.right = new TreeNode(3);
+		t.left.left = new TreeNode(2);
+		t.right.right = new TreeNode(1);
+		t.right.right.left = new TreeNode(6);
+		t.right.right.right = new TreeNode(7);
+		t.left.left.left = new TreeNode(8);
+		t.left.left.left.left = new TreeNode(9);
+		System.out.println(rightSideView(t));*/
+		int [] c = {3,9,8,7,4,1,5,2};
+		System.out.println(increasingTriplet(c));
 	}
 
 }
