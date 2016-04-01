@@ -1,6 +1,7 @@
 package leetcodeTest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -563,6 +564,158 @@ public class Solution {
         }
         return false;
     }
+	//201. Bitwise AND of Numbers Range
+	//basic 
+	public static int rangeBitwiseAnd(int m, int n) {
+		int num =m;
+		int x=m,y=n;
+		while(x>1 && y>1){
+			x>>=1;
+			y>>=1;
+		}
+		if(x<y) return 0;
+		for(int i=m+1;i<n+1;i++){
+			num= num&i;
+		}
+        return num;
+    }
+	public static int rangeBitwiseAnd2(int m, int n) {
+		int num=0;
+		int x=m,y=n;
+		while(x>1 && y>1){
+			x>>=1;
+			y>>=1;
+		}
+		if(x<y) return 0;
+		x=m;
+		y=n;
+		int l=0;
+		while(x>=1 && y>=1 ){
+			int flag = 0;
+			for(int i=x;i<=y&&i>=0;i++){
+				if((i&1)==0){
+					l++;
+					x>>=1;
+					y>>=1;
+					flag = 1;
+					break;
+				}
+			}
+			if((x&1)==1 && (y&1)==1 && flag==0){
+				num+=Math.pow(2, l);
+				l++;
+				x>>=1;
+				y>>=1;
+			}
+			
+		}
+			
+		/*for(int i=m+1;i<n+1;i++){
+			num= num&i;
+		}*/
+        return num;
+    }
+	//short by slow
+	public static int rangeBitwiseAnd3(int m, int n) {
+		while(n>m)
+			n&=(n-1);
+		return m&n;
+	}
+	//86. Partition List
+	public static class ListNode {
+	     int val;
+	     ListNode next;
+	     ListNode(int x) { val = x; }
+	}
+	public static ListNode partition(ListNode head, int x) {
+		ListNode s = null;
+		ListNode b = null;
+		ListNode pointer = head;
+		ListNode p1 = null;
+		ListNode p2 = null;
+		while(pointer!=null){
+			if(pointer.val<x){
+				if(s==null) {
+					s = new ListNode(pointer.val);
+					p1 = s;
+				}
+				else {
+					p1.next = new ListNode(pointer.val);
+					p1 = p1.next;
+				}
+			}
+			else {
+				if(b==null) {
+					b = new ListNode(pointer.val);
+					p2 = b;
+				}
+				else {
+					p2.next = new ListNode(pointer.val);
+					p2 = p2.next;
+				}
+			}
+			pointer = pointer.next;
+				
+		}
+		if(p1!=null){
+			
+			p1.next = b;
+		}
+		else {
+			if(p2!=null)
+				s = b;
+		}
+        return s;
+    }
+	//198. House Robber
+	public static int rob(int[] nums) {
+		int rob =0;
+		int didnt = 0;
+		for(int i=0;i<nums.length;i++){
+			int currob = didnt + nums[i];
+			int curdidnt = Math.max(rob, didnt);
+			rob = currob;
+			didnt = curdidnt;
+		}
+        return Math.max(rob, didnt);
+    }
+	//213. House Robber II
+	public static int rob2(int[] nums) {
+		if(nums.length == 0) return 0;
+		if(nums.length == 1) return nums[0];
+		
+		return Math.max(rob(nums,0,nums.length-2), rob(nums,1,nums.length-1));
+	}
+	public static int rob(int[] nums,int l,int j ) {
+		int rob =0;
+		int didnt = 0;
+		for(int i=l;i<=j;i++){
+			int currob = didnt + nums[i];
+			int curdidnt = Math.max(rob, didnt);
+			rob = currob;
+			didnt = curdidnt;
+		}
+        return Math.max(rob, didnt);
+    }
+	//337. House Robber III
+	public static int rob(TreeNode root) {
+		
+        return dfs_337(root,0,0);
+    }
+	public static int dfs_337(TreeNode t,int rob,int didnt){
+		if(t == null) return 0;
+		/*int currob = didnt + t.val;
+		int curdidnt = Math.max(rob,didnt);
+		rob = currob;
+		didnt = curdidnt;
+		int cur = Math.max(rob,didnt);
+		int lc = 0;
+		int rc = 0;
+		if(t.left!=null) lc=dfs_337(t.left, rob, didnt);
+		if(t.right!=null) rc=dfs_337(t.right,rob,didnt);
+		cur = Math.max(cur, lc+rc);*/
+		return 0;
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
@@ -630,8 +783,56 @@ public class Solution {
 		t.left.left.left = new TreeNode(8);
 		t.left.left.left.left = new TreeNode(9);
 		System.out.println(rightSideView(t));*/
-		int [] c = {3,9,8,7,4,1,5,2};
-		System.out.println(increasingTriplet(c));
+		/*int [] c = {3,9,8,7,4,1,5,2};
+		System.out.println(increasingTriplet(c));*/
+		
+		//201.testCase
+		/*int m=236236,n=646238;
+		while(m>1 && n>1){
+			System.out.println(m +" "+n);
+			m>>=1;
+			n>>=1;
+			
+		}
+		System.out.println("->"+m +"  "+n);
+		System.out.println();
+		m = 2; n =2;
+		while(m>1 && n>1){
+			System.out.println(m +" "+n);
+			m<<=1;
+			n<<=1;
+		}
+		System.out.println("-------------------");
+		//111316236 132346767
+		System.out.println(rangeBitwiseAnd(111316236,132346767));
+	   System.out.println(rangeBitwiseAnd2(111316236,132346767));
+	    System.out.println(rangeBitwiseAnd3(111316236,132346767));*/
+		//86.testCase
+		/*ListNode root = new ListNode(11);*/
+		/*ListNode root = new ListNode(0);
+		root.next = new ListNode(4);
+		root.next.next = new ListNode(3);
+		root.next.next.next= new ListNode(2);
+		root.next.next.next.next = new ListNode(5);
+		root.next.next.next.next.next = new ListNode(2)
+		ListNode root2 = partition(root,1);
+		while(root2!=null){
+			System.out.print(root2.val+" ");
+			root2 = root2.next;
+		};*/
+		/*int p[] = {1,2,3};
+		System.out.println(rob2(p));*/
+		TreeNode t = new TreeNode(3);
+		t.left = new TreeNode(2);
+		t.right = new TreeNode(3);
+		/*t.left.left = new TreeNode(2);*/
+		t.right.right = new TreeNode(1);
+		t.left.right = new TreeNode(3);
+		/*t.right.right.left = new TreeNode(6);
+		t.right.right.right = new TreeNode(7);
+		t.left.left.left = new TreeNode(8);
+		t.left.left.left.left = new TreeNode(9);*/
+		System.out.println(rob(t));
 	}
 
 }
