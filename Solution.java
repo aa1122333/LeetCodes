@@ -3,8 +3,10 @@ package leetcodeTest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 public class Solution {
@@ -704,6 +706,7 @@ public class Solution {
     }
 	public static int dfs_337(TreeNode t,int rob,int didnt){
 		if(t == null) return 0;
+		
 		/*int currob = didnt + t.val;
 		int curdidnt = Math.max(rob,didnt);
 		rob = currob;
@@ -716,6 +719,14 @@ public class Solution {
 		cur = Math.max(cur, lc+rc);*/
 		return 0;
 	}
+	//217.
+	public static boolean containsDuplicate(int[] nums) {
+		Set<Integer> hash = new HashSet<Integer>();
+		for(int i=0;i<nums.length;i++)
+			if(!hash.add(nums[i]))
+			  return true;
+        return false;
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
