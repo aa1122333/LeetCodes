@@ -727,6 +727,39 @@ public class Solution {
 			  return true;
         return false;
     }
+	//125
+	public static boolean isPalindrome(String s) {
+		s = s.replaceAll("[\\pP\\pZ\\pS\\pC\\pM¡®¡¯¡°¡±]", "");
+		s = s.toLowerCase();
+		if(s.isEmpty()) return true;
+		System.out.println(s);
+		char[] c = s.toCharArray();
+		int l = s.length();
+		boolean solution = true;
+		int i=0;
+		if(l%2==0){
+			while(l/2-1-i>=0){
+				if(c[l/2-1-i]!=c[l/2+i] ){
+					solution = false;
+					break;
+				}
+				else {
+					i++;
+				}
+			}
+		}else {
+			while(l/2-1-i>=0){
+				if(c[l/2-1-i]!=c[l/2+1+i] ){
+					solution = false;
+					break;
+				}
+				else {
+					i++;
+				}
+			}
+		}
+        return solution;
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
