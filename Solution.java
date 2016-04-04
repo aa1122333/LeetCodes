@@ -760,6 +760,23 @@ public class Solution {
 		}
         return solution;
     }
+	//100
+	public static boolean dfs(TreeNode p,TreeNode q){
+		boolean solution = true;
+		if(p==null&&q==null) return true;
+		if(p==null&&q!=null) return false;
+		if(p!=null&&q==null) return false;
+		if(p.val!=q.val ) return false;
+		
+		solution = dfs(p.left,q.left);
+		solution = solution &&dfs(p.right,q.right);
+		return solution;
+	}
+	public static boolean isSameTree(TreeNode p, TreeNode q) {
+		boolean solution=true;
+		solution = dfs(p,q);
+        return solution;
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
