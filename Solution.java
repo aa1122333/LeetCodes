@@ -777,6 +777,16 @@ public class Solution {
 		solution = dfs(p,q);
         return solution;
     }
+	//171. Excel Sheet Column Number
+		public static int titleToNumber(String s) {
+			int sum=0;
+			for(int i=0;i<s.length();i++){
+				//System.out.println((s.charAt(i)-'@')+" "+Math.pow(26,s.length()-i-1));
+				sum+=(s.charAt(i)-'@')*Math.pow(26, s.length()-i-1);
+				System.out.println(sum);
+			}
+	        return sum;
+	    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
