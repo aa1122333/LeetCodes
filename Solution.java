@@ -787,6 +787,7 @@ public class Solution {
 			}
 	        return sum;
 	    }
+
 	//136. Single Number
 	public static int singleNumber(int[] nums) {
 		int result =0;
@@ -820,6 +821,25 @@ public class Solution {
 		}
         return sol;
     }
+
+		
+	//78. Subsets
+	public static List<List<Integer>> subsets(int[] nums) {
+		Arrays.sort(nums);
+		List<List<Integer>> sol = new ArrayList<List<Integer>>();
+		int sum = 1<<nums.length;
+		for(int i=0;i<sum;i++){
+			List<Integer> set = new ArrayList<Integer>();
+			for(int j=0;j<nums.length;j++){
+				if((i&(1<<j))!=0){
+					set.add(nums[j]);
+				}
+			}
+			sol.add(set);
+		}
+        return sol;
+    }	
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
