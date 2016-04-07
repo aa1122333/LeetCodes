@@ -787,6 +787,39 @@ public class Solution {
 			}
 	        return sum;
 	    }
+	//136. Single Number
+	public static int singleNumber(int[] nums) {
+		int result =0;
+		for(int i=0;i<nums.length;i++) result^=nums[i];
+		return result;
+	}
+	//137. Single Number II
+	public static int singleNumber2(int[] nums) {
+		int ones = 0, twos = 0;
+	    for(int i = 0; i < nums.length; i++){
+	        ones = (ones ^ nums[i]) & ~twos;
+	        twos = (twos ^ nums[i]) & ~ones;
+	    }
+	    return ones;
+    }
+	//260. Single Number III
+	public static int[] singleNumber3(int[] nums) {
+		int f = 0;
+		for(int i=0;i<nums.length;i++){
+			f^=nums[i];
+		}
+		f&=-f;
+		int [] sol = {0,0};
+		for(int i=0;i<nums.length;i++){
+			if((nums[i]&f)==0){
+				sol[0]^=nums[i];
+			}
+			else if((nums[i]&f)!=0){
+				sol[1]^=nums[i];
+			}
+		}
+        return sol;
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
@@ -893,17 +926,22 @@ public class Solution {
 		};*/
 		/*int p[] = {1,2,3};
 		System.out.println(rob2(p));*/
-		TreeNode t = new TreeNode(3);
+		/*TreeNode t = new TreeNode(3);
 		t.left = new TreeNode(2);
 		t.right = new TreeNode(3);
-		/*t.left.left = new TreeNode(2);*/
+		t.left.left = new TreeNode(2);
 		t.right.right = new TreeNode(1);
 		t.left.right = new TreeNode(3);
-		/*t.right.right.left = new TreeNode(6);
+		t.right.right.left = new TreeNode(6);
 		t.right.right.right = new TreeNode(7);
 		t.left.left.left = new TreeNode(8);
-		t.left.left.left.left = new TreeNode(9);*/
-		System.out.println(rob(t));
+		t.left.left.left.left = new TreeNode(9);
+		System.out.println(rob(t));*/
+		/*int p[] = {2,5,7,5,2,2,5};
+		System.out.println(singleNumber2(p));*/
+		int []diff = {1,2,3,4,5,6,7,8,1,2,3,5,6,7};
+		diff =singleNumber3(diff);
+		System.out.println(diff[0]+" "+diff[1]);
 	}
 
 }
