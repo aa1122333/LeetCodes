@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -839,7 +840,75 @@ public class Solution {
 		}
         return sol;
     }	
-
+	//165. Compare Version Numbers
+	public static int compareVersion(String version1, String version2) {
+		if(version1.length()==0 && version2.length()==0) return 0;
+		else if(version1.length() == 0 && version2.length() != 0) return -1;
+		else if(version1.length() != 0 && version2.length() == 0) return 1;
+		String[] v1 = version1.split("\\.");
+		String[] v2 = version2.split("\\.");
+		int length = Math.min(v1.length, v2.length);
+		for(int i=0;i<length;i++){
+			if(Integer.valueOf(v1[i])>Integer.valueOf(v2[i])) return 1;
+			else if(Integer.valueOf(v1[i])<Integer.valueOf(v2[i])) return -1;
+		}
+		if(v1.length>v2.length){
+			for(int i=v2.length;i<v1.length;i++){
+				if(Integer.valueOf(v1[i])!=0) return 1;
+			}
+			return 0;
+		}
+		else if(v1.length<v2.length){
+			for(int i=v1.length;i<v2.length;i++){
+				if(Integer.valueOf(v2[i])!=0) return -1;
+			}
+			return 0;
+		}
+		else return 0;
+    }
+	
+	
+	//77. Combinations
+	public static List<List<Integer>> combine(int n, int k) {//1...n Kth
+		List<List<Integer>> s = new ArrayList<List<Integer>>();
+		List<Integer> l = new ArrayList<Integer>();
+		dfs_77(s, n, k, 1, 0, l);
+        return s;
+    }
+	public static void dfs_77(List<List<Integer>> s,int n,int k,int start,int num,List<Integer> l){
+		//if(n==k) return ;
+		if(l.size()==k){ 
+			List<Integer> t = new ArrayList<Integer>(l);
+			s.add(t);
+			
+			return ;
+		}
+		for(int i=start;i<=n;i++){
+			//List<Integer> t = new ArrayList<Integer>();
+			l.add(i);
+			dfs_77(s,n,k,i+1,num++,l);
+			l.remove(l.size()-1);
+			
+		}
+	}
+	//77-2 
+	public List<List<Integer>> combine2(int n, int k) {
+        if (k == n || k == 0) {
+            List<Integer> row = new LinkedList<>();
+            for (int i = 1; i <= k; ++i) {
+                row.add(i);
+            }
+            return new LinkedList<>(Arrays.asList(row));
+        }
+        List<List<Integer>> result = this.combine2(n - 1, k - 1);
+        //resultforEach(e -> e.add(n));
+        result.addAll(this.combine(n - 1, k));
+        return result;
+    }
+	//69. Sqrt(x)
+	public static int mySqrt(int x) {
+        return (int) Math.sqrt(x);
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
@@ -959,9 +1028,12 @@ public class Solution {
 		System.out.println(rob(t));*/
 		/*int p[] = {2,5,7,5,2,2,5};
 		System.out.println(singleNumber2(p));*/
-		int []diff = {1,2,3,4,5,6,7,8,1,2,3,5,6,7};
+		/*int []diff = {1,2,3,4,5,6,7,8,1,2,3,5,6,7};
 		diff =singleNumber3(diff);
-		System.out.println(diff[0]+" "+diff[1]);
+		System.out.println(diff[0]+" "+diff[1]);*/
+		//System.out.println(compareVersion("1.0.0.0.0.1","1.0.0"));
+		//System.out.println(combine(5,3));
+		System.out.print(mySqrt(58));
 	}
 
 }
