@@ -909,6 +909,27 @@ public class Solution {
 	public static int mySqrt(int x) {
         return (int) Math.sqrt(x);
     }
+	//25. Reverse Nodes in k-Group
+	public ListNode reverseKGroup(ListNode head, int k) {
+		if(k<=1) return head;
+		ListNode l = head;
+		int n = 0;
+		while(l.next!=null){
+			l=l.next;
+			n++;
+		}
+		l = head;
+		ListNode p ;
+		ListNode last;
+		while(n/k!=0){
+			for(int i=0;i<k;k++){
+				last = l.next.next;
+				l.next.next = l;
+			}
+			
+		}
+        return null;
+    }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//54.testCase
