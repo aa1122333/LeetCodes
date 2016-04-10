@@ -7,8 +7,11 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
+
+import javax.management.Query;
 
 public class Solution {
 	//54. Spiral Matrix
@@ -910,25 +913,147 @@ public class Solution {
         return (int) Math.sqrt(x);
     }
 	//25. Reverse Nodes in k-Group
-	public ListNode reverseKGroup(ListNode head, int k) {
+	public static ListNode reverseKGroup(ListNode head, int k) {
 		if(k<=1) return head;
 		ListNode l = head;
-		int n = 0;
+		int n = 1;
+		if(head == null || head.next == null) return head;
 		while(l.next!=null){
 			l=l.next;
 			n++;
 		}
-		l = head;
 		ListNode p ;
 		ListNode last;
-		while(n/k!=0){
-			for(int i=0;i<k;k++){
-				last = l.next.next;
-				l.next.next = l;
+		ListNode first = null;
+		ListNode c = null;
+		last = head;
+		while(n/k>0){
+			n-=k;
+			for(int i=0;i<k;i++){
+				if(i==0){
+					l = last.next;
+					first = last;
+					p = l.next;
+					l.next = last;
+					last = l;
+					l = p;
+				}
+				else if(i==k-1){
+					if(c !=null)
+						c.next = last;
+					else {
+						head = last;
+					}
+					first.next = l;
+					c = first;
+					if(l!=null){
+						p = l.next;
+						last = l;
+						l = p;
+					}
+				}
+				else {
+					
+					p = l.next;
+					l.next = last;
+					last = l;
+					l = p;
+				}
 			}
-			
 		}
-        return null;
+        return head;
+    }
+	//25-2
+	public ListNode reverseKGroup2(ListNode head, int k) {
+	    ListNode curr = head;
+	    int count = 0;
+	    while (curr != null && count != k) { // find the k+1 node
+	        curr = curr.next;
+	        count++;
+	    }
+	    if (count == k) { // if k+1 node is found
+	        curr = reverseKGroup(curr, k); // reverse list with k+1 node as head
+	        // head - head-pointer to direct part, 
+	        // curr - head-pointer to reversed part;
+	        while (count-- > 0) { // reverse current k-group: 
+	            ListNode tmp = head.next; // tmp - next head in direct part
+	            head.next = curr; // preappending "direct" head to the reversed list 
+	            curr = head; // move head of reversed part to a new node
+	            head = tmp; // move "direct" head to the next node in direct part
+	        }
+	        head = curr;
+	    }
+	    return head;
+	}
+	//222. Count Complete Tree Nodes
+	public int height(TreeNode root){
+		return root==null? -1:1+height(root.left);
+	}
+	public int countNodes(TreeNode root) {
+		int h = height(root);
+		return h < 0 ? 0 : height(root.right) == h-1 ? (1<<h) + height(root.right):(1<<h-1) + height(root.left);
+		
+    }
+	//222-2
+	public int countNodes2(TreeNode root) {
+		if(root == null) return 0;
+		Stack<TreeNode> t = new Stack<TreeNode>();
+		t.push(root);
+		int num = 1;
+		while(!t.isEmpty()){
+			TreeNode tmp = t.pop();
+			if(tmp.val!=-100){
+                tmp.val=-100;
+				if(tmp.left != null){
+					t.push(tmp.left);
+					num++;
+				}
+				if(tmp.right!= null){
+					t.push(tmp.right);
+					num++;
+				}
+			}
+		}
+		return num;
+	}
+	//222-3
+	public int countNodes3(TreeNode root) {  
+        if(root==null) return 0;  
+          
+        int l = getLeft(root) + 1;  
+        int r = getRight(root) + 1;  
+          
+        if(l==r) {  
+            return (2<<(l-1)) - 1;  
+        } else {  
+            return countNodes(root.left) + countNodes(root.right) + 1;  
+        }  
+    }  
+      
+    private int getLeft(TreeNode root) {  
+        int count = 0;  
+        while(root.left!=null) {  
+            root = root.left;  
+            ++count;  
+        }  
+        return count;  
+    }  
+      
+    private int getRight(TreeNode root) {  
+        int count = 0;  
+        while(root.right!=null) {  
+            root = root.right;  
+            ++count;  
+        }  
+        return count;  
+    }  
+    //89. Gray Code
+    public List<Integer> grayCode(int n) {
+    	List<Integer> r = new ArrayList<Integer>();
+    	for(int i=0;i<1<<n;i++){
+    		r.add(i^i>>1);
+    	}
+        return r;
     }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -1054,7 +1179,21 @@ public class Solution {
 		System.out.println(diff[0]+" "+diff[1]);*/
 		//System.out.println(compareVersion("1.0.0.0.0.1","1.0.0"));
 		//System.out.println(combine(5,3));
-		System.out.print(mySqrt(58));
+		//System.out.print(mySqrt(58));
+		/*ListNode l = new ListNode(1);
+		l.next = new ListNode(2);
+		l.next.next = new ListNode(3);
+		l.next.next.next = new ListNode(4);
+		l.next.next.next.next = new ListNode(5);
+		l.next.next.next.next.next = new ListNode(6);
+		l.next.next.next.next.next.next = new ListNode(7);
+		l.next.next.next.next.next.next.next= new ListNode(8);
+		l.next.next.next.next.next.next.next.next= new ListNode(9);
+		l.next.next.next.next.next.next.next.next.next= new ListNode(10);
+		l.next.next.next.next.next.next.next.next.next.next= new ListNode(11);
+		l = reverseKGroup(l,4);*/
+		
+		
 	}
 
 }
