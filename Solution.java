@@ -907,7 +907,49 @@ public class Solution {
     }
 	//69. Sqrt(x)
 	public static int mySqrt(int x) {
-        return (int) Math.sqrt(x);
+        //return (int) Math.sqrt(x);(;-))
+		int min = 1;
+		int max = Integer.MAX_VALUE-1;
+		
+		while(true){
+			int mid = (max-min)/2+min;
+			if(x/mid<mid){
+				max = mid -1;
+			}
+			else{
+				if(x/(mid+1)<(mid+1)){
+					return mid;
+				}
+				else 
+					min = mid + 1;
+			}
+		}
+		
+    }
+	//238. Product of Array Except Self
+	public static int[] productExceptSelf(int[] nums) {
+        Long sum = 1L;
+        int num = 0;
+        for(int n:nums){
+        	if(n==0){
+        		num++;
+        		if(num==2){
+        			Arrays.fill(nums, 0);
+        			return nums;
+        		}
+        	}
+        	else 
+        	sum*=n;
+        }
+        for(int i=0;i<nums.length;i++){
+        	if(nums[i]==0 && num==1){ 
+        		Arrays.fill(nums, 0);
+        		nums[i] = (int)(sum*1);
+        		return nums;
+        	}
+        	else nums[i] = (int) (sum/nums[i]);
+        }
+        return nums;
     }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -916,7 +958,7 @@ public class Solution {
 		List<Integer> l = new ArrayList<Integer>();
 		l = spiralOrder(matrix);
 		System.out.println(l);*/
-		
+	
 		//105.testCase
 		/*int [] pre = {1,2,3,4,5,6,7,8,9};
 		int [] ino = {2,4,3,1,6,5,8,7,9};
@@ -1033,7 +1075,12 @@ public class Solution {
 		System.out.println(diff[0]+" "+diff[1]);*/
 		//System.out.println(compareVersion("1.0.0.0.0.1","1.0.0"));
 		//System.out.println(combine(5,3));
-		System.out.print(mySqrt(58));
+		//System.out.print(mySqrt(897975));
+		int []s = {8,9,8,5,4,0,2,4};
+		productExceptSelf(s);
+		for(int i:s)
+		System.out.println(i);
+		
 	}
 
 }
