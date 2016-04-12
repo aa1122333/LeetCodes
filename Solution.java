@@ -1195,9 +1195,138 @@ public class Solution {
         }
         return res;
     }
+    //121. Best Time to Buy and Sell Stock
+    public static int maxProfit_121(int[] prices) {
+    	if(prices.length == 0|| prices == null) return 0;
+    	int [] status = {-99999,0};
+    	for(int i=0;i<prices.length;i++){
+    		status[1] = status[1]>(status[0]+prices[i])?status[1]:(status[0]+prices[i]);
+    		status[0] = status[0]>-prices[i]?status[0]:-prices[i];
+    	}
+        return status[1];
+    }
     
-    
+    //212. Word Search II
+    public static List<String> findWords(char[][] board, String[] words) {
+    	List<String> sol = new ArrayList<String>();
+    	if(board.length == 0 || words.length == 0 || board[0].length == 0) return sol;
+    	boolean [][]visited = new boolean[board.length][board[0].length];
+    	Trie root = new Trie();
+    	for(String t:words)
+    		root.insert(t);
+    	Set<String> res = new HashSet<String>();
+    	for(int i=0;i<board.length;i++)
+    		for(int j=0;j<board[0].length;j++)
+    			insert(board,i,j,visited,root,"",res);
+
+    	return new ArrayList<String>(res);	
+    }
+    public static void insert(char [][]board,int x,int y,boolean [][] visited,Trie root,String str,Set<String> res){
+    	if(x<0 || x>=board.length || y<0 || y>=board[0].length || visited[x][y] == true){
+			return ;
+		}
+    	str+=board[x][y];
+    	if(!root.startsWith(str)) return ;
+    	if(root.search(str))
+    		res.add(str);
+    	visited[x][y] = true;
+    	insert(board,x-1,y,visited,root,str,res);
+    	insert(board,x+1,y,visited,root,str,res);
+    	insert(board,x,y-1,visited,root,str,res);
+    	insert(board,x,y+1,visited,root,str,res);
+    	visited[x][y] = false;
+    }
+    //212-2
+    static class TrieNode{
+    	TrieNode[] next = new TrieNode[26];
+    	String word;
+    }
+    public static TrieNode buildTrie(String[] words){
+    	TrieNode root = new TrieNode();
+    	for(String w:words){
+    		TrieNode p = root;
+    		for(char a:w.toCharArray()){
+    			int i = a  - 'a';
+    			if(p.next[i] == null) p.next[i] = new TrieNode();
+    			p = p.next[i];
+    		}
+    		p.word = w;
+    	}
+    	return root;
+    }
+    public static void dfs_212(char[][] board,int x,int y,TrieNode p,List<String> res){
+    	char c = board[x][y];
+    	if(c == '#' || p.next[c-'a'] == null) return ;
+    	p = p.next[c-'a'];
+    	if(p.word != null){
+    		res.add(p.word);
+    		p.word = null;
+    	}
+    	board[x][y] = '#';
+    	if(x>0) dfs_212(board,x-1,y,p,res);
+    	if(x<board.length-1) dfs_212(board,x+1,y,p,res);
+    	if(y>0) dfs_212(board,x,y-1,p,res);
+    	if(y<board[0].length-1) dfs_212(board,x,y+1,p,res);
+    	board[x][y] = c;
+    }
+    public static List<String> findWords2(char [][] board,String[] words){
+    	List<String> res = new ArrayList<String>();
+    	TrieNode root = buildTrie(words);
+    	for(int i=0;i<board.length;i++){
+    		for(int j=0;j<board[0].length;j++){
+    			dfs_212(board,i,j,root,res);
+    		}
+    	}
+    	return res;
+    }
+    //79. Word Search
+    public static boolean exist(char[][] board, String word) {
+    	if(word.length() == 0 || board.length ==0 || board[0].length == 0) return false;
+    	
+    	for(int i=0;i<board.length;i++)
+    		for(int j=0;j<board[0].length;j++)
+    			if(board[i][j] == word.charAt(0))
+    				if(dfs_79(board,word,0,i,j))
+    					return true;
+        return false;
+    }
+    public static boolean dfs_79(char[][] board,String word,int l,int x,int y){
+    	if(l == word.length()-1) return true;
+    	char t = board[x][y];
+    	board[x][y] = '#';
+    	if(x>0 && board[x-1][y]==word.charAt(l+1)) 
+    		if(dfs_79(board,word,l+1,x-1,y))
+    			return true;
+    	if(y>0 &&board[x][y-1]==word.charAt(l+1))
+    		if(dfs_79(board,word,l+1,x,y-1))
+    			return true;
+    	if(x<board.length-1 &&board[x+1][y]==word.charAt(l+1))
+    		if(dfs_79(board,word,l+1,x+1,y))
+    			return true;
+    	if(y<board[0].length-1 &&board[x][y+1]==word.charAt(l+1))
+    		if(dfs_79(board,word,l+1,x,y+1))
+    			return true;
+    	board[x][y] = t;
+    	return false;
+    	
+    }
+    //60. Permutation Sequence
+    public static String getPermutation(int n, int k) {
+    	LinkedList<Integer> l = new LinkedList<Integer>();
+    	for(int i=1;i<=n;i++) l.add(i);
+    	int sum = 1;
+    	for(int i=2;i<=n;i++) sum*=i;
+    	k--;
+    	StringBuffer sb = new StringBuffer();
+    	for(;n>0;n--){
+    		sum/=n;
+    		sb.append(l.remove(k/sum));
+    		k%=sum;
+    	}
+    	return sb.toString();
+    }
 	public static void main(String[] args) {
+		
 		// TODO Auto-generated method stub
 		//54.testCase
 		/*int [][] matrix = {{1,2,3,4,5},{6,7,8,9,10},{11,12,13,14,15},{16,17,18,19,20},{21,22,23,24,25}};
@@ -1344,8 +1473,26 @@ public class Solution {
 		/*System.out.println(Integer.parseInt("1"));
 		System.out.println(myAtoi("1"));
 */
-		int [] nums = {1,1,2,3};
-		System.out.println(permuteUnique2(nums));
+		/*int [] nums = {1,1,2,3};
+		System.out.println(permuteUnique2(nums));*/
+		/*int [] num ={2,3,4,6,1,8,5,78,87,6,67};
+		System.out.println(maxProfit_121(num));*/
+		/*char [][] p = {
+				{'b','b','a','a','b','a',},
+				{'b','b','a','b','a','a',},
+				{'b','b','b','b','b','b',},
+				{'a','a','a','b','a','a',},
+				{'a','b','a','a','b','b',},
+				{'a','a','a','b','a','a',},
+				{'a','b','a','a','b','b',}
+		};
+		String [] s = {"abbbabab"};
+		 long startTime = System.nanoTime(); 
+		System.out.println(findWords2(p,s));
+		 System.out.println(exist(p,""));
+		long consumingTime = System.nanoTime() - startTime;
+		 System.out.println(consumingTime/1000000+"ms");*/
+		System.out.println(getPermutation(3,4));
 	}
 
 }
