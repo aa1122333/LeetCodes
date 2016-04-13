@@ -1325,6 +1325,154 @@ public class Solution {
     	}
     	return sb.toString();
     }
+    //127. Word Ladder
+    public static int ladderLength(String beginWord, String endWord, Set<String> wordList) {
+    	Set<String> begin = new HashSet<String>(),end = new HashSet<String>(),visited = new HashSet<String>();
+    	int length = beginWord.length();
+    	begin.add(beginWord);
+    	end.add(endWord);
+    	int len = 1;
+    	while(!begin.isEmpty()&&!end.isEmpty()){
+    		HashSet<String> tmp = new HashSet<String>();
+    		if(begin.size() > end.size()){
+    			Set<String> t = begin;
+    			begin = end;
+    			end = t;
+    		}
+    		for(String cur:begin){
+    			char[] word = cur.toCharArray();
+    			for(int i=0;i<length;i++){
+        			for(char a='a';a<='z';a++){
+        				char o = word[i];
+        				word[i] = a;
+        				String msg = String.valueOf(word);
+        				if(end.contains(msg)){
+        					return len+1;
+        				}
+        				if(!visited.contains(msg)&&wordList.contains(msg)){
+        					visited.add(msg);
+        					tmp.add(msg);
+        				}
+        				word[i] = o;
+        			}
+        		}
+    		}
+    		len++;
+    		begin = tmp;
+    		
+    	}
+        return 0;
+    }
+    //2. Add Two Numbers
+    public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    	if(l1 == null) return l2;
+    	if(l2 == null) return l1;
+    	ListNode t1 = l1;
+    	ListNode t2 = l2;
+    	ListNode sol = new ListNode(0);
+    	ListNode p = sol;
+    	ListNode head = sol;
+    	int  w = 0;
+    	while(t1!=null || t2!=null){
+    		if(t1 == null) t1 = new ListNode(0);
+    		else if(t2 == null) t2 = new ListNode(0);
+    		int sum = t1.val + t2.val + w;
+    		w = sum>9?1:0;
+    		sol = new ListNode(sum%10);
+    		p.next = sol;
+    		p = sol;
+    		sol =sol.next;
+    		t1 = t1.next;
+    		t2 = t2.next;
+    	}
+    	if(w == 1){
+    		sol = new ListNode(1);
+    		p.next = sol;
+    	}
+        return head.next;
+    }
+    //57. Insert Interval
+      public class Interval {
+          int start;
+          int end;
+          Interval() { start = 0; end = 0; }
+          Interval(int s, int e) { start = s; end = e; }
+      }
+     
+    public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
+    	int length = intervals.size();
+    	List<Interval> sol = new ArrayList<Interval>();
+    	int i=0;
+    	if(length == 0){ sol.add(newInterval);return sol;}
+    		while(intervals.get(i).end<newInterval.start && i<length){
+    			sol.add(intervals.get(i++));
+    		}
+    		while(intervals.get(i).start<=newInterval.end && i<length){
+    			newInterval = new Interval(Math.min(intervals.get(i).start,newInterval.start),
+    									   Math.max(intervals.get(i).end, newInterval.end));
+    			i++;
+    		}
+    		sol.add(newInterval);
+    		while(i<length) sol.add(intervals.get(i++));
+    		return sol;
+    }
+    //202. Happy Number
+    public static boolean isHappy(int n) {
+    	Set<Integer> nums = new HashSet<Integer>();
+    	int curr = n;
+    	while(nums.add(curr)){
+    		int sum = 0;
+    		while(curr/10!=0){
+    			sum+=(curr%10)*(curr%10);
+    			curr/=10;
+    		}
+    		sum+=(curr%10)*(curr%10);
+			curr/=10;
+    		if(sum == 1) return true;
+    		else curr = sum;
+    	}
+        return false;
+    }
+    //202-2
+    public boolean isHappy2(int n) {
+        int x = n;
+        int y = n;
+        while(x>1){
+            x = cal(x) ;
+            if(x==1) return true ;
+            y = cal(cal(y));
+            if(y==1) return true ;
+
+            if(x==y) return false;
+        }
+        return true ;
+    }
+    public int cal(int n){
+        int x = n;
+        int s = 0;
+        while(x>0){
+            s = s+(x%10)*(x%10);
+            x = x/10;
+        }
+        return s ;
+    }
+    //26. Remove Duplicates from Sorted Array
+    public static int removeDuplicates(int[] nums) {
+        if(nums.length == 0) return 0;
+        if(nums.length == 1) return 1;
+        int length = 1;
+        int j = 1;
+        while(j<nums.length){
+        	if(nums[j]!=nums[length-1]){
+        		length ++;
+        		nums[length-1] = nums[j];
+        	}
+        	j++;
+        }
+        for(int i:nums)
+        System.out.println(i);
+        return length;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -1492,7 +1640,30 @@ public class Solution {
 		 System.out.println(exist(p,""));
 		long consumingTime = System.nanoTime() - startTime;
 		 System.out.println(consumingTime/1000000+"ms");*/
-		System.out.println(getPermutation(3,4));
+		//System.out.println(getPermutation(3,4));
+		/*String[] p = {"hot","dot","dog","lot","log"};
+		Set<String> s = new HashSet<String>();
+		for(String a:p)
+			s.add(a);
+		System.out.println(ladderLength("hit","cog",s));*/
+		/*ListNode root = new ListNode(0);
+		root.next = new ListNode(4);
+		root.next.next = new ListNode(9);
+		root.next.next.next= new ListNode(9);
+		root.next.next.next.next = new ListNode(9);
+		root.next.next.next.next.next = new ListNode(9);
+		ListNode root2 = new ListNode(8);
+		root2.next = new ListNode(8);
+		root2.next.next = new ListNode(8);
+		root2.next.next.next= new ListNode(8);
+		ListNode s = addTwoNumbers(root,root2);
+		while(s!=null){
+			System.out.println(s.val);
+			s = s.next;
+		}*/
+		//System.out.println(isHappy(1));
+		int [] s = {1,1,1,1,1,1,2,2,3,3,3,3,5,5,5,6,9,10};
+		System.out.println(removeDuplicates(s));
 	}
 
 }
