@@ -1037,7 +1037,7 @@ public class Solution {
 		
     }
 	//222-2
-	public int countNodes2(TreeNode root) {
+	public static int countNodes2(TreeNode root) {
 		if(root == null) return 0;
 		Stack<TreeNode> t = new Stack<TreeNode>();
 		t.push(root);
@@ -1473,6 +1473,72 @@ public class Solution {
         System.out.println(i);
         return length;
     }
+    //331. Verify Preorder Serialization of a Binary Tree
+    public static boolean isValidSerialization(String preorder) {
+        String [] s = preorder.split(",");
+        Stack<String> stack = new Stack<String>();
+        
+        for(int i=0;i<s.length;i++){
+        	if(s[i].equals("#")){
+        		while(!stack.isEmpty()&&stack.peek().equals("#")){
+        			stack.pop();
+        			if(stack.isEmpty()||stack.pop().equals("#")) return false;
+        		}
+        		
+        	}
+        	stack.add(s[i]);
+        }
+        if(stack.size()==1 && stack.peek().equals("#")) return true;
+        
+        else return false;
+    }
+    //331-2
+    public boolean isValidSerialization2(String preorder) {
+        String s = preorder.replaceAll("\\d+,#,#", "#");
+        return s.equals("#") || !s.equals(preorder) && isValidSerialization(s);
+    }
+    //331-3 
+    public boolean isValidSerialization3(String preorder) {
+        int len = preorder.length();
+        int count = 0;
+        char[] s = preorder.toCharArray();
+
+        for(int i=len-1; i>=0; i--){
+
+            char tmp = s[i];
+
+            if(tmp == ','){
+                continue;
+            }else if(tmp == '#'){
+                count++;
+            }else if(tmp != ',' && tmp != '#' && i!=0 && s[i-1]!=','){
+                continue;
+            }else{
+                if(count<2){
+                    return false;
+                }else{
+                    count--;
+                }
+            }
+        }
+
+        if(count ==1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    //138. Copy List with Random Pointer
+    class RandomListNode {
+        int label;
+        RandomListNode next, random;
+        RandomListNode(int x) { this.label = x; }
+     };
+    public RandomListNode copyRandomList(RandomListNode head) {
+    	if(head == null) return null;
+    	RandomListNode newList = new RandomListNode(head.label);
+    	return null;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -1662,8 +1728,12 @@ public class Solution {
 			s = s.next;
 		}*/
 		//System.out.println(isHappy(1));
-		int [] s = {1,1,1,1,1,1,2,2,3,3,3,3,5,5,5,6,9,10};
-		System.out.println(removeDuplicates(s));
+		/*int [] s = {1,1,1,1,1,1,2,2,3,3,3,3,5,5,5,6,9,10};
+		System.out.println(removeDuplicates(s));*/
+		long startTime = System.nanoTime(); 
+		System.out.println(isValidSerialization("9,#,#,1"));
+		long consumingTime = System.nanoTime() - startTime;
+		 System.out.println(consumingTime/1000000+"ms");
 	}
 
 }
