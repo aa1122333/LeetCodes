@@ -1529,15 +1529,115 @@ public class Solution {
         }
     }
     //138. Copy List with Random Pointer
-    class RandomListNode {
+    public static class RandomListNode {
         int label;
         RandomListNode next, random;
         RandomListNode(int x) { this.label = x; }
      };
     public RandomListNode copyRandomList(RandomListNode head) {
     	if(head == null) return null;
-    	RandomListNode newList = new RandomListNode(head.label);
-    	return null;
+    	RandomListNode p = head;
+    	RandomListNode next;
+    	while(p!=null){
+    		next = p.next;
+    		RandomListNode t = new RandomListNode(p.label);
+    		p.next = t;
+    		t.next = next;
+    		p = next;
+    	}
+    	p = head;
+    	while(p!=null){
+    		if(p.random!=null)
+    		p.next.random = p.random.next;
+    		p = p.next.next;
+    	}
+    	RandomListNode newList = new RandomListNode(0);
+    	RandomListNode cp = newList;
+    	RandomListNode q = newList;
+    	p = head;
+    	while(p!=null){
+    		next = p.next.next;
+    		cp = p.next;
+    		q.next = cp;
+    		q = cp;
+    		p.next = next;
+    		p = next;
+    	}
+    	
+    	return newList.next;
+    }
+    //172. Factorial Trailing Zeroes
+    public static int trailingZeroes(int n) {
+    	int sum = 0;
+    	while(n/5>0){
+    		sum += n/5;
+    		n/=5;
+    	}
+        return sum;
+    }
+    //120. Triangle  top-bottom
+    public static  int minimumTotal(List<List<Integer>> triangle) {
+    	if(triangle.size()==0) return 0;
+    	if(triangle.size()==1) return triangle.get(0).get(0); 
+    	int length = triangle.size();
+    	int min = Integer.MAX_VALUE;
+    	for(int i=1;i<triangle.size();i++){
+    		for(int j=0;j<=i;j++){
+    			if(j==0){
+    				triangle.get(i).set(0, triangle.get(i-1).get(0)+triangle.get(i).get(0));
+    			}
+    			else if(j==i){
+    				triangle.get(i).set(i, triangle.get(i-1).get(i-1)+triangle.get(i).get(i));
+    			}
+    			else {
+    				triangle.get(i).set(j,Math.min(triangle.get(i-1).get(j-1), triangle.get(i-1).get(j))+triangle.get(i).get(j));
+    			}
+    		}
+    	}
+    	for(int i=0;i<triangle.get(length-1).size();i++){
+    		int t = triangle.get(length-1).get(i);
+    		if(t < min)  min = t;
+    	}
+        return min;
+    }
+    //120-2   bottom-up
+    public static  int minimumTotal2(List<List<Integer>> triangle) {
+    	if(triangle.size() == 0 ) return 0;
+    	
+    	for(int i = triangle.size()-2;i >= 0;i--){
+    		List<Integer> next = triangle.get(i+1);
+    		for(int j=0;j<=i;j++){
+    			triangle.get(i).set(j, Math.min(next.get(j), next.get(j+1)+triangle.get(i).get(j)));
+    		}
+    	}
+    	return triangle.get(0).get(0);
+    }
+    //120-3 buttom-up and use array instead of List
+    public static int minimumTotal3(List<List<Integer>> triangle) {
+    	int length = triangle.size();
+        if(length==1) return triangle.get(0).get(0);
+        int[] ans=new int[length];
+        List<Integer> list=triangle.get(length-1);
+        for(int i=0;i<ans.length;i++){
+            ans[i]=list.get(i);
+        }
+        int[] ret=action(triangle,ans,length-1);
+        return ret[0];
+    }
+    public static int[] action(List<List<Integer>> triangle,int[] ans,int n){
+        if(n==0) return ans;
+        List<Integer> list=triangle.get(n-1);
+        int[] ans2=new int[list.size()];
+        for(int i=0;i<ans2.length;i++){
+            ans2[i]=list.get(i);
+        }
+        System.out.println(ans2.length);
+        for(int i=0;i<ans2.length;i++){
+            ans2[i]+=Math.min(ans[i],ans[i+1]);
+            
+        }
+        return action(triangle,ans2,n-1);
+
     }
 	public static void main(String[] args) {
 		
@@ -1670,70 +1770,36 @@ public class Solution {
 		productExceptSelf(s);
 		for(int i:s)
 		System.out.println(i);*/
-
-		//System.out.print(mySqrt(58));
-		/*ListNode l = new ListNode(1);
-		l.next = new ListNode(2);
-		l.next.next = new ListNode(3);
-		l.next.next.next = new ListNode(4);
-		l.next.next.next.next = new ListNode(5);
-		l.next.next.next.next.next = new ListNode(6);
-		l.next.next.next.next.next.next = new ListNode(7);
-		l.next.next.next.next.next.next.next= new ListNode(8);
-		l.next.next.next.next.next.next.next.next= new ListNode(9);
-		l.next.next.next.next.next.next.next.next.next= new ListNode(10);
-		l.next.next.next.next.next.next.next.next.next.next= new ListNode(11);
-		l = reverseKGroup(l,4);*/
-		/*System.out.println(Integer.parseInt("1"));
-		System.out.println(myAtoi("1"));
-*/
-		/*int [] nums = {1,1,2,3};
-		System.out.println(permuteUnique2(nums));*/
-		/*int [] num ={2,3,4,6,1,8,5,78,87,6,67};
-		System.out.println(maxProfit_121(num));*/
-		/*char [][] p = {
-				{'b','b','a','a','b','a',},
-				{'b','b','a','b','a','a',},
-				{'b','b','b','b','b','b',},
-				{'a','a','a','b','a','a',},
-				{'a','b','a','a','b','b',},
-				{'a','a','a','b','a','a',},
-				{'a','b','a','a','b','b',}
-		};
-		String [] s = {"abbbabab"};
-		 long startTime = System.nanoTime(); 
-		System.out.println(findWords2(p,s));
-		 System.out.println(exist(p,""));
-		long consumingTime = System.nanoTime() - startTime;
-		 System.out.println(consumingTime/1000000+"ms");*/
-		//System.out.println(getPermutation(3,4));
-		/*String[] p = {"hot","dot","dog","lot","log"};
-		Set<String> s = new HashSet<String>();
-		for(String a:p)
-			s.add(a);
-		System.out.println(ladderLength("hit","cog",s));*/
-		/*ListNode root = new ListNode(0);
-		root.next = new ListNode(4);
-		root.next.next = new ListNode(9);
-		root.next.next.next= new ListNode(9);
-		root.next.next.next.next = new ListNode(9);
-		root.next.next.next.next.next = new ListNode(9);
-		ListNode root2 = new ListNode(8);
-		root2.next = new ListNode(8);
-		root2.next.next = new ListNode(8);
-		root2.next.next.next= new ListNode(8);
-		ListNode s = addTwoNumbers(root,root2);
-		while(s!=null){
-			System.out.println(s.val);
-			s = s.next;
-		}*/
-		//System.out.println(isHappy(1));
-		/*int [] s = {1,1,1,1,1,1,2,2,3,3,3,3,5,5,5,6,9,10};
-		System.out.println(removeDuplicates(s));*/
-		long startTime = System.nanoTime(); 
-		System.out.println(isValidSerialization("9,#,#,1"));
-		long consumingTime = System.nanoTime() - startTime;
-		 System.out.println(consumingTime/1000000+"ms");
+/*		RandomListNode head = new RandomListNode(1);
+		RandomListNode itnode = head;
+		head.label = 2;
+		System.out.println(itnode.label);*/
+		/*for(int i=0;i<10000;i++)
+			System.out.println(trailingZeroes(Integer.MAX_VALUE));*/
+		Long  time = System.nanoTime();
+		List<List<Integer>> s = new ArrayList<List<Integer>>();
+		
+		List<Integer> t1 = new ArrayList<Integer>();
+		t1.add(1);
+		List<Integer> t2 = new ArrayList<Integer>();
+		t2.add(2);
+		t2.add(3);
+		List<Integer> t3 = new ArrayList<Integer>();
+		t3.add(4);
+		t3.add(5);
+		t3.add(6);
+		List<Integer> t4 = new ArrayList<Integer>();
+		t4.add(7);
+		t4.add(8);
+		t4.add(9);
+		t4.add(10);
+		s.add(t1);
+		s.add(t2);
+		s.add(t3);
+		s.add(t4);
+		
+		System.out.println(minimumTotal3(s));
+		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
 
 }
