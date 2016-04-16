@@ -1639,6 +1639,158 @@ public class Solution {
         return action(triangle,ans2,n-1);
 
     }
+    //116. Populating Next Right Pointers in Each Node
+    //117 can also use this code
+    public static class TreeLinkNode {
+         int val;
+         TreeLinkNode left, right, next;
+         TreeLinkNode(int x) { val = x; }
+     }
+    public static void connect(TreeLinkNode root) {
+    	Stack<TreeLinkNode> stack = new Stack<TreeLinkNode>();
+        dfs_116(root, stack);
+        System.out.println();
+    }
+    public static void dfs_116(TreeLinkNode root,Stack<TreeLinkNode> s){
+    	if(root == null) return ;
+    	if(s.isEmpty()) root.next = null;
+    	else root.next = s.pop();
+    	if(root.right!=null){ 
+    		dfs_116(root.right, s);
+    		s.add(root.right);
+    	}
+    	if(root.left!=null){ 
+    		dfs_116(root.left, s);
+    		s.add(root.left);
+    	}
+    }
+    //116-2
+    public void connect2(TreeLinkNode root) {
+        if (root == null){
+            return;
+        }
+
+        if (root.left != null){
+            root.left.next = root.right;
+            if (root.next != null){
+                root.right.next = root.next.left;
+            }
+        }
+
+        connect2(root.left);
+        connect2(root.right);
+    }
+    //117-2
+    public void connect3(TreeLinkNode root){ 
+    	while (root != null) { root = handler(root); } 
+    }
+    private TreeLinkNode handler(TreeLinkNode node) {
+        TreeLinkNode res = null;
+        TreeLinkNode cur = null;
+        while(node != null) {
+            if (node.left != null) {
+                res = node.left;
+                break;
+            }
+            else if (node.right != null) {
+                res = node.right;
+                break;
+            }
+            node = node.next;
+        }
+
+        if (node != null) {
+            if (node.left != null) {
+                cur = node.left;
+                if (node.right != null) {
+                    cur.next = node.right;
+                    cur = node.right;
+                }
+            }
+            else if (node.right != null) {
+                cur = node.right;
+            }
+            node = node.next;
+        }
+
+        while (node != null) {
+            if (node.left != null) {
+                cur.next = node.left;
+                cur = node.left;
+            }
+            if (node.right != null) {
+                cur.next = node.right;
+                cur = node.right;
+            }
+            node = node.next;
+        }
+        return res;
+    }
+    //149. Max Points on a Line
+    class Point {
+         int x;
+         int y;
+         Point() { x = 0; y = 0; }
+         Point(int a, int b) { x = a; y = b; }
+     }
+    public int maxPoints(Point[] points) {
+    	if(points == null) return 0;
+    	if(points.length <= 2) return points.length;
+    	HashMap<Integer,Map<Integer,Integer>> map = new HashMap<Integer,Map<Integer,Integer>>();
+    	int result = 0;
+    	for(int i=0;i<points.length;i++){
+    		map.clear();
+    		int samepoint = 0;
+    		int max = 0;
+    		for(int j=i+1;j<points.length;j++){
+    			int x = points[j].x-points[i].x;
+    			int y = points[j].y-points[i].y;
+    			if(x == 0 && y == 0){
+    				samepoint++;
+    				continue;
+    			}
+    			int gcd=GCD(x,y);
+    			if(gcd!=0){
+    				x/=gcd;
+    				y/=gcd;
+    			}
+    			if(map.containsKey(x)){
+    				if(map.get(x).containsKey(y))
+    					map.get(x).put(y, map.get(x).get(y)+1);
+    				else 
+    					map.get(x).put(y, 1);
+    			}
+    			else {
+    				Map<Integer,Integer> newx = new HashMap<Integer,Integer>();
+    				newx.put(y, 1);
+    				map.put(x,newx);
+    			}
+    			max = Math.max(max, map.get(x).get(y));
+    		}
+    		result = Math.max(result, max+samepoint+1);
+    	}
+        return result;
+    }
+    public int GCD(int a,int b){
+    	return b==0?a:GCD(b,a%b);
+    }
+    //153. Find Minimum in Rotated Sorted Array
+    public static int findMin(int[] nums) {
+    	if(nums.length==0) return 0;
+        return findmin(nums,0,nums.length-1);
+    }
+    public static int findmin(int []nums,int s,int e){
+    	if(s+1==e) return Math.min(nums[s], nums[e]);
+    	int t = (s+e)/2;
+    	
+    	if(nums[s]<=nums[t]){
+    		if(nums[t]<nums[e]) return nums[s];
+    		else return findmin(nums,t,e);
+    	}
+    	else 
+    		return findmin(nums,s,t);
+    	
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -1777,7 +1929,7 @@ public class Solution {
 		/*for(int i=0;i<10000;i++)
 			System.out.println(trailingZeroes(Integer.MAX_VALUE));*/
 		Long  time = System.nanoTime();
-		List<List<Integer>> s = new ArrayList<List<Integer>>();
+		/*List<List<Integer>> s = new ArrayList<List<Integer>>();
 		
 		List<Integer> t1 = new ArrayList<Integer>();
 		t1.add(1);
@@ -1798,7 +1950,9 @@ public class Solution {
 		s.add(t3);
 		s.add(t4);
 		
-		System.out.println(minimumTotal3(s));
+		System.out.println(minimumTotal3(s));*/
+		int [] m = {2,2,1,2};
+		System.out.println(findMin(m));
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
 
