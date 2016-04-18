@@ -1878,6 +1878,65 @@ public class Solution {
         }
         return answer;
     }
+    //11. Container With Most Water
+    public int maxArea(int[] height) {
+        if(height.length<=1) return 0;
+        int max = 0,low=0,high=height.length-1;
+        while(low<high){
+        	int currlow= height[low],currhigh = height[high];
+        	max=Math.max(Math.min(currlow, currhigh)*(high-low),max);
+        	while(height[low]<currlow && low<high) low++;
+        	while (height[high]<currhigh && low<high) high++;
+        }
+        return max;
+    }
+    //42. Trapping Rain Water
+    public int trap(int[] height) {
+    	if(height.length<3) return 0;
+        int low = 0,high=height.length-1,sum=0;
+        while(height[low]<=0 && low<high) low++;
+        while(height[high]<=0 && high>low) high--;
+        while(low<high){
+        	if(height[low]<=height[high]){
+        		int th = height[low];
+        		while(low<high && th>=height[low]){
+        			sum+=th-height[low];
+        			low++;
+        		}
+        	}
+        	else {
+        		int th = height[high];
+        		while(low<high && th>=height[high]){
+        			sum+=th-height[high];
+        			high--;
+        		}
+        	}
+        }
+        
+        return sum;
+    }
+    //42-2
+    public int trap2(int[] height) {
+    	if(height.length<3) return 0;
+    	int max = -1,maxindex=0;
+    	for(int i=0;i<height.length;i++){
+    		if(max<height[i]) {
+    		    max=height[i];
+    		    maxindex=i;
+    		}
+    	}
+    	int area = 0,root = height[0];
+    	for(int i=0;i<maxindex;i++){
+    		if(root<height[i]) root = height[i];
+    		else area += (root-height[i]);
+    	}
+    	root=height[height.length-1];
+    	for(int i=height.length-1;i>maxindex;i--){
+    		if(root<height[i]) root = height[i];
+    		else area+=(root-height[i]);
+    	}
+    	return area;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
