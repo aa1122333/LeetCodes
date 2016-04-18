@@ -1791,6 +1791,93 @@ public class Solution {
     		return findmin(nums,s,t);
     	
     }
+    //169. Majority Element
+    public static int majority(int [] nums){
+    	int n = 0;
+    	int maj = Integer.MAX_VALUE;
+    	for(int p:nums){
+    		if(p!=maj){
+    			n--;
+    			if(n<0){
+    				maj = p;
+    				n = 0;
+    			}
+    		}
+    		else n++;
+    	}
+    	return maj;
+    }
+    //229. Majority Element II 
+    public static List<Integer> majorityElement(int[] nums) {
+    	List<Integer> sol = new ArrayList<Integer>();
+    	if(nums.length==0) return sol;
+    	int n1=0,n2=0,count1=0,count2=0;
+    	for(int n:nums){
+    		if(n==n1) count1++;
+    		else if(n==n2) count2++;
+    		else if(count1<=0){
+				count1=1;
+				n1=n;
+			}
+			else if(count2<=0){
+				count2=1;
+				n2=n;
+			}
+    		else {
+    			count1--;
+    			count2--;
+    			
+    		}
+    	}
+    	count1=0;
+    	count2=0;
+    	for(int n:nums){
+    		if(n==n1) count1++;
+    		else if(n==n2) count2++;
+    	}
+    	if(count1>nums.length/3) sol.add(n1);
+    	if(count2>nums.length/3) sol.add(n2);
+        return sol;
+    }
+    //70. Climbing Stairs
+    public static int climbStairs(int n) {
+    	//return (n==0||n==1)?1:climbStairs(n-1)+climbStairs(n-2);//febonacci -TLE
+    	int f1 = 1,f2 = 1;
+    	int curr = 1;
+    	while(curr<n){
+    		curr++;
+    		int t = f1+f2;
+    		f1 = f2;
+    		f2 = t;
+    	}
+    	return f2;
+    }
+    //91. Decode Ways
+    public static int numDecodings(String s) {
+    	if(s.length()==0) return 0;
+    	char[] str = s.toCharArray();
+    	int l = s.length();
+    	int sum[] = new int[l+1];
+    	sum[l] = 1;
+    	sum[l-1] = str[l-1]=='0'?0:1;
+    	for(int i=l-2;i>=0;i--)
+    		if(str[i]=='0') continue;
+    		else sum[i] = (((str[i]=='2'&&str[i+1]<'7')||str[i]=='1'))?sum[i+1]+sum[i+2]:sum[i+1];
+    	
+        return sum[0];
+    }
+    //91-2
+    public int numDecodings2(String s) {
+        if(s.length() == 0) return 0;
+        int pre = 27, digit, answer = 0, first = 1, second = 1;
+        for(int i = s.length()-1; i >= 0; i--){
+            digit = s.charAt(i) - '0';
+            if(digit == 0) answer = 0;
+            else answer = first + (digit*10 + pre < 27 ? second : 0);
+            second = first; first = answer; pre = digit;
+        }
+        return answer;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -1951,8 +2038,11 @@ public class Solution {
 		s.add(t4);
 		
 		System.out.println(minimumTotal3(s));*/
-		int [] m = {2,2,1,2};
-		System.out.println(findMin(m));
+		/*int [] m = {2,2,1,2};
+		System.out.println(findMin(m));*/
+		/*int [] m = {2,2,2,4,5,4,4,4,9};
+		System.out.println(majorityElement(m));*/
+		System.out.println(numDecodings("2102510255167123643151341035"));
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
 
