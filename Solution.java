@@ -1937,6 +1937,26 @@ public class Solution {
     	}
     	return area;
     }
+    //48. Rotate Image
+    public void rotate(int[][] matrix) {
+        
+    }
+    //242. Valid Anagram
+    public boolean isAnagram(String s, String t) {
+    	if(s.equals(t)) return true;
+    	if(s.length()==0 && t.length()==0) return true;
+    	if(s.length()==0 || t.length()==0) return false;
+    	int slength = s.length(),tlength = t.length();
+    	if(slength!=tlength) return false;
+    	char[] schar=s.toCharArray(),tchar=t.toCharArray();
+    	
+    	Arrays.sort(schar);
+    	Arrays.sort(tchar);
+    	for(int i=0;i<slength;i++){
+    		if(schar[i]!=tchar[i]) return false;
+    	}
+        return true;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
