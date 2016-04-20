@@ -1639,6 +1639,324 @@ public class Solution {
         return action(triangle,ans2,n-1);
 
     }
+    //116. Populating Next Right Pointers in Each Node
+    //117 can also use this code
+    public static class TreeLinkNode {
+         int val;
+         TreeLinkNode left, right, next;
+         TreeLinkNode(int x) { val = x; }
+     }
+    public static void connect(TreeLinkNode root) {
+    	Stack<TreeLinkNode> stack = new Stack<TreeLinkNode>();
+        dfs_116(root, stack);
+        System.out.println();
+    }
+    public static void dfs_116(TreeLinkNode root,Stack<TreeLinkNode> s){
+    	if(root == null) return ;
+    	if(s.isEmpty()) root.next = null;
+    	else root.next = s.pop();
+    	if(root.right!=null){ 
+    		dfs_116(root.right, s);
+    		s.add(root.right);
+    	}
+    	if(root.left!=null){ 
+    		dfs_116(root.left, s);
+    		s.add(root.left);
+    	}
+    }
+    //116-2
+    public void connect2(TreeLinkNode root) {
+        if (root == null){
+            return;
+        }
+
+        if (root.left != null){
+            root.left.next = root.right;
+            if (root.next != null){
+                root.right.next = root.next.left;
+            }
+        }
+
+        connect2(root.left);
+        connect2(root.right);
+    }
+    //117-2
+    public void connect3(TreeLinkNode root){ 
+    	while (root != null) { root = handler(root); } 
+    }
+    private TreeLinkNode handler(TreeLinkNode node) {
+        TreeLinkNode res = null;
+        TreeLinkNode cur = null;
+        while(node != null) {
+            if (node.left != null) {
+                res = node.left;
+                break;
+            }
+            else if (node.right != null) {
+                res = node.right;
+                break;
+            }
+            node = node.next;
+        }
+
+        if (node != null) {
+            if (node.left != null) {
+                cur = node.left;
+                if (node.right != null) {
+                    cur.next = node.right;
+                    cur = node.right;
+                }
+            }
+            else if (node.right != null) {
+                cur = node.right;
+            }
+            node = node.next;
+        }
+
+        while (node != null) {
+            if (node.left != null) {
+                cur.next = node.left;
+                cur = node.left;
+            }
+            if (node.right != null) {
+                cur.next = node.right;
+                cur = node.right;
+            }
+            node = node.next;
+        }
+        return res;
+    }
+    //149. Max Points on a Line
+    class Point {
+         int x;
+         int y;
+         Point() { x = 0; y = 0; }
+         Point(int a, int b) { x = a; y = b; }
+     }
+    public int maxPoints(Point[] points) {
+    	if(points == null) return 0;
+    	if(points.length <= 2) return points.length;
+    	HashMap<Integer,Map<Integer,Integer>> map = new HashMap<Integer,Map<Integer,Integer>>();
+    	int result = 0;
+    	for(int i=0;i<points.length;i++){
+    		map.clear();
+    		int samepoint = 0;
+    		int max = 0;
+    		for(int j=i+1;j<points.length;j++){
+    			int x = points[j].x-points[i].x;
+    			int y = points[j].y-points[i].y;
+    			if(x == 0 && y == 0){
+    				samepoint++;
+    				continue;
+    			}
+    			int gcd=GCD(x,y);
+    			if(gcd!=0){
+    				x/=gcd;
+    				y/=gcd;
+    			}
+    			if(map.containsKey(x)){
+    				if(map.get(x).containsKey(y))
+    					map.get(x).put(y, map.get(x).get(y)+1);
+    				else 
+    					map.get(x).put(y, 1);
+    			}
+    			else {
+    				Map<Integer,Integer> newx = new HashMap<Integer,Integer>();
+    				newx.put(y, 1);
+    				map.put(x,newx);
+    			}
+    			max = Math.max(max, map.get(x).get(y));
+    		}
+    		result = Math.max(result, max+samepoint+1);
+    	}
+        return result;
+    }
+    public int GCD(int a,int b){
+    	return b==0?a:GCD(b,a%b);
+    }
+    //153. Find Minimum in Rotated Sorted Array
+    public static int findMin(int[] nums) {
+    	if(nums.length==0) return 0;
+        return findmin(nums,0,nums.length-1);
+    }
+    public static int findmin(int []nums,int s,int e){
+    	if(s+1==e) return Math.min(nums[s], nums[e]);
+    	int t = (s+e)/2;
+    	
+    	if(nums[s]<=nums[t]){
+    		if(nums[t]<nums[e]) return nums[s];
+    		else return findmin(nums,t,e);
+    	}
+    	else 
+    		return findmin(nums,s,t);
+    	
+    }
+    //169. Majority Element
+    public static int majority(int [] nums){
+    	int n = 0;
+    	int maj = Integer.MAX_VALUE;
+    	for(int p:nums){
+    		if(p!=maj){
+    			n--;
+    			if(n<0){
+    				maj = p;
+    				n = 0;
+    			}
+    		}
+    		else n++;
+    	}
+    	return maj;
+    }
+    //229. Majority Element II 
+    public static List<Integer> majorityElement(int[] nums) {
+    	List<Integer> sol = new ArrayList<Integer>();
+    	if(nums.length==0) return sol;
+    	int n1=0,n2=0,count1=0,count2=0;
+    	for(int n:nums){
+    		if(n==n1) count1++;
+    		else if(n==n2) count2++;
+    		else if(count1<=0){
+				count1=1;
+				n1=n;
+			}
+			else if(count2<=0){
+				count2=1;
+				n2=n;
+			}
+    		else {
+    			count1--;
+    			count2--;
+    			
+    		}
+    	}
+    	count1=0;
+    	count2=0;
+    	for(int n:nums){
+    		if(n==n1) count1++;
+    		else if(n==n2) count2++;
+    	}
+    	if(count1>nums.length/3) sol.add(n1);
+    	if(count2>nums.length/3) sol.add(n2);
+        return sol;
+    }
+    //70. Climbing Stairs
+    public static int climbStairs(int n) {
+    	//return (n==0||n==1)?1:climbStairs(n-1)+climbStairs(n-2);//febonacci -TLE
+    	int f1 = 1,f2 = 1;
+    	int curr = 1;
+    	while(curr<n){
+    		curr++;
+    		int t = f1+f2;
+    		f1 = f2;
+    		f2 = t;
+    	}
+    	return f2;
+    }
+    //91. Decode Ways
+    public static int numDecodings(String s) {
+    	if(s.length()==0) return 0;
+    	char[] str = s.toCharArray();
+    	int l = s.length();
+    	int sum[] = new int[l+1];
+    	sum[l] = 1;
+    	sum[l-1] = str[l-1]=='0'?0:1;
+    	for(int i=l-2;i>=0;i--)
+    		if(str[i]=='0') continue;
+    		else sum[i] = (((str[i]=='2'&&str[i+1]<'7')||str[i]=='1'))?sum[i+1]+sum[i+2]:sum[i+1];
+    	
+        return sum[0];
+    }
+    //91-2
+    public int numDecodings2(String s) {
+        if(s.length() == 0) return 0;
+        int pre = 27, digit, answer = 0, first = 1, second = 1;
+        for(int i = s.length()-1; i >= 0; i--){
+            digit = s.charAt(i) - '0';
+            if(digit == 0) answer = 0;
+            else answer = first + (digit*10 + pre < 27 ? second : 0);
+            second = first; first = answer; pre = digit;
+        }
+        return answer;
+    }
+    //11. Container With Most Water
+    public int maxArea(int[] height) {
+        if(height.length<=1) return 0;
+        int max = 0,low=0,high=height.length-1;
+        while(low<high){
+        	int currlow= height[low],currhigh = height[high];
+        	max=Math.max(Math.min(currlow, currhigh)*(high-low),max);
+        	while(height[low]<currlow && low<high) low++;
+        	while (height[high]<currhigh && low<high) high++;
+        }
+        return max;
+    }
+    //42. Trapping Rain Water
+    public int trap(int[] height) {
+    	if(height.length<3) return 0;
+        int low = 0,high=height.length-1,sum=0;
+        while(height[low]<=0 && low<high) low++;
+        while(height[high]<=0 && high>low) high--;
+        while(low<high){
+        	if(height[low]<=height[high]){
+        		int th = height[low];
+        		while(low<high && th>=height[low]){
+        			sum+=th-height[low];
+        			low++;
+        		}
+        	}
+        	else {
+        		int th = height[high];
+        		while(low<high && th>=height[high]){
+        			sum+=th-height[high];
+        			high--;
+        		}
+        	}
+        }
+        
+        return sum;
+    }
+    //42-2
+    public int trap2(int[] height) {
+    	if(height.length<3) return 0;
+    	int max = -1,maxindex=0;
+    	for(int i=0;i<height.length;i++){
+    		if(max<height[i]) {
+    		    max=height[i];
+    		    maxindex=i;
+    		}
+    	}
+    	int area = 0,root = height[0];
+    	for(int i=0;i<maxindex;i++){
+    		if(root<height[i]) root = height[i];
+    		else area += (root-height[i]);
+    	}
+    	root=height[height.length-1];
+    	for(int i=height.length-1;i>maxindex;i--){
+    		if(root<height[i]) root = height[i];
+    		else area+=(root-height[i]);
+    	}
+    	return area;
+    }
+    //48. Rotate Image
+    public void rotate(int[][] matrix) {
+        
+    }
+    //242. Valid Anagram
+    public boolean isAnagram(String s, String t) {
+    	if(s.equals(t)) return true;
+    	if(s.length()==0 && t.length()==0) return true;
+    	if(s.length()==0 || t.length()==0) return false;
+    	int slength = s.length(),tlength = t.length();
+    	if(slength!=tlength) return false;
+    	char[] schar=s.toCharArray(),tchar=t.toCharArray();
+    	
+    	Arrays.sort(schar);
+    	Arrays.sort(tchar);
+    	for(int i=0;i<slength;i++){
+    		if(schar[i]!=tchar[i]) return false;
+    	}
+        return true;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -1777,7 +2095,7 @@ public class Solution {
 		/*for(int i=0;i<10000;i++)
 			System.out.println(trailingZeroes(Integer.MAX_VALUE));*/
 		Long  time = System.nanoTime();
-		List<List<Integer>> s = new ArrayList<List<Integer>>();
+		/*List<List<Integer>> s = new ArrayList<List<Integer>>();
 		
 		List<Integer> t1 = new ArrayList<Integer>();
 		t1.add(1);
@@ -1798,7 +2116,12 @@ public class Solution {
 		s.add(t3);
 		s.add(t4);
 		
-		System.out.println(minimumTotal3(s));
+		System.out.println(minimumTotal3(s));*/
+		/*int [] m = {2,2,1,2};
+		System.out.println(findMin(m));*/
+		/*int [] m = {2,2,2,4,5,4,4,4,9};
+		System.out.println(majorityElement(m));*/
+		System.out.println(numDecodings("2102510255167123643151341035"));
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
 
