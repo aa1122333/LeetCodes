@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import javax.management.Query;
+import javax.swing.text.AbstractDocument.BranchElement;
 
 public class Solution {
 	//54. Spiral Matrix
@@ -1938,8 +1939,26 @@ public class Solution {
     	return area;
     }
     //48. Rotate Image
-    public void rotate(int[][] matrix) {
-        
+    public static void rotate(int[][] matrix) {
+    	if(matrix.length<=1) return ;
+        int l = matrix.length/2;
+        int length = matrix.length-1 ;
+        for(int i=0;i<l;i++){
+        	for(int j=i;j<(length-i);j++){
+        		int t = matrix[i][j];
+        		matrix[i][j] = matrix[length-j][i];
+        		matrix[length-j][i] = matrix[length-i][length-j];
+        		matrix[length-i][length-j] = matrix[j][length-i];
+        		matrix[j][length-i] = t; 
+        		
+        	}
+        	
+        }
+        for(int i=0;i<matrix.length;i++){
+        	for(int j=0;j<matrix[0].length;j++)
+        		System.out.print(matrix[i][j]+" ");
+        	System.out.println();
+        }
     }
     //242. Valid Anagram
     public boolean isAnagram(String s, String t) {
@@ -1956,6 +1975,131 @@ public class Solution {
     		if(schar[i]!=tchar[i]) return false;
     	}
         return true;
+    }
+    //JosephusProblem
+    public static int[] JosephusProblem(int n,int m){
+    	if(n<1||m<1) return null;
+    	int [] list = new int [n+1];
+    	list[0] = 0;
+    	list[1] =1;
+    	for(int i=2;i<=n;i++)
+    		list[i]= (list[i-1]+m)%i;
+    	return list;
+    }
+    //30. Substring with Concatenation of All Words
+    public static List<Integer> findSubstring(String s, String[] words) {
+        List<Integer> sol = new ArrayList<Integer>();
+        if(s.length()==0 || words.length==0) return sol;
+        int length = words[0].length();
+        int size = words.length;
+        HashMap<String,Integer> map = new HashMap<String,Integer>();
+        for(int i=0;i<size;i++)
+        	map.put(words[i],  map.containsKey(words[i]) ? map.get(words[i]) + 1 : 1);
+        for(int i=0;i<=(s.length()-length*size);i++){
+        	Map<String, Integer> copy = new HashMap<String, Integer>(map);
+        		for(int j=0;j<words.length;j++){
+        			String tstring = s.substring(j*length+i, (j+1)*length+i);
+        			if(copy.containsKey(tstring)){
+        				int count = copy.get(tstring);
+        				if(count==1)
+        					copy.remove(tstring);
+        				else 
+        					copy.put(tstring,count-1);
+        				if(copy.isEmpty()) {
+        					sol.add(i);
+        					break;
+        				}
+        				
+        			}
+        			else break;
+        		}
+        }
+        return sol;
+    }
+    //30-2
+    public List<Integer> findSubstring2(String s, String[] words) {
+    	List<Integer> res = new ArrayList<Integer>();
+    	int n = s.length();
+    	int m = words.length;
+    	int k;
+    	if(n==0||m==0||(k=words[0].length())==0) return res;
+    	HashMap<String,Integer> wDict = new HashMap<String,Integer>();
+    	for(String word:words){
+    		if(wDict.containsKey(word))
+    			wDict.put(word, wDict.get(word)+1);
+    		else wDict.put(word,1);
+    	}
+    	int start ,x,wordsLen = m*k;
+    	HashMap<String,Integer> curDict = new HashMap<String,Integer>();
+    	String test,temp;
+    	for(int i=0;i<k;i++){
+    		curDict.clear();
+    		start = i;
+    		if(start+wordsLen>n)
+    			return res;
+    		for(int j=i;j+k<=n;j+=k){
+    			test = s.substring(j,j+k);
+    			if(wDict.containsKey(test)){
+    				if(!curDict.containsKey(test)){
+    					curDict.put(test, 1);
+    					start = checkFound(res,start,wordsLen,j,k,curDict,s);
+    					continue;
+    				}
+    			
+	    			x = curDict.get(test);
+	    			if(x<wDict.get(test)){
+	    				curDict.put(test, x+1);
+	    				start = checkFound(res, start, wordsLen, j, k, curDict, s);
+	    				continue;
+	    			}
+	    			while(!(temp=s.substring(start, start+k)).equals(test)){
+	    				decreaseCount(curDict, temp);
+	    				start+=k;
+	    			}
+	    			start+=k;
+	    			if(start+wordsLen>n) break;
+	    			continue;
+    			}
+    			start = j+k;
+        		if(start+wordsLen>n) break;
+        		curDict.clear();
+    		}
+    		
+    	}
+    	return res;
+    }
+    public int checkFound(List<Integer> res,int start,int wordsLen,int j,int k,HashMap<String,Integer> curDict,String s){
+    	if(start + wordsLen == j+k){
+    		res.add(start);
+    		decreaseCount(curDict,s.substring(start, start+k));
+    		return start + k;
+    	}
+    	return start;
+    }
+    public void decreaseCount(HashMap<String,Integer> curDict,String key){
+    	int x = curDict.get(key);
+    	if(x==1)
+    		curDict.remove(key);
+    	else curDict.put(key, x-1); 
+    }
+    //73. Set Matrix Zeroes
+    public static void setZeroes(int[][] matrix) {
+        if(matrix.length==0||matrix[0].length==0) return ;
+        
+        int col= 1;
+        for(int i=0;i<matrix.length;i++){
+        	if(matrix[i][0]==0) col=0;
+        	for(int j=1;j<matrix[0].length;j++)
+        		if(matrix[i][j]==0)
+        			matrix[i][0] = matrix[0][j] = 0;
+        }
+        
+        for(int i=matrix.length-1;i>=0;i--){
+        	for(int j=matrix[0].length-1;j>=1;j--)
+        		if(matrix[i][0]==0 || matrix[0][j]==0)
+        			matrix[i][j] = 0;
+        	if(col==0) matrix[i][0] = 0;
+        }
     }
 	public static void main(String[] args) {
 		
@@ -2121,7 +2265,23 @@ public class Solution {
 		System.out.println(findMin(m));*/
 		/*int [] m = {2,2,2,4,5,4,4,4,9};
 		System.out.println(majorityElement(m));*/
-		System.out.println(numDecodings("2102510255167123643151341035"));
+		/*System.out.println(numDecodings("2102510255167123643151341035"));*/
+		/*int p[] = JosephusProblem(8,4);*/
+		/*int p[][] = {{1,2,3,4,5},{6,7,8,9,10},{11,12,13,14,15},{16,17,18,19,20},{21,22,23,24,25}};
+		int q[][] = {{1,2},{3,4}};
+		rotate(q);*/
+		/*String s = "wordgoodgoodgoodbestword";
+		String[] words = {"word","good","best","good"};
+		System.out.println(findSubstring(s,words));*/
+		int p[][] = {{0,0,0,5},{6,7,8,10},{0,12,13,15},{16,17,18,20},{0,0,24,25}};
+		int q[][] = {{1,2},{3,4}};
+		setZeroes(p);
+		for(int i=0;i<p.length;i++){
+			for(int j=0;j<p[0].length;j++)
+				System.out.print(p[i][j]+" ");
+			System.out.println();
+		}
+		
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
 
