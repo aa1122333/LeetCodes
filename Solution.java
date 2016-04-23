@@ -1976,6 +1976,25 @@ public class Solution {
     	}
         return true;
     }
+    //242-2
+    //3ms basic ASCII 
+      public boolean isAnagram2(String s, String t) {
+          if(s==null || t==null || s.length()!=t.length())
+              return false;
+          int[] alphabets = new int[256];
+          char[] sc = s.toCharArray();
+          char[] tc = t.toCharArray();
+          for(char c : sc){
+              alphabets[c]++;
+          }
+          for(char c : tc){
+              if(alphabets[c]>0)
+                  alphabets[c]--;
+              else
+                  return false;
+          }
+          return true;
+      }
     //JosephusProblem
     public static int[] JosephusProblem(int n,int m){
     	if(n<1||m<1) return null;
@@ -2100,6 +2119,61 @@ public class Solution {
         			matrix[i][j] = 0;
         	if(col==0) matrix[i][0] = 0;
         }
+    }
+    //39. Combination Sum
+    public static List<List<Integer>> combinationSum(int[] candidates, int target) {
+    	List<List<Integer>> sol = new ArrayList<List<Integer>>();
+    	List<Integer> tmp = new ArrayList<Integer>();
+    	if(candidates.length==0) return sol;
+    	Arrays.sort(candidates);
+    	findTheSum(sol, candidates, target, 0, tmp,0);
+        return sol;
+    }
+    public static void findTheSum(List<List<Integer>> sol,int[]cadidates,int target,int currsum,List<Integer> tmp,int begin){
+    	for(int i=begin;i<cadidates.length;i++){
+    		if(currsum+cadidates[i]==target){
+    			tmp.add(cadidates[i]);
+    			sol.add(new ArrayList<Integer>(tmp));
+    			tmp.remove(tmp.size()-1);
+    			return ;
+    		}
+    		else if(currsum+cadidates[i]<target){
+    			tmp.add(cadidates[i]);
+    			findTheSum(sol, cadidates, target, currsum+cadidates[i], tmp,i);
+    			tmp.remove(tmp.size()-1);
+    		}
+    		else  return ;
+    	}
+    }
+    //264. Ugly Number II
+    static int []num = new int[3000];
+    static boolean  ini = false;
+    public static int nthUglyNumber(int n) {
+    	
+    	if(!ini){
+    		ini = true;
+    		init();
+    	}
+    	return num[n-1];
+    }
+    public static void init(){
+    	int n2=0,n3=0,n5=0;
+    	num[0] = 1;
+    	for(int i=1;i<3000;i++){
+    		int min = Math.min(num[n2]*2,Math.min(num[n3]*3, num[n5]*5));
+    		if(num[n2]*2==min){
+    			num[i] = num[n2]*2;
+    			n2++;
+    		}
+    		if(num[n3]*3==min){
+    			num[i] = num[n3]*3;
+    			n3++;
+    		}
+    		if(num[n5]*5==min){
+    			num[i] = num[n5]*5;
+    			n5++;
+    		}
+    	}
     }
 	public static void main(String[] args) {
 		
@@ -2273,15 +2347,17 @@ public class Solution {
 		/*String s = "wordgoodgoodgoodbestword";
 		String[] words = {"word","good","best","good"};
 		System.out.println(findSubstring(s,words));*/
-		int p[][] = {{0,0,0,5},{6,7,8,10},{0,12,13,15},{16,17,18,20},{0,0,24,25}};
+		/*int p[][] = {{0,0,0,5},{6,7,8,10},{0,12,13,15},{16,17,18,20},{0,0,24,25}};
 		int q[][] = {{1,2},{3,4}};
 		setZeroes(p);
 		for(int i=0;i<p.length;i++){
 			for(int j=0;j<p[0].length;j++)
 				System.out.print(p[i][j]+" ");
 			System.out.println();
-		}
-		
+		}*/
+		/*int []p = {1,2,3,4,5,6,7};
+		System.out.println(combinationSum(p,45));*/
+		System.out.println(nthUglyNumber(10));
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
 
