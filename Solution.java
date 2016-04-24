@@ -2175,6 +2175,31 @@ public class Solution {
     		}
     	}
     }
+    //283. Move Zeroes
+    public static void moveZeroes(int[] nums) {
+        if(nums.length==0) return ;
+        int i=0,j=0;
+        while(i<nums.length&&j<nums.length){
+        	while(i<nums.length && nums[i]!=0 ) i++;
+        	j = i+1;
+        	while(j<nums.length && nums[j]==0 ) j++;
+        	if(i<nums.length && j<nums.length){
+        		nums[i] = nums[j];
+        		nums[j] = 0;
+        	}
+        }
+    }
+    //283-2
+    public static void moveZeroes2(int[] nums) {
+    	int j = 0;
+    	for(int i=0;i<nums.length;i++){
+    		if(nums[i]!=0){
+    			nums[j++] = nums[i];
+    		}
+    	}
+    	for(;j<nums.length;j++)
+    		nums[j] = 0;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -2357,7 +2382,12 @@ public class Solution {
 		}*/
 		/*int []p = {1,2,3,4,5,6,7};
 		System.out.println(combinationSum(p,45));*/
-		System.out.println(nthUglyNumber(10));
+		//System.out.println(nthUglyNumber(10));
+		int [] p = {0, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12};
+		moveZeroes2(p);
+		for(int i=0;i<p.length;i++)
+			System.out.print(p[i]+" ");
+		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
 
