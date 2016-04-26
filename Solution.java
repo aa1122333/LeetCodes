@@ -2200,6 +2200,61 @@ public class Solution {
     	for(;j<nums.length;j++)
     		nums[j] = 0;
     }
+    
+    //297. Serialize and Deserialize Binary Tree
+    // Encodes a tree to a single string.
+    //runtime:428ms
+    public static String serialize(TreeNode root) {
+    	if(root==null) return null;
+    	StringBuffer s = new StringBuffer();
+    	List<TreeNode> nodes = new LinkedList<TreeNode>();
+    	nodes.add(root);
+    	int i = 0;
+    	while(i<nodes.size()){
+    		TreeNode t = nodes.get(i);
+    		i++;
+    		if(t == null){
+    			s.append("#;");
+    			continue;
+    		}
+    		else {
+    			s.append(t.val);
+    			s.append(';');
+	    		nodes.add(t.left);
+	    		nodes.add(t.right);
+    		}
+    	}
+        return s.toString();
+    }
+    
+    
+
+    // Decodes your encoded data to tree.
+    public static TreeNode deserialize(String data) {
+    	if(data==null || data.equals("#")) return null;
+    	String[] s = data.split(";");
+    	int i = 1,j=0;
+    	List<TreeNode> nodes = new LinkedList<TreeNode>();
+    	TreeNode root = new TreeNode(Integer.parseInt(s[0]));
+    	nodes.add(root);
+    	while(i<s.length && j<nodes.size()){
+    		TreeNode t = nodes.get(j);
+    		
+    		if(!s[i].equals("#")){
+    			t.left = new TreeNode(Integer.parseInt(s[i]));
+    			nodes.add(t.left);
+    		}
+    		i++;
+    		if(!s[i].equals("#")){
+    			t.right = new TreeNode(Integer.parseInt(s[i]));
+    			nodes.add(t.right);
+    		}
+    		i++;
+    		j++;
+    	}
+    	
+         return root;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -2383,10 +2438,25 @@ public class Solution {
 		/*int []p = {1,2,3,4,5,6,7};
 		System.out.println(combinationSum(p,45));*/
 		//System.out.println(nthUglyNumber(10));
-		int [] p = {0, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12};
+		/*int [] p = {0, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12, 1, 0, 3, 12};
 		moveZeroes2(p);
 		for(int i=0;i<p.length;i++)
-			System.out.print(p[i]+" ");
+			System.out.print(p[i]+" ");*/
+		TreeNode t = new TreeNode(3);
+		t.left = new TreeNode(2);
+		t.right = new TreeNode(3);
+		t.left.left = new TreeNode(2);
+		t.right.right = new TreeNode(1);
+		t.left.right = new TreeNode(3);
+		t.right.right.left = new TreeNode(6);
+		t.right.right.right = new TreeNode(7);
+		t.left.left.left = new TreeNode(8);
+		t.left.left.left.left = new TreeNode(9);
+		TreeNode n = null;
+		String s = serialize(t);
+		System.out.println(s);
+		TreeNode root = deserialize(s);
+		
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
