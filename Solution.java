@@ -2203,7 +2203,7 @@ public class Solution {
     
     //297. Serialize and Deserialize Binary Tree
     // Encodes a tree to a single string.
-    //runtime:428ms
+    //bfs runtime:428ms
     public static String serialize(TreeNode root) {
     	if(root==null) return null;
     	StringBuffer s = new StringBuffer();
@@ -2254,6 +2254,358 @@ public class Solution {
     	}
     	
          return root;
+    }
+    //297-2
+    static char[] chars;
+    static int length;
+	static int c;
+
+    // Encodes a tree to a single string.
+    public static String serialize2(TreeNode root) {
+        length = 128;
+        chars = new char[length];
+        c = 0;
+        sdfs(root);
+        return new String(chars).substring(0,c);
+    }
+
+    static void sdfs(TreeNode root){
+        add(root);
+        if(root == null) return;
+        sdfs(root.left);
+        sdfs(root.right);
+    }
+
+    static void add(TreeNode root){
+        int v;
+        if(root == null){
+            v = Integer.MIN_VALUE;
+        }else{
+            v = root.val;
+        }
+        if(c == length) grow();
+        chars[c++] = (char) (v >>> 16);
+        chars[c++] = (char) v;
+    }
+
+    static void grow(){
+        int nl = length * 2;
+        char[] n = new char[nl];
+        System.arraycopy(chars,0,n,0,length);
+        chars = n;
+        length = nl;
+    }
+
+    // Decodes your encoded data to tree.
+    public static TreeNode deserialize2(String data) {
+        chars = data.toCharArray();
+        c = 0;
+        TreeNode root = next();
+        ddfs(root);
+        return root;
+    }
+
+    static void ddfs(TreeNode root){
+        if(root == null) return;
+        root.left = next();
+        ddfs(root.left);
+        root.right = next();
+        ddfs(root.right);
+    }
+
+    static TreeNode next(){
+        if(c == length) return null;
+        char a = chars[c++];
+        char b = chars[c++];
+        int v = (((int) a) << 16) | b;
+        if(v == Integer.MIN_VALUE) return null;
+        return new TreeNode(v);
+    }
+    
+    //297-3 dfs
+    public String serialize3(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        _serialize(root, sb);
+        return sb.toString();
+    }
+
+    private void _serialize(TreeNode root, StringBuilder sb) {
+        if (root == null) {
+            sb.append("#,");
+        } else {
+            sb.append(root.val);
+            sb.append(",");
+            _serialize(root.left, sb);
+            _serialize(root.right, sb);
+        }
+    }
+    
+    public TreeNode deserialize3(String data) {
+        TreeNode dummy = new TreeNode(-1);
+        _deserialize(dummy, true, data, 0);
+        return dummy.left;
+    }
+
+    private int _deserialize(TreeNode root, boolean left, String data, int start) {
+        if (start < data.length() && data.charAt(start) != '#') {
+            int end = start + 1;
+            while (data.charAt(end) != ',') {
+                ++end;
+            }
+            TreeNode node = new TreeNode(Integer.parseInt(data.substring(start, end)));
+            if (left) {
+                root.left = node;
+            } else {
+                root.right = node;
+            }
+            int deserialized = _deserialize(node, true, data, end + 1);
+            return _deserialize(node, false, data, deserialized + 1);
+        }
+        return start + 1;
+    }
+    
+    //290. Word Pattern
+    public static boolean wordPattern(String pattern, String str) {
+    	if(str == null || pattern == null) return false;
+    	str.replaceAll(" +"," ");
+        String [] s = str.split(" ");
+        HashMap<Character,String> map = new HashMap<Character,String>();
+        HashMap<String,Character> map2 = new HashMap<String,Character>(); 
+        char[] p = pattern.toCharArray();
+        if(s.length!=p.length) return false;
+        for(int i=0;i<s.length;i++){
+        	char t = p[i];
+        	if(map.containsKey(t)){
+        		String v = map.get(t);
+        		if(!v.equals(s[i]))
+        			return false;
+        	}
+        	else if(map2.containsKey(s[i])){
+        		char k = map2.get(s[i]);
+        		if(k!=t)
+        			return false;
+        	}
+        	else {
+        		map.put(p[i], s[i]);
+        		map2.put(s[i], p[i]);
+        	}
+        }
+        	
+        return true;
+    }
+    
+    //290-2
+    public static boolean wordPattern2(String pattern,String str){
+    	ArrayList<String> s = new ArrayList<String>();
+    	if(pattern==null || str == null) return false;
+    	int lastindex = -1,index = str.indexOf(" ");
+    	char[] p = pattern.toCharArray();
+    	while(index!=-1){
+    		s.add(str.substring(lastindex+1,index));
+    		lastindex = index;
+    		index = str.indexOf(" ", index+1);
+    	}
+    	s.add(str.substring(lastindex+1));
+    	if(s.size()!=pattern.length()) return false;
+    	String[] letters = new String[26];
+    	HashSet<String> set = new HashSet<String>();
+    	for(int i=0;i<pattern.length();i++){
+    		if(letters[p[i]-'a']==null){
+    			String t = s.get(i);
+    			if(set.contains(t)) return false;
+    			letters[p[i]-'a'] = t;
+    			set.add(t);
+    		}
+    		else 
+    			if(!letters[p[i]-'a'].equals(s.get(i)))
+    				return false;
+    	}
+    	return true;
+    }
+    
+    //12. Integer to Roman
+    public static String intToRoman(int num) {
+         String[][]s = {
+        		 {"","I","II","III","IV","V","VI","VII","VIII","IX"},
+                 {"","X","XX","XXX","XL","L","LX","LXX","LXXX","XC"},
+                 {"","C","CC","CCC","CD","D","DC","DCC","DCCC","CM"},
+                 {"","M","MM","MMM"}
+         };
+         StringBuilder str = new StringBuilder();
+         if(num>=1000)
+         str.append(s[3][num/1000%10]);
+         if(num>=100)
+         str.append(s[2][num/100%10]);
+         if(num>=10)
+         str.append(s[1][num/10%10]);
+         
+         str.append(s[0][num%10]);
+         return str.toString();
+         
+    }
+    private static int index = 0;
+    private static char[] result = new char[15];
+
+    public static String intToRoman2(int num) {
+        index = 0;
+        if (num > 999) {
+            if (num > 2999) {
+                result[index++] = 'M';
+                result[index++] = 'M';
+            } else if (num > 1999) 
+                result[index++] = 'M';
+            result[index++] = 'M';
+            num = num % 1000;
+        }
+        if (num > 99) {
+            ten(result, num / 100, 'M', 'D', 'C');
+            num = num % 100;
+        }
+        if (num > 9) {
+            ten(result, num / 10, 'C', 'L', 'X');
+            num = num % 10;
+        }
+        ten(result, num, 'X', 'V', 'I');
+        return new String(result, 0, index);
+    }
+
+    public static char[] ten(char[] result, int val, char f1, char f2, char f3) {
+        if (val > 8) {
+            result[index++] = f3;
+            result[index++] = f1;
+        } else if (val > 5) {
+            result[index++] = f2;
+            while (val-- > 5) result[index++] = f3;
+        } else if (val > 4) {
+            result[index++] = f2;
+        } else if (val == 4) {
+            result[index++] = f3;
+            result[index++] = f2;
+        } else while (val-- > 0) result[index++] = f3;
+        return result;
+    }
+    //33. Search in Rotated Sorted Array 
+    public static int search(int[] nums, int target) {
+    	if(nums.length == 0) return 0;
+		return find(nums,0,nums.length-1,target);
+    }
+    
+    public static int find(int[] nums,int s,int e,int target){
+    	if(s>e) return -1;
+    	int t = (s+e)/2;
+    	if(nums[t]==target) return t;
+    	if(nums[s]==target) return s;
+    	if(nums[e]==target) return e;
+    	if(nums[t]>nums[e]){
+    		if(nums[t]<target || target<nums[e]  ){
+    			return find(nums,t+1,e,target);
+    		}
+    		else 
+    			return find(nums,s,t-1,target);
+    	}
+    	else  {
+    		if(target<nums[e] && target>nums[t])
+    			return find(nums,t+1,e,target);
+    		else 
+    			return find(nums,s,t-1,target);
+    	}
+    	
+    }
+    //81. Search in Rotated Sorted Array II
+    public boolean search_II(int[] nums, int target) {
+    	return Recur(0, nums.length - 1, target, nums);
+    }
+    
+	public boolean Recur(int left, int right, int target, int[] nums) {
+		int mid = (left + right) / 2;
+
+		if (right - left >= 2) {
+			mid = (left + right) / 2;
+			if (nums[mid] == target)
+				return true;
+			else {
+
+				if (Recur(left, mid - 1, target, nums))
+					return true;
+				else if (Recur(mid + 1, right, target, nums))
+					return true;
+
+				if (Recur(mid + 1, right, target, nums))
+					return true;
+				else if (Recur(left, mid - 1, target, nums))
+					return true;
+			}
+
+		} else {
+			if (right - left == 0)
+				if (nums[right] == target)
+					return true;
+			if (right - left == 1)
+				if (nums[right] == target || nums[left] == target)
+					return true;
+
+		}
+
+		return false;
+
+	}
+    //81-2 
+	//1ms
+    public boolean search_II2(int[] nums, int target) {
+    	return Recur2(0, nums.length - 1, target, nums);
+    }
+    
+    public boolean Recur2(int left, int right, int target, int[] nums)
+    {
+        int mid = (left + right) / 2;
+        boolean right_sorted = false;
+        boolean left_sorted = false;
+        if(right - left >= 2)
+        {
+            mid = (left + right) / 2;
+            if(nums[mid] == target)
+                return true;
+            else
+            {
+                //left sorted
+                if(mid - left - 1 > 2 && nums[left] < nums[mid - 1])
+                    left_sorted = true;
+                //right sorted
+                if(right - mid - 1 > 2  && nums[right] > nums[mid + 1])
+                    right_sorted = true;
+                if(target < nums[mid] && right_sorted)
+                    if(Recur(left, mid - 1, target, nums)) 
+                        return true;      
+                if(target < nums[mid] && !right_sorted)
+                    if(Recur(left, mid - 1, target, nums)) 
+                        return true;
+                    else if(Recur(mid + 1, right, target, nums)) 
+                        return true;
+
+                if(target > nums[mid] && left_sorted)
+                    if(Recur(mid + 1, right, target, nums)) 
+                        return true;      
+                if(target > nums[mid] && !left_sorted)
+                    if(Recur(mid + 1, right, target, nums)) 
+                        return true;
+                    else if(Recur(left, mid - 1, target, nums)) 
+                        return true;
+            }
+
+        }
+        else
+        {
+            if(right - left == 0)
+                if(nums[right] == target)
+                    return true;
+            if(right - left == 1)
+                if(nums[right] == target || nums[left] == target)
+                    return true;
+
+        }
+
+        return false;
+
     }
 	public static void main(String[] args) {
 		
@@ -2442,7 +2794,7 @@ public class Solution {
 		moveZeroes2(p);
 		for(int i=0;i<p.length;i++)
 			System.out.print(p[i]+" ");*/
-		TreeNode t = new TreeNode(3);
+		/*TreeNode t = new TreeNode(3);
 		t.left = new TreeNode(2);
 		t.right = new TreeNode(3);
 		t.left.left = new TreeNode(2);
@@ -2453,10 +2805,18 @@ public class Solution {
 		t.left.left.left = new TreeNode(8);
 		t.left.left.left.left = new TreeNode(9);
 		TreeNode n = null;
-		String s = serialize(t);
+		String s = serialize2(t);
 		System.out.println(s);
-		TreeNode root = deserialize(s);
-		
+		TreeNode root = deserialize2(s);*/
+		/*char[]t = new char[10];
+		String str = "abba";
+		String str2 = "bog dog dog bog";
+		System.out.println(wordPattern2(str, str2));*/
+		/*for(int i=0;i<3999;i++)
+		System.out.println(intToRoman(i));*/
+		int [] n ={4,5,6,7,8,9,10,11,12,1,2,3};
+		for(int i=0;i<10;i++)
+		System.out.println(search(n, i));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
