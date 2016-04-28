@@ -2607,6 +2607,57 @@ public class Solution {
         return false;
 
     }
+    
+    //74. Search a 2D Matrix
+    public static boolean searchMatrix(int[][] matrix, int target) {
+        if(matrix.length==0 || matrix[0].length ==0) return false;
+        int x = matrix.length;
+        int y = matrix[0].length;
+        int xt = x/2;
+        int yt = 0;
+        int start = 0;
+        int end = x-1;
+        while(start<end){
+        	xt = (start+end)/2;
+        	if(matrix[xt][yt]>target) {
+        		end = xt-1;
+        	}
+        	else if(matrix[xt][0]<target ){
+        		if(matrix[xt][y-1]>=target)
+        			break;
+        		start = xt+1;
+        	}
+        	else return true;
+        }
+        if(start == end) xt = start;
+        if(matrix[xt][yt]==target) return true;
+        start = 0;
+        end = y-1;
+        while(start<end){
+        	yt = (start+end)/2;
+        	if(matrix[xt][yt]>target){
+        		end = yt-1;
+        	}
+        	else if(matrix[xt][yt]<target){
+        		start = yt+1;
+        	}
+        	else 
+        		return true;
+        }
+        if(start == end && matrix[xt][start] == target) return true; 
+        return false;
+    }
+    
+    //50. Pow(x, n)
+    public static double myPow(double x, int n) {
+        return pow(n<0?1/x:x,n);
+    }
+    public static double pow(double x,int n){
+    	if(n == 0) return 1;
+    	if(n == 1) return x;
+    	double t = pow(x,n/2);
+    	return t*t*(n%2==0?1:x);
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -2744,7 +2795,7 @@ public class Solution {
 		System.out.println(itnode.label);*/
 		/*for(int i=0;i<10000;i++)
 			System.out.println(trailingZeroes(Integer.MAX_VALUE));*/
-		Long  time = System.nanoTime();
+		
 		/*List<List<Integer>> s = new ArrayList<List<Integer>>();
 		
 		List<Integer> t1 = new ArrayList<Integer>();
@@ -2814,9 +2865,22 @@ public class Solution {
 		System.out.println(wordPattern2(str, str2));*/
 		/*for(int i=0;i<3999;i++)
 		System.out.println(intToRoman(i));*/
-		int [] n ={4,5,6,7,8,9,10,11,12,1,2,3};
+		/*int [] n ={4,5,6,7,8,9,10,11,12,1,2,3};
 		for(int i=0;i<10;i++)
-		System.out.println(search(n, i));
+		System.out.println(search(n, i));*/
+		/*int [][] m = {
+				{1,3,4,5,6},
+				{8,9,12,13,15},
+				{21,22,25,28,31}
+		};
+		for(int i=0;i<35;i++)
+		System.out.print(searchMatrix(m,i)+" ");*/
+		Long  time = System.nanoTime();
+		System.out.println(Math.pow(4.52, 212));
+		System.out.println((System.nanoTime()-time)/1000000+"ms");
+		time = System.nanoTime();
+		
+		System.out.println(myPow(4.52, 212));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
