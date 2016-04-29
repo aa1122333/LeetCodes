@@ -706,23 +706,24 @@ public class Solution {
     }
 	//337. House Robber III
 	public static int rob(TreeNode root) {
-		
-        return dfs_337(root,0,0);
+		dfs_337(root);
+        return root.val;
     }
-	public static int dfs_337(TreeNode t,int rob,int didnt){
+	public static int dfs_337(TreeNode t){
 		if(t == null) return 0;
-		
-		/*int currob = didnt + t.val;
-		int curdidnt = Math.max(rob,didnt);
-		rob = currob;
-		didnt = curdidnt;
-		int cur = Math.max(rob,didnt);
 		int lc = 0;
 		int rc = 0;
-		if(t.left!=null) lc=dfs_337(t.left, rob, didnt);
-		if(t.right!=null) rc=dfs_337(t.right,rob,didnt);
-		cur = Math.max(cur, lc+rc);*/
-		return 0;
+		int pre = 0;
+		if(t.left!=null) {
+			lc=dfs_337(t.left);
+			pre+=t.left.val;
+		}
+		if(t.right!=null){
+			rc=dfs_337(t.right);
+			pre+=t.right.val;
+		}
+		t.val = Math.max(lc + rc + t.val,pre);
+		return pre;
 	}
 	//217.
 	public static boolean containsDuplicate(int[] nums) {
@@ -2658,6 +2659,157 @@ public class Solution {
     	double t = pow(x,n/2);
     	return t*t*(n%2==0?1:x);
     }
+    //50-2
+    static double myPow2(double x, int n) { 
+        if(n==0) return 1;
+        if(n<0) {
+            n = -n;
+            x = 1/x;
+        }
+        double ans = 1;
+        while(n>0){
+            if((n&1)==1) ans *= x;
+            x *= x;
+            n >>= 1;
+        }
+        return ans;
+    }
+    
+    //50-3
+    public static double myPow3(double x, int n) {
+        int m = n < 0 ? -n - 1 : n; 
+        double p = 1.0;
+        for (double q = x; m > 0; m = m >>> 1) {
+            if ((m & 1) != 0) {
+                p *= q;
+            }
+            q *= q;
+        }
+        return n < 0 ? 1.0 / p / x : p;
+    }
+    //51. N-Queens
+    public static List<List<String>> solveNQueens(int n) {
+        List<List<String>> sol = new ArrayList<List<String>>();
+        if(n == 0 ) return sol;
+        int [][] map = new int[n][n];
+        for(int i=0;i<n;i++)
+        Arrays.fill(map[i], 0);
+        Nqueens(sol, map, n, 0);
+        return sol;
+    }
+    
+    public static void Nqueens(List<List<String>> s,int[][]map,int n,int x){
+    	if(x==n){
+    		List<String> l = new ArrayList<String>();
+    		
+    		for(int i=0;i<n;i++){
+    			StringBuffer sb = new StringBuffer();
+    			for(int j=0;j<n;j++){
+    				if(map[i][j]==1)
+    					sb.append("Q");
+    				else sb.append(".");
+    			}
+    			l.add(sb.toString());
+    		}
+    		s.add(l);
+    		return ;
+    	}
+    	for(int i=0;i<n;i++){
+    		boolean able = true;
+    		
+    		for(int j = 1;j<n&&able&&(x-j)>=0;j++){
+    			if(i>=j){
+    				if(map[x-j][i-j]==1){
+        				able = false;
+        				break;
+        			}
+    			}
+    			
+    			if(i+j<n){
+    				if(map[x-j][i+j]==1){
+        				able = false;
+        				break;
+        			}
+    			}
+    			if(map[x-j][i]==1){
+    				able = false;
+    				break;
+    			}
+    		}
+    		if(able){
+    			map[x][i] = 1;
+    			Nqueens(s, map, n, x+1);
+    			map[x][i] = 0;
+    		}
+    	}
+    }
+    //52. N-Queens II
+    public static int s = 0;
+    public static int totalNQueens(int n) {
+        if(n == 0 ) return 0;
+        int [][] map = new int[n][n];
+        for(int i=0;i<n;i++)
+        Arrays.fill(map[i], 0);
+        Nqueens_II(map, n, 0);
+        return s;
+    }
+    public static void Nqueens_II(int[][]map,int n,int x){
+    	if(x==n){
+    		s++;
+    		return ;
+    	}
+    	for(int i=0;i<n;i++){
+    		boolean able = true;
+    		
+    		for(int j = 1;j<n&&able&&(x-j)>=0;j++){
+    			if(i>=j){
+    				if(map[x-j][i-j]==1){
+        				able = false;
+        				break;
+        			}
+    			}
+    			
+    			if(i+j<n){
+    				if(map[x-j][i+j]==1){
+        				able = false;
+        				break;
+        			}
+    			}
+    			if(map[x-j][i]==1){
+    				able = false;
+    				break;
+    			}
+    		}
+    		if(able){
+    			map[x][i] = 1;
+    			Nqueens_II(map, n, x+1);
+    			map[x][i] = 0;
+    		}
+    	}
+    }
+    //52-2
+    int count = 0;
+    public int totalNQueens2(int n) {
+        boolean[] cols = new boolean[n];     // columns   |
+        boolean[] d1 = new boolean[2 * n];   // diagonals \
+        boolean[] d2 = new boolean[2 * n];   // diagonals /
+        backtracking(0, cols, d1, d2, n);
+        return count;
+    }
+
+    public void backtracking(int row, boolean[] cols, boolean[] d1, boolean []d2, int n) {
+        if(row == n) count++;
+
+        for(int col = 0; col < n; col++) {
+            int id1 = col - row + n;
+            int id2 = col + row;
+            if(cols[col] || d1[id1] || d2[id2]) continue;
+
+            cols[col] = true; d1[id1] = true; d2[id2] = true;
+            backtracking(row + 1, cols, d1, d2, n);
+            cols[col] = false; d1[id1] = false; d2[id2] = false;
+        }
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -2876,11 +3028,18 @@ public class Solution {
 		for(int i=0;i<35;i++)
 		System.out.print(searchMatrix(m,i)+" ");*/
 		Long  time = System.nanoTime();
-		System.out.println(Math.pow(4.52, 212));
+		/*System.out.println(Math.pow(4.52, 212));
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 		time = System.nanoTime();
 		
-		System.out.println(myPow(4.52, 212));
+		System.out.println(myPow3(4.52, 212));*/
+		/*char[][] m = {{'q','w'},{'e','r'}};*/
+		//List<String> s = new ArrayList<String>(m);
+		
+/*		System.out.println(solveNQueens(2).size());
+		System.out.println(totalNQueens(2));*/
+		
+		
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
