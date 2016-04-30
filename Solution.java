@@ -722,7 +722,7 @@ public class Solution {
 			rc=dfs_337(t.right);
 			pre+=t.right.val;
 		}
-		t.val = Math.max(lc + rc + t.val,pre);
+		t.val = Math.max(lc + rc + t.val,pre); 
 		return pre;
 	}
 	//217.
@@ -2810,6 +2810,130 @@ public class Solution {
             cols[col] = false; d1[id1] = false; d2[id2] = false;
         }
     }
+    //43. Multiply Strings
+    public static String multiply_43(String num1, String num2) {
+    	int [] intNum1 = changetoArray(num1);
+    	int [] intNum2 = changetoArray(num2);
+     	int length1=intNum1.length;   
+        int length2=intNum2.length;   
+        int[] result=new int[length1+length2];   
+        for(int i=0;i<length1;i++)   
+        for(int j=0;j<length2;j++){   
+            int temp = result[i + j] + intNum1[i] * intNum2[j];   
+            result[i + j] = temp % 10;   
+            result[i + j + 1] += temp / 10;   
+            if (result[i + j + 1] > 10) {   
+                result[i + j + 1] %= 10;   
+                result[i + j + 2]++;   
+            }   
+        }      
+        StringBuffer sb=new StringBuffer();   
+        boolean flag = true;
+        for(int i=result.length-1;i>=0;i--)  { 
+        	if(flag && result[i]==0) continue;
+        	else flag = false;
+        	sb.append(result[i]);    
+        }
+        if(sb.length() == 0 ) return "0";
+        return sb.toString();   
+    }
+    public static int[] changetoArray(String numStr){   
+        int length=numStr.length();   
+        int[] intNum=new int[length];   
+        for(int i=0;i<length;i++)   
+        intNum[length-i-1]=Integer.parseInt(String.valueOf((numStr.charAt(i))));   
+        return intNum;   
+    }   
+    public static String multiply2(String num1, String num2) {
+        int m=num1.length(), n=num2.length(), zero=0;
+        int[] a = new int[m], c = new int[m+n];
+        for(int i=0,k=m; i<m; i++) a[--k]=num1.charAt(i)-'0';  
+        for(int i=n-1; i>=0; i--)
+            add(c,a,num2.charAt(i)-'0',zero++);    
+        carry(c);            
+        int i=m+n;
+        while(i>0 && c[--i]==0); 
+        i++;
+        StringBuilder ret = new StringBuilder(i);
+        while(i>0) ret.append((char)(c[--i]+'0'));
+        return ret.toString();
+    }
+    static void carry(int[] a){
+        int i;
+        for(int k=0,d=0; k<a.length; k++){
+            i=a[k]+d;
+            a[k]=i%10;
+            d=i/10;
+        }
+    }
+    static void add(int[] c, int[] a, int b, int zero){
+        for(int i=zero,j=0; j<a.length; j++,i++)
+            c[i]+=a[j]*b;
+    }
+    //66. Plus One
+    public static int[] plusOne(int[] digits) {
+    	boolean carry = (digits[digits.length-1] = digits[digits.length-1]+1)==10?true:false;
+    	if(carry)
+    		digits[digits.length-1] = 0;
+    	int i = digits.length-2;
+    	while(carry && i>=0){
+    		if(digits[i]+1!=10){
+    			digits[i]+=1;
+    			carry = false;
+    		}
+    		else {
+    			digits[i] = 0;
+    		}
+    		i--;
+    	}
+    	if(carry){
+    		int [] n = new int[digits.length+1];
+    		n[0] = 1;
+    		for(int j=0;j<digits.length-1;j++)
+    			n[j+1] = digits[j];
+    		digits = n;
+    	}
+        return digits;
+    }
+    //66-2
+    public int[] plusOne2(int[] digits) {
+
+        int n = digits.length;
+        for(int i=n-1; i>=0; i--) {
+            if(digits[i] < 9) {
+                digits[i]++;
+                return digits;
+            }
+
+            digits[i] = 0;
+        }
+
+        int[] newNumber = new int [n+1];
+        newNumber[0] = 1;
+
+        return newNumber;
+    }
+    //114. Flatten Binary Tree to Linked List
+    public static void flatten(TreeNode root) {
+        dfs_114(root);
+        System.out.println("--");
+    }
+    public static void dfs_114(TreeNode root){
+    	if(root == null) return ;
+    	if(root.left!=null) dfs_114(root.left);
+    	if(root.right!=null) dfs_114(root.right);
+    	TreeNode t = root.right;
+    	TreeNode l = root.left;
+    	if(l!=null){
+    		while(l.right!=null)
+    			l=l.right;
+    		l.right = t;
+    	}
+    	if(root.left !=null)
+    		root.right = root.left;
+    	
+    	root.left = null;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -3039,7 +3163,22 @@ public class Solution {
 /*		System.out.println(solveNQueens(2).size());
 		System.out.println(totalNQueens(2));*/
 		
+		/*System.out.println(multiply2("123","1230"));
+		System.out.println(7777*2111);*/
+		/*int[] s = {9};
+		s = plusOne(s);
+		for(int i=0;i<s.length;i++)
+		System.out.print(s[i]);*/
 		
+		TreeNode t = new TreeNode(1);
+		t.left = new TreeNode(2);
+		t.right = new TreeNode(3);
+		//t.left.left = new TreeNode(4);
+		t.right.left = new TreeNode(5);
+		t.left.right = new TreeNode(6);
+		t.left.right.right = new TreeNode(8);
+		//t.right.right = new TreeNode(7);
+		flatten(t);
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
