@@ -2934,6 +2934,27 @@ public class Solution {
     	
     	root.left = null;
     }
+    //63. Unique Paths II 
+    public static int uniquePathsWithObstacles(int[][] obstacleGrid) {
+    	int m = obstacleGrid.length;
+    	if(m==0) return 0;
+    	int n = obstacleGrid[0].length;
+    	int [][] p = new int [m][n];
+		for(int i = m-1;i>=0;i--){
+			p[i][n-1]=1;
+		}
+		for(int j=n-1;j>=0;j--){
+			p[m-1][j]=1;
+		}
+		for(int i = m-2;i>=0;i--){
+			for(int j = n-2;j>=0;j--){
+				if(obstacleGrid[i][j]!=1 && obstacleGrid[i+1][j]!=1&&obstacleGrid[i][j+1]!=1)
+				p[i][j] = p[i+1][j]+p[i][j+1];
+			}
+		}
+		return p[0][0];
+        
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -3170,7 +3191,7 @@ public class Solution {
 		for(int i=0;i<s.length;i++)
 		System.out.print(s[i]);*/
 		
-		TreeNode t = new TreeNode(1);
+		/*TreeNode t = new TreeNode(1);
 		t.left = new TreeNode(2);
 		t.right = new TreeNode(3);
 		//t.left.left = new TreeNode(4);
@@ -3178,7 +3199,13 @@ public class Solution {
 		t.left.right = new TreeNode(6);
 		t.left.right.right = new TreeNode(8);
 		//t.right.right = new TreeNode(7);
-		flatten(t);
+		flatten(t);*/
+		int[][] n = {
+				{0,0,0},
+				{0,1,0},
+				{0,0,0},
+		};
+		System.out.println(uniquePathsWithObstacles(n));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
