@@ -2955,6 +2955,44 @@ public class Solution {
 		return p[0][0];
         
     }
+    //53. Maximum Subarray
+    //Kadane's Algorithm
+    public static int maxSubArray(int[] nums) {
+    	int curleft = 0,curight = 0;
+    	int curmax = 0,max = Integer.MIN_VALUE,left = 0,right = 0;
+    	int neg = 0;
+    	for(int i=0;i<nums.length;i++){
+    		curmax+=nums[i];
+    		if(nums[i]<0) neg++;
+    		if(curmax>0){
+    			curight = i;
+    			if(max<curmax){
+    				max = curmax;
+    				left = curleft;
+    				right = curight;
+    			}
+    		}
+    		else {
+    			curmax = 0;
+    			curleft = curight = i+1;
+    		}
+    	}
+    	if(neg==nums.length)
+    		for(int i=0;i<nums.length;i++){
+    			if(nums[i]>max)
+    				max = nums[i];
+    		}
+        return max;
+    }
+    //53-2
+    public int maxSubArray2(int[] nums) {
+        int sum = nums[0], highest = nums[0];
+        for(int i = 1; i < nums.length; i++){
+            sum = sum < 0 ? nums[i] : sum + nums[i];
+            highest = Math.max(highest, sum);
+        }
+        return highest;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -3200,12 +3238,14 @@ public class Solution {
 		t.left.right.right = new TreeNode(8);
 		//t.right.right = new TreeNode(7);
 		flatten(t);*/
-		int[][] n = {
+		/*int[][] n = {
 				{0,0,0},
 				{0,1,0},
 				{0,0,0},
 		};
-		System.out.println(uniquePathsWithObstacles(n));
+		System.out.println(uniquePathsWithObstacles(n));*/
+		int [] s = {-2,1,-3,4,-1,2,1,-5,4};
+		System.out.println(maxSubArray(s));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
