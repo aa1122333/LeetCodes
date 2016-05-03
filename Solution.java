@@ -2,6 +2,8 @@ package leetcodeTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -2993,6 +2995,167 @@ public class Solution {
         }
         return highest;
     }
+    
+    //18. 4Sum
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        ArrayList<List<Integer>> res = new ArrayList<List<Integer>>();
+        int len = nums.length;
+        if (nums == null || len < 4)
+            return res;
+
+        Arrays.sort(nums);
+
+        int max = nums[len - 1];
+        if (4 * nums[0] > target || 4 * max < target)
+            return res;
+
+        int i, z;
+        for (i = 0; i < len; i++) {
+            z = nums[i];
+            if (i > 0 && z == nums[i - 1])// avoid duplicate
+                continue;
+            if (z + 3 * max < target) // z is too small
+                continue;
+            if (4 * z > target) // z is too large
+                break;
+            if (4 * z == target) { // z is the boundary
+                if (i + 3 < len && nums[i + 3] == z)
+                    res.add(Arrays.asList(z, z, z, z));
+                break;
+            }
+
+            threeSumForFourSum(nums, target - z, i + 1, len - 1, res, z);
+        }
+
+        return res;
+    }
+
+    /*
+     * Find all possible distinguished three numbers adding up to the target
+     * in sorted array nums[] between indices low and high. If there are,
+     * add all of them into the ArrayList fourSumList, using
+     * fourSumList.add(Arrays.asList(z1, the three numbers))
+     */
+    public void threeSumForFourSum(int[] nums, int target, int low, int high, ArrayList<List<Integer>> fourSumList,
+            int z1) {
+        if (low + 1 >= high)
+            return;
+
+        int max = nums[high];
+        if (3 * nums[low] > target || 3 * max < target)
+            return;
+
+        int i, z;
+        for (i = low; i < high - 1; i++) {
+            z = nums[i];
+            if (i > low && z == nums[i - 1]) // avoid duplicate
+                continue;
+            if (z + 2 * max < target) // z is too small
+                continue;
+
+            if (3 * z > target) // z is too large
+                break;
+
+            if (3 * z == target) { // z is the boundary
+                if (i + 1 < high && nums[i + 2] == z)
+                    fourSumList.add(Arrays.asList(z1, z, z, z));
+                break;
+            }
+
+            twoSumForFourSum(nums, target - z, i + 1, high, fourSumList, z1, z);
+        }
+
+    }
+
+    /*
+     * Find all possible distinguished two numbers adding up to the target
+     * in sorted array nums[] between indices low and high. If there are,
+     * add all of them into the ArrayList fourSumList, using
+     * fourSumList.add(Arrays.asList(z1, z2, the two numbers))
+     */
+    public void twoSumForFourSum(int[] nums, int target, int low, int high, ArrayList<List<Integer>> fourSumList,
+            int z1, int z2) {
+
+        if (low >= high)
+            return;
+
+        if (2 * nums[low] > target || 2 * nums[high] < target)
+            return;
+
+        int i = low, j = high, sum, x;
+        while (i < j) {
+            sum = nums[i] + nums[j];
+            if (sum == target) {
+                fourSumList.add(Arrays.asList(z1, z2, nums[i], nums[j]));
+
+                x = nums[i];
+                while (++i < j && x == nums[i]) // avoid duplicate
+                    ;
+                x = nums[j];
+                while (i < --j && x == nums[j]) // avoid duplicate
+                    ;
+            }
+            if (sum < target)
+                i++;
+            if (sum > target)
+                j--;
+        }
+        return;
+    }
+    //15. 3Sum
+    public static List<List<Integer>> threeSum(int[] nums) {
+    	List<List<Integer>> s = new ArrayList<List<Integer>>();
+        
+        Arrays.sort(nums);
+        for(int i=0;i<nums.length-2;i++){
+        	if(nums[i]>0) break;
+			if (i > 0 && nums[i] == nums[i - 1])
+				continue;
+			int low = i + 1, high = nums.length - 1, sum =  - nums[i];
+			while (low < high) {
+				if (nums[low] + nums[high] == sum) {
+					s.add(Arrays.asList(nums[i], nums[low], nums[high]));
+					low++;
+					high--;
+					while (low < high && nums[low] == nums[low - 1])
+						low++;
+					while (low < high && nums[high] == nums[high + 1])
+						high--;
+					
+				} else if (nums[low] + nums[high] < sum)
+					low++;
+				else
+					high--;
+			}
+        	
+        }
+        return s;
+    }
+    public static int threeSumClosest(int[] nums, int target) {
+        Arrays.sort(nums);
+        int closest = Integer.MAX_VALUE;
+        int sum = 0;
+        for(int i=0;i<nums.length-2;i++){
+        	if(i> 0&& nums[i] == nums[i-1]) continue;
+        	int low = i+1,high = nums.length-1;
+        	while(low<high){
+        		if(Math.abs(nums[i]+nums[low]+nums[high]-target)<closest){
+        			sum=nums[i]+nums[low]+nums[high];
+        			System.out.println(nums[i]+" "+nums[low]+" "+nums[high]);
+        			closest = Math.abs(nums[i]+nums[low]+nums[high]-target);
+
+        		}
+        		if(nums[i]+nums[low]+nums[high]>target){
+        			 high--; 
+        		}
+        		else if(nums[i]+nums[low]+nums[high]<target){
+        			 low++;
+        		}
+        		else return sum;
+        	}
+        }
+        return sum;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -3244,8 +3407,17 @@ public class Solution {
 				{0,0,0},
 		};
 		System.out.println(uniquePathsWithObstacles(n));*/
-		int [] s = {-2,1,-3,4,-1,2,1,-5,4};
-		System.out.println(maxSubArray(s));
+		/*int [] s = {-2,1,-3,4,-1,2,1,-5,4};
+		System.out.println(maxSubArray(s));*/
+		int[]s={
+				13,2,0,-14,-20,19,8,-5,-13,-3,20,15,20,5,13,14,-17,-7,12,-6,0,20,
+				-19,-1,-15,-2,8,-2,-9,13,0,-3,-18,-9,-9,-19,17,-14,-19,-4,-16,2,
+				0,9,5,-7,-4,20,18,9,0,12,-1,10,-17,-11,16,-13,-14,-3,0,2,-18,2,8,
+				20,-15,3,-13,-12,-2,-19,11,11,-10,1,1,-10,-2,12,0,17,-19,-7,8,
+				-19,-17,5,-5,-10,8,0,-12,4,19,2,0,12,14,-9,15,7,0,-16,-5,16,
+				-12,0,2,-16,14,18,12,13,5,0,5,6
+				}; 
+		System.out.println(threeSumClosest(s,-59));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
