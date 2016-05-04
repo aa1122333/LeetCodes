@@ -3156,6 +3156,22 @@ public class Solution {
         }
         return sum;
     }
+    
+    //154. Find Minimum in Rotated Sorted Array II
+    public int findMin2(int[] nums) {
+        int start=0,mid=0,end=nums.length-1;
+        while(start<end){
+            mid=start+(end-start)/2;
+            if(nums[mid]>nums[end]) start=mid+1;
+            else if(nums[mid]==nums[end]) end--;
+            else end=mid;
+        }
+        return nums[start];
+    }
+    //219. Contains Duplicate II
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        return false;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
