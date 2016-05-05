@@ -3168,6 +3168,90 @@ public class Solution {
         }
         return nums[start];
     }
+    
+    //204. Count Primes
+    public static int countPrimes(int n) {
+        boolean []isnotprime = new boolean[n+1];
+        double t = Math.sqrt(n);
+        for(int i=2;i<=t;i++){
+        	if(!isnotprime[i]){
+        		for(int j=2;j*i<=n;j++){
+        			isnotprime[j*i] = true;
+        		}
+        	}
+        }
+        int sum = 0;
+        for(int i=2;i<n;i++){
+        	if(!isnotprime[i])
+        		sum++;
+        }
+        return sum;
+    }
+    //204-2
+    public int countPrimes2(int n) {
+        if (n < 3) return 0;
+        int primeNum = n / 2; 
+        boolean[] isPrime = new boolean[n];
+        int sqrtN = (int) Math.sqrt(n);
+        for (int i = 3; i <= sqrtN; i += 2) {
+            if (!isPrime[i]) {
+                for (int j = i * i; j < n; j += i * 2) {
+                    primeNum -= (isPrime[j])? 0: 1;
+                    isPrime[j] = true;
+                }
+            }
+        }
+        return primeNum;  
+    }
+    //14. Longest Common Prefix
+    public static String longestCommonPrefix(String[] strs) {
+        if(strs.length==0 ) return "";
+        int min = strs[0].length();
+        for(int i=0;i<strs.length;i++){
+        	if(strs[i].length()<min)
+        		min = strs[i].length();
+        }
+        StringBuffer sb = new StringBuffer();
+        boolean brk = false;
+        for(int i=0;i<min && !brk;i++){
+        	char t = strs[0].charAt(i);
+        	for(int j=0;j<strs.length;j++){
+        		if(strs[j].charAt(i)!=t){
+        			brk = true;
+        			break;
+        		}
+        	}
+        	if(!brk)
+        		sb.append(t);
+        }
+        return sb.toString();
+    }
+    
+    //14-2
+    public String longestCommonPrefix2(String[] strs) {
+        if (strs.length < 1 || strs == null) {
+            return "";
+        }
+        if (strs.length == 1) {
+            return strs[0];
+        }
+        int shortest = 0;
+        int len = strs[0].length();
+        for (int i = 1; i < strs.length; i++) {
+            int curLen = strs[i].length();
+            if (curLen < len) {
+                len = curLen;
+                shortest = i;
+            }
+        }
+        String sub = strs[shortest];
+        for (int i = 0; i < strs.length; i++) {
+            while (strs[i].indexOf(sub) != 0) {
+                sub = sub.substring(0, sub.length()-1);
+            }
+        } 
+        return sub;
+    }
     //219. Contains Duplicate II
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         return false;
@@ -3425,7 +3509,7 @@ public class Solution {
 		System.out.println(uniquePathsWithObstacles(n));*/
 		/*int [] s = {-2,1,-3,4,-1,2,1,-5,4};
 		System.out.println(maxSubArray(s));*/
-		int[]s={
+		/*int[]s={
 				13,2,0,-14,-20,19,8,-5,-13,-3,20,15,20,5,13,14,-17,-7,12,-6,0,20,
 				-19,-1,-15,-2,8,-2,-9,13,0,-3,-18,-9,-9,-19,17,-14,-19,-4,-16,2,
 				0,9,5,-7,-4,20,18,9,0,12,-1,10,-17,-11,16,-13,-14,-3,0,2,-18,2,8,
@@ -3433,7 +3517,16 @@ public class Solution {
 				-19,-17,5,-5,-10,8,0,-12,4,19,2,0,12,14,-9,15,7,0,-16,-5,16,
 				-12,0,2,-16,14,18,12,13,5,0,5,6
 				}; 
-		System.out.println(threeSumClosest(s,-59));
+		System.out.println(threeSumClosest(s,-59));*/
+		String[] s = {
+				"qwert",
+				"qwerttttt",
+				"qwennn",
+				"qwemmmmmmmmm",
+				"qwertyu"
+		};
+		System.out.println(longestCommonPrefix(s));
+		
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
