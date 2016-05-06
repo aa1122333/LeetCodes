@@ -3252,6 +3252,12 @@ public class Solution {
         } 
         return sub;
     }
+    //344. Reverse String
+    public String reverseString(String s) {
+    	StringBuffer sb = new StringBuffer(s);
+    	sb.reverse();
+        return sb.toString();
+    }
     //219. Contains Duplicate II
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         return false;
