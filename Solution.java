@@ -3258,6 +3258,28 @@ public class Solution {
     	sb.reverse();
         return sb.toString();
     }
+    
+    public void quicksort(int left,int right,int []s){
+		if(left<right){
+			int i = left;
+			int j = right;
+			int tmp = s[i];
+			while(i<j){
+				while(j>i && s[j]>=tmp) j--;
+				while(i<j && s[i]<=tmp) i++;
+				if(i<j){
+					int t = s[i];
+					s[i] = s[j];
+					s[j] = t;
+				}
+			}
+			s[left] = s[i];
+			s[i] = tmp;
+			quicksort(left, i-1, s);
+			quicksort(i+1, right, s);
+		}
+	}
+    
     //219. Contains Duplicate II
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         return false;
