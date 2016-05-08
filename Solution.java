@@ -3279,7 +3279,20 @@ public class Solution {
 			quicksort(i+1, right, s);
 		}
 	}
-    
+    //342. Power of Four
+    public static boolean isPowerOfFour(int num) {
+    	
+        return Integer.toString(num,4).matches("10*");
+    }
+    public static boolean isPowerOfFour2(int num) {
+    	
+    	return (num > 0) && ((num & (num - 1)) == 0) && ((num & 0x55555555) == num);
+    }
+    //231. Power of Two
+    public static boolean isPowerOfTwo(int n) {
+    	
+        return (n > 0) && ((n & (n - 1)) == 0);
+    }
     //219. Contains Duplicate II
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         return false;
@@ -3553,7 +3566,7 @@ public class Solution {
 				"qwemmmmmmmmm",
 				"qwertyu"
 		};
-		System.out.println(longestCommonPrefix(s));
+		System.out.println(isPowerOfTwo(1));
 		
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
