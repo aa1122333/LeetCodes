@@ -3293,6 +3293,119 @@ public class Solution {
     	
         return (n > 0) && ((n & (n - 1)) == 0);
     }
+    
+    //128. Longest Consecutive Sequence
+    public static int longestConsecutive(int[] nums) {
+    	int max = 0;
+    	HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();
+    	for(int n:nums){
+    		if(!map.containsKey(n)){
+    			int left = map.containsKey(n-1)?map.get(n-1):0;
+    			int right = map.containsKey(n+1)?map.get(n+1):0;
+    			int sum = left+right+1;
+    			map.put(n,sum);
+    			max = Math.max(sum, max);
+    			
+    			map.put(n-left, sum);
+    			map.put(n+right, sum);
+    			
+    		}
+    		else 
+    			continue;
+    	}
+        return max;
+    }
+    //128-2
+    public int longestConsecutive2(int[] num) {
+        Set<Integer> set = new HashSet<Integer>(num.length);
+        for (int n: num) {
+            set.add(n);
+        }
+
+        int maxLength = 0;
+        for (int n: num) {
+            if (set.contains(n)) {
+                int length = 1;
+                int next = n - 1;
+                while (set.contains(next)) {
+                    length++;
+                    set.remove(next);
+                    next--;
+                }
+                next = n+1;
+                while (set.contains(next)) {
+                    length++;
+                    set.remove(next);
+                    next++;
+                }
+
+                if (length > maxLength) {
+                    maxLength = length;
+                }
+            }
+        }
+
+        return maxLength;
+    }
+    
+    //128-3 using union-find
+    public int longestConsecutive3(int[] nums) {
+        UF uf = new UF(nums.length);
+        Map<Integer,Integer> map = new HashMap<Integer,Integer>(); // <value,index>
+        for(int i=0; i<nums.length; i++){
+            if(map.containsKey(nums[i])){
+                continue;
+            }
+            map.put(nums[i],i);
+            if(map.containsKey(nums[i]+1)){
+                uf.union(i,map.get(nums[i]+1));
+            }
+            if(map.containsKey(nums[i]-1)){
+                uf.union(i,map.get(nums[i]-1));
+            }
+        }
+        return uf.maxUnion();
+    }
+
+
+    class UF{
+	    private int[] list;
+	    public UF(int n){
+	        list = new int[n];
+	        for(int i=0; i<n; i++){
+	            list[i] = i;
+	        }
+	    }
+	
+	    private int root(int i){
+	        while(i!=list[i]){
+	            list[i] = list[list[i]];
+	            i = list[i];
+	        }
+	        return i;
+	    }
+	
+	    public boolean connected(int i, int j){
+	        return root(i) == root(j);
+	    }
+	
+	    public void union(int p, int q){
+	      int i = root(p);
+	      int j = root(q);
+	      list[i] = j;
+	    }
+	
+	    // returns the maxium size of union
+	    public int maxUnion(){ // O(n)
+	        int[] count = new int[list.length];
+	        int max = 0;
+	        for(int i=0; i<list.length; i++){
+	            count[root(i)] ++;
+	            max = Math.max(max, count[root(i)]);
+	        }
+	        return max;
+	    }
+    }
     //219. Contains Duplicate II
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         return false;
@@ -3566,8 +3679,9 @@ public class Solution {
 				"qwemmmmmmmmm",
 				"qwertyu"
 		};
-		System.out.println(isPowerOfTwo(1));
-		
+		//System.out.println((n&(n-1))==0);
+		int [] n = {4,3,2,1,12,5,10};
+		System.out.println(longestConsecutive(n));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
