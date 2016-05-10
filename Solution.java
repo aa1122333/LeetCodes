@@ -15,6 +15,7 @@ import java.util.Stack;
 
 import javax.management.Query;
 import javax.swing.text.AbstractDocument.BranchElement;
+import javax.swing.text.html.HTMLDocument.Iterator;
 
 public class Solution {
 	//54. Spiral Matrix
@@ -3406,6 +3407,62 @@ public class Solution {
 	        return max;
 	    }
     }
+    //40. Combination Sum II
+    public static List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        List<List<Integer>> s = new ArrayList<List<Integer>>();
+        if(candidates.length==0) return s;
+        Arrays.sort(candidates);
+        List<Integer> t = new ArrayList<Integer>();
+        backtracking(candidates, t, 0, s, target, 0);
+        return s;
+    }
+    
+    public static void backtracking(int[]nums,List<Integer> t,int currsum,List<List<Integer>> sol,int target,int index){
+		if (currsum == target) {
+			sol.add(new ArrayList<Integer>(t));
+			return;
+		} else if (target < 0)
+			return;
+		else if (target >= 0) {
+			for (int i = index; i < nums.length; i++) {
+				if (i > index && nums[i] == nums[i - 1])
+					continue;
+				if (currsum + nums[i] <= target) {
+
+					t.add(t.size(), nums[i]);
+					backtracking(nums, t, currsum + nums[i], sol, target, i + 1);
+					t.remove(t.size() - 1);
+
+				} else
+					break;
+			}
+		}
+    	
+    }
+    
+    //40-2
+    public List<List<Integer>> combinationSum22(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        List<List<Integer>> res = new ArrayList<List<Integer>>();
+        generate(candidates, res, new ArrayList<Integer>(), target, 0);
+        return res;
+    }
+    private void generate(int[] candidates, List<List<Integer>> res, ArrayList<Integer> cur, int target, int start) {
+        if (target < 0) return;
+        if (target == 0) {
+            res.add(new ArrayList<Integer>(cur));
+            return;
+        }
+        for (int i = start; i < candidates.length; i++) {            
+            if (i > start && candidates[i] == candidates[i - 1]) {
+                continue;
+            }
+            if (target - candidates[i] < 0) break;
+            cur.add(candidates[i]);
+            generate(candidates, res, cur, target - candidates[i], i + 1);
+            cur.remove(cur.size() - 1);
+        }
+    }   
     //219. Contains Duplicate II
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         return false;
@@ -3680,8 +3737,9 @@ public class Solution {
 				"qwertyu"
 		};
 		//System.out.println((n&(n-1))==0);
-		int [] n = {4,3,2,1,12,5,10};
-		System.out.println(longestConsecutive(n));
+		int [] n = {1,2,2,3,4,4,4,3,4,5,6,7,8};
+		/*System.out.println(longestConsecutive(n));*/
+		System.out.println(combinationSum2(n,8));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
