@@ -3463,6 +3463,21 @@ public class Solution {
             cur.remove(cur.size() - 1);
         }
     }   
+    //151. Reverse Words in a String
+    public static String reverseWords(String s) {
+    	String[] strs = s.trim().split(" ");
+    	StringBuffer sb = new StringBuffer();
+    	
+    	for(int i=strs.length-1;i>0;i--){
+    		if(strs[i].isEmpty()) continue;
+    		sb.append(strs[i]);
+    		sb.append(" ");
+    	}
+    	sb.append(strs[0]);
+    	
+        return sb.toString();
+    }
+    
     //219. Contains Duplicate II
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         return false;
@@ -3729,17 +3744,14 @@ public class Solution {
 				-12,0,2,-16,14,18,12,13,5,0,5,6
 				}; 
 		System.out.println(threeSumClosest(s,-59));*/
-		String[] s = {
-				"qwert",
-				"qwerttttt",
-				"qwennn",
-				"qwemmmmmmmmm",
-				"qwertyu"
-		};
+		
 		//System.out.println((n&(n-1))==0);
-		int [] n = {1,2,2,3,4,4,4,3,4,5,6,7,8};
-		/*System.out.println(longestConsecutive(n));*/
-		System.out.println(combinationSum2(n,8));
+/*		int [] n = {1,2,2,3,4,4,4,3,4,5,6,7,8};
+		System.out.println(longestConsecutive(n));
+		System.out.println(combinationSum2(n,8));*/
+		String s = "  ssss fffff gggg hhh         hh ";
+		String t =reverseWords(s);
+		System.out.println(t);
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
