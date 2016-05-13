@@ -3477,7 +3477,23 @@ public class Solution {
     	
         return sb.toString();
     }
-    
+    //59. Spiral Matrix II
+    public static int[][] generateMatrix(int n) {
+        int [][] s = new int[n][n];
+        if(n==0) return s;
+        int curr = 2;
+        int i=0,j=0;
+        boolean [][] visited = new boolean[n][n];
+        visited[0][0] = true;
+        s[0][0] = 1;
+        while(curr<=n*n){
+        	while(j+1<n && !visited[i][j+1]) {visited[i][j+1]=true;s[i][j+1]=curr++;j++;}
+        	while(i+1<n && !visited[i+1][j]) {visited[i+1][j]=true;s[i+1][j]=curr++;i++;}
+        	while(j-1>=0 &&!visited[i][j-1]){visited[i][j-1]=true;s[i][j-1]=curr++;j--;}
+        	while(i-1>=0 &&!visited[i-1][j]){visited[i-1][j]=true;s[i-1][j]=curr++;i--;}
+        }
+        return s;
+    }
     //219. Contains Duplicate II
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         return false;
@@ -3749,9 +3765,14 @@ public class Solution {
 /*		int [] n = {1,2,2,3,4,4,4,3,4,5,6,7,8};
 		System.out.println(longestConsecutive(n));
 		System.out.println(combinationSum2(n,8));*/
-		String s = "  ssss fffff gggg hhh         hh ";
-		String t =reverseWords(s);
-		System.out.println(t);
+		int n = 14;
+		int [][] s = generateMatrix(n);
+		for(int i=0;i<n;i++){
+			for(int j =0;j<n;j++)
+				System.out.print(s[i][j]+" ");
+			System.out.println();
+		}
+		
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
