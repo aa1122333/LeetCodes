@@ -3494,6 +3494,38 @@ public class Solution {
         }
         return s;
     }
+    //104. Maximum Depth of Binary Tree
+    public static int maxDepth(TreeNode root) {
+        if(root==null) return 0;
+        
+        return dfs_104(root,1);
+    }
+    
+    public static int dfs_104(TreeNode root,int curr){
+    	int left = curr;
+    	int right = curr;
+    	if(root.left!=null) left = dfs_104(root.left,curr+1);
+    	if(root.right!=null) right = dfs_104(root.right,curr+1);
+    	return Math.max(left, right);
+    }
+    //115. Distinct Subsequences
+    public static int  sum115 = 0;
+    public static int numDistinct(String s, String t) {
+    	substring115(s,t,0,0);
+        return sum115;
+    }
+    
+    public static void substring115(String s,String t,int curr,int sindex){
+    	if(curr==t.length()){
+    		sum115++;
+    		return ;
+    	}
+    	for(int i=sindex;i<s.length();i++){
+    		if(s.charAt(i)==t.charAt(curr)){
+    			substring115(s,t,curr+1,i+1);
+    		}
+    	}
+    }
     //219. Contains Duplicate II
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         return false;
@@ -3765,14 +3797,18 @@ public class Solution {
 /*		int [] n = {1,2,2,3,4,4,4,3,4,5,6,7,8};
 		System.out.println(longestConsecutive(n));
 		System.out.println(combinationSum2(n,8));*/
-		int n = 14;
-		int [][] s = generateMatrix(n);
-		for(int i=0;i<n;i++){
-			for(int j =0;j<n;j++)
-				System.out.print(s[i][j]+" ");
-			System.out.println();
-		}
+		/*TreeNode t = new TreeNode(1);
+		t.left = new TreeNode(2);
+		t.right = new TreeNode(3);
+		//t.left.left = new TreeNode(4);
+		t.right.left = new TreeNode(5);
+		t.left.right = new TreeNode(6);
+		t.left.right.right = new TreeNode(8);
+		t.left.right.left = new TreeNode(8);
+		t.left.right.right.right = new TreeNode(9);
 		
+		System.out.println(maxDepth(t));*/
+		System.out.println(numDistinct("rabbbit","rabbit"));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
