@@ -3509,27 +3509,57 @@ public class Solution {
     	return Math.max(left, right);
     }
     //115. Distinct Subsequences
-    public static int  sum115 = 0;
+    
     public static int numDistinct(String s, String t) {
-    	substring115(s,t,0,0);
-        return sum115;
+    	int[] p=new int[t.length()+1];
+        p[0]=1;
+        for(int i=0;i<s.length();i++){
+            for(int j=t.length();j>0;j--){
+                if(s.charAt(i)==t.charAt(j-1)) p[j]=p[j]+p[j-1];
+            }
+        }
+        return p[p.length-1];
+    }
+    //115-2
+    public int numDistinct2(String s, String t) {
+        int[][] arr = new int[256][t.length()+1];
+        int[] cnt = new int[t.length()+1];
+        cnt[0] = 1;
+        char c;
+        for(int i = 0; i < t.length(); i++ ) {
+            c = t.charAt(i);
+            arr[c][arr[c][0]+1] = i+1;
+            arr[c][0]++;
+        }
+        for( char a: s.toCharArray() ) {
+            if( arr[a][0] != 0 ) {
+                for( int i = arr[a][0]; i > 0; i-- ) {
+                    cnt[arr[a][i]] += cnt[arr[a][i]-1];
+                }
+            }
+        }
+        return cnt[t.length()];
     }
     
-    public static void substring115(String s,String t,int curr,int sindex){
-    	if(curr==t.length()){
-    		sum115++;
-    		return ;
-    	}
-    	for(int i=sindex;i<s.length();i++){
-    		if(s.charAt(i)==t.charAt(curr)){
-    			substring115(s,t,curr+1,i+1);
-    		}
-    	}
+    //94. Binary Tree Inorder Traversal
+    public static List<Integer> inorderTraversal(TreeNode root) {
+    	List<Integer> s = new ArrayList<Integer>();
+    	if(root == null) return s;
+    	dfs_94(root,s);
+        return s;
     }
+    
+    public static void dfs_94(TreeNode root,List<Integer> s){
+    	if(root.left!=null) dfs_94(root.left,s);
+    	s.add(root.val);
+    	if(root.right!=null) dfs_94(root.right,s);
+     }
     //219. Contains Duplicate II
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         return false;
     }
+    
+    
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -3797,7 +3827,7 @@ public class Solution {
 /*		int [] n = {1,2,2,3,4,4,4,3,4,5,6,7,8};
 		System.out.println(longestConsecutive(n));
 		System.out.println(combinationSum2(n,8));*/
-		/*TreeNode t = new TreeNode(1);
+		TreeNode t = new TreeNode(1);
 		t.left = new TreeNode(2);
 		t.right = new TreeNode(3);
 		//t.left.left = new TreeNode(4);
@@ -3807,8 +3837,9 @@ public class Solution {
 		t.left.right.left = new TreeNode(8);
 		t.left.right.right.right = new TreeNode(9);
 		
-		System.out.println(maxDepth(t));*/
-		System.out.println(numDistinct("rabbbit","rabbit"));
+		/*System.out.println(maxDepth(t));*/
+		/*System.out.println(numDistinct("rabbbit","rabbit"));*/
+		System.out.println(inorderTraversal(t));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
