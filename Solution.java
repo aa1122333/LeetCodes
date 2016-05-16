@@ -3554,7 +3554,78 @@ public class Solution {
     	s.add(root.val);
     	if(root.right!=null) dfs_94(root.right,s);
      }
-    //219. Contains Duplicate II
+    //191. Number of 1 Bits
+    public static int hammingWeight(int n) {
+        int num = 0;
+        while(n!=0){
+        	num+=(n&1);
+        	n>>>=1;
+        }
+        return num;
+    }
+    //329. Longest Increasing Path in a Matrix 
+    //--TLE
+    public static int max_329 = 0;
+    public static int longestIncreasingPath(int[][] matrix) {
+    	max_329 = 0;
+    	int x = matrix.length;
+    	if(x==0) return 0;
+    	int y = matrix[0].length;
+    	for(int i=0;i<x;i++)
+    		for(int j=0;j<y;j++)
+    			dfs_329(matrix,1,i,j,x,y);
+        return max_329;
+    }
+    
+    public static void dfs_329(int[][] matrix,int sum,int x,int y,int m,int n){
+    	max_329=max_329<sum?sum:max_329;
+    	if((x+1)<m && matrix[x][y]<matrix[x+1][y] ){
+    		dfs_329(matrix,sum+1,x+1,y,m,n);
+    	}
+    	if((x-1)>=0 && matrix[x][y]<matrix[x-1][y]){
+    		dfs_329(matrix,sum+1,x-1,y,m,n);
+    	}
+    	if((y+1)<n && matrix[x][y]<matrix[x][y+1] ){
+    		dfs_329(matrix,sum+1,x,y+1,m,n);
+    	}
+    	if((y-1)>=0 && matrix[x][y]<matrix[x][y-1]){
+    		dfs_329(matrix,sum+1,x,y-1,m,n);
+    	}
+    }
+    public static int [][]path;
+    public static int longestIncreasingPath2(int[][] matrix) {
+    	if(matrix == null || matrix.length == 0) return 0;
+    	int max = 0;
+    	int row = matrix.length;
+    	int col = matrix[0].length;
+    	path = new int[row][col];
+    	for(int i=0;i<row;i++)
+    		for(int j=0;j<col;j++){
+    			dfs_329_2(matrix,i,j,Integer.MIN_VALUE);
+    			max = max > path[i][j]?max:path[i][j];
+    		}
+    	return max;
+    }
+    
+    private static int dfs_329_2(int[][] matrix, int x, int y, int curr) {
+		// TODO Auto-generated method stub
+		if(x<0||x>=matrix.length||y<0||y>=matrix[0].length|| matrix[x][y] <= curr)
+			return 0;
+		if(path[x][y]>0)
+			return path[x][y];
+		int max = 1;
+		int[]dx={-1,1,0,0};
+		int[]dy={0,0,-1,1};
+		for(int i=0;i<4;i++){
+			int curx = x+dx[i];
+			int cury = y+dy[i];
+			int tmp = dfs_329_2(matrix, curx, cury, matrix[x][y])+1;
+			max = max>tmp?max:tmp;
+		}
+		path[x][y]=max;
+		return max;
+	}
+	//219. Contains Duplicate II
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         return false;
     }
@@ -3827,7 +3898,7 @@ public class Solution {
 /*		int [] n = {1,2,2,3,4,4,4,3,4,5,6,7,8};
 		System.out.println(longestConsecutive(n));
 		System.out.println(combinationSum2(n,8));*/
-		TreeNode t = new TreeNode(1);
+		/*TreeNode t = new TreeNode(1);
 		t.left = new TreeNode(2);
 		t.right = new TreeNode(3);
 		//t.left.left = new TreeNode(4);
@@ -3835,11 +3906,18 @@ public class Solution {
 		t.left.right = new TreeNode(6);
 		t.left.right.right = new TreeNode(8);
 		t.left.right.left = new TreeNode(8);
-		t.left.right.right.right = new TreeNode(9);
+		t.left.right.right.right = new TreeNode(9);*/
 		
 		/*System.out.println(maxDepth(t));*/
 		/*System.out.println(numDistinct("rabbbit","rabbit"));*/
-		System.out.println(inorderTraversal(t));
+		/*System.out.println(inorderTraversal(t));*/
+		//System.out.println(hammingWeight(2147483647));
+		int [][] s = {
+				{9,9,4},
+				{6,6,8},
+				{2,1,1}
+		};
+		System.out.println(longestIncreasingPath2(s));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
