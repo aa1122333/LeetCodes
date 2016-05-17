@@ -3625,10 +3625,61 @@ public class Solution {
 		path[x][y]=max;
 		return max;
 	}
+    //287. Find the Duplicate Number
+    public int findDuplicate(int[] nums) {
+    	if(nums.length>1){
+	    	int fast = nums[nums[0]];
+	    	int slow = nums[0];
+	    	while(fast!=slow){
+	    		fast = nums[nums[fast]];
+	    		slow = nums[slow];
+	    	}
+	    	fast = 0;
+	    	while(fast!=slow){
+	    		fast = nums[fast];
+	    		slow = nums[slow];
+	    	}
+	    	return slow;
+    	}
+    	return 0;
+        
+    }
+   //142. Linked List Cycle II
+    public static ListNode detectCycle(ListNode head) {
+    	if(head == null || head.next==null) return null;
+    	ListNode fast = head.next.next;
+    	ListNode slow = head.next;
+    	while(fast!=null && fast.next!=null){
+    		fast = fast.next.next;
+    		slow = slow.next;
+    		if(fast == slow) break;
+    	}
+    	if(fast==null || fast.next==null) return null;
+    	fast = head ;
+    	while(fast!=slow){
+    		fast = fast.next;
+    		slow = slow.next;
+    	}
+        return fast;
+    }
+    
+    //141. Linked List Cycle
+    public boolean hasCycle(ListNode head) {
+    	if(head == null || head.next==null) return false;
+    	ListNode fast = head.next.next;
+    	ListNode slow = head.next;
+    	while(fast!=null && fast.next!=null){
+    		fast = fast.next.next;
+    		slow = slow.next;
+    		if(fast == slow) return true;
+    	}
+    	return false;
+    }
 	//219. Contains Duplicate II
     public boolean containsNearbyDuplicate(int[] nums, int k) {
         return false;
     }
+    
     
     
 	public static void main(String[] args) {
@@ -3912,12 +3963,14 @@ public class Solution {
 		/*System.out.println(numDistinct("rabbbit","rabbit"));*/
 		/*System.out.println(inorderTraversal(t));*/
 		//System.out.println(hammingWeight(2147483647));
-		int [][] s = {
+		/*int [][] s = {
 				{9,9,4},
 				{6,6,8},
 				{2,1,1}
 		};
-		System.out.println(longestIncreasingPath2(s));
+		System.out.println(longestIncreasingPath2(s));*/
+		ListNode h = new ListNode(1);
+		
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
