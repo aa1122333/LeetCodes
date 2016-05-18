@@ -3677,10 +3677,21 @@ public class Solution {
     }
 	//219. Contains Duplicate II
     public boolean containsNearbyDuplicate(int[] nums, int k) {
+    	HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();
+    	for(int i=0;i<nums.length;i++){
+    		if(map.containsKey(nums[i]) && i-map.get(nums[i])<=k){
+    			return true;
+    		}
+    		else map.put(nums[i], i);
+    	}
+    		
         return false;
     }
-    
-    
+    //220. Contains Duplicate III
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+    	
+        return false;
+    }
     
 	public static void main(String[] args) {
 		
