@@ -3687,6 +3687,31 @@ public class Solution {
     		
         return false;
     }
+    //110. Balanced Binary Tree
+    public static boolean isBalanced(TreeNode root) {
+    	return dfs_110(root)==-1?false:true;
+    }
+    
+    public static int  dfs_110(TreeNode root){
+    	if(root == null) return 0;
+    	int left = dfs_110(root.left);
+    	if(left == -1) return -1;
+    	int right = dfs_110(root.right);
+    	if(right == -1) return -1;
+    	if(right - left>1 || left - right>1)
+    		return -1;
+    	return (left>right?left:right)+1;
+     }
+    //111. Minimum Depth of Binary Tree
+    public int minDepth(TreeNode root) {
+    	if(root == null) return 0;
+    	if(root.left==null && root.right==null){
+    		return Math.min(minDepth(root.left), minDepth(root.right))+1;
+    	}
+    	else {
+    		return Math.max(minDepth(root.left), minDepth(root.right));
+    	}
+    }
     //220. Contains Duplicate III
     public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
     	
@@ -3960,13 +3985,13 @@ public class Solution {
 /*		int [] n = {1,2,2,3,4,4,4,3,4,5,6,7,8};
 		System.out.println(longestConsecutive(n));
 		System.out.println(combinationSum2(n,8));*/
-		/*TreeNode t = new TreeNode(1);
+		TreeNode t = new TreeNode(1);
 		t.left = new TreeNode(2);
 		t.right = new TreeNode(3);
 		//t.left.left = new TreeNode(4);
 		t.right.left = new TreeNode(5);
 		t.left.right = new TreeNode(6);
-		t.left.right.right = new TreeNode(8);
+		/*t.left.right.right = new TreeNode(8);
 		t.left.right.left = new TreeNode(8);
 		t.left.right.right.right = new TreeNode(9);*/
 		
@@ -3980,7 +4005,7 @@ public class Solution {
 				{2,1,1}
 		};
 		System.out.println(longestIncreasingPath2(s));*/
-		ListNode h = new ListNode(1);
+		System.out.println(isBalanced(t));
 		
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
