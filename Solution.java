@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
@@ -3712,6 +3713,32 @@ public class Solution {
     		return Math.max(minDepth(root.left), minDepth(root.right));
     	}
     }
+    //347. Top K Frequent Elements
+    public static List<Integer> topKFrequent(int[] nums, int k) {
+    	List<Integer> s = new ArrayList<Integer>();
+        if(k==0) return s;
+        HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();
+        for(int i=0;i<nums.length;i++){
+        	if(map.containsKey(nums[i])){
+        		map.put(nums[i], (int)map.get(nums[i])+1);
+        	}
+        	else 
+        		map.put(nums[i], 1);
+        }
+        java.util.Iterator<Entry<Integer, Integer>> i = map.entrySet().iterator();
+        int[] num = new int[map.size()];
+        int m = 1;
+        while(i.hasNext()){
+        	Map.Entry<Integer, Integer> t = i.next();
+        	num[num.length-m] = t.getValue();
+        	m++;
+        }
+        Arrays.sort(num);
+        for(int j=0;j<k;j++){
+        	s.add(num[num.length-1-j]);
+        }
+        return s;
+    }
     //220. Contains Duplicate III
     public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
     	
@@ -4005,7 +4032,8 @@ public class Solution {
 				{2,1,1}
 		};
 		System.out.println(longestIncreasingPath2(s));*/
-		System.out.println(isBalanced(t));
+		int [] s = {1,1,1,2,3,4,4,5,5,6,7};
+		System.out.println(topKFrequent(s,3));
 		
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
