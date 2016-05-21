@@ -3739,6 +3739,65 @@ public class Solution {
         }
         return s;
     }
+    //150. Evaluate Reverse Polish Notation
+    public static int evalRPN(String[] tokens) {
+        Stack<Integer> s = new Stack<Integer>();
+        for(int i=0;i<tokens.length;i++){
+        	if(tokens[i].equals("+")){
+        		int a = s.pop();
+        		int b = s.pop();
+        		s.push(a+b);
+        	}
+        	else if(tokens[i].equals("-")){
+        		int a = s.pop();
+        		int b = s.pop();
+        		s.push(b-a);
+        	}
+        	else if(tokens[i].equals("*")){
+        		int a = s.pop();
+        		int b = s.pop();
+        		s.push(a*b);
+        	}
+        	else if(tokens[i].equals("/")){
+        		int a = s.pop();
+        		int b = s.pop();
+        		s.push(b/a);
+        	}
+        	else s.push(Integer.parseInt(tokens[i]));
+        }
+        return s.peek();
+    }
+    //150-2
+    public static int evalRPN2(String[] tokens) {
+    	int []nums = new int[tokens.length/2+1];
+    	int i = 0;
+    	for(String s :tokens){
+    		switch(s){
+    			case "+":
+	    			nums[i-2]=nums[i-2]+nums[i-1];
+	    			i--;
+	    			break;
+    			case "-":
+    				nums[i-2]=nums[i-2]-nums[i-1];
+    				i--;
+    				break;
+    			case "*":
+    				nums[i-2]=nums[i-2]*nums[i-1];
+    				i--;
+    				break;
+    			case "/":
+    				nums[i-2]=nums[i-2]/nums[i-1];
+    				i--;
+    				break;
+    			default:
+    				nums[i++]=Integer.parseInt(s);
+    				break;
+    				
+    			
+    		}
+    	}
+    	return nums[0];
+    }
     //220. Contains Duplicate III
     public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
     	
@@ -4032,8 +4091,12 @@ public class Solution {
 				{2,1,1}
 		};
 		System.out.println(longestIncreasingPath2(s));*/
-		int [] s = {1,1,1,2,3,4,4,5,5,6,7};
-		System.out.println(topKFrequent(s,3));
+		/*int [] s = {1,1,1,2,3,4,4,5,5,6,7};
+		System.out.println(topKFrequent(s,3));*/
+		String [] ts = {
+				"4","13","5","/","+"
+		};
+		System.out.println(evalRPN2(ts));
 		
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
