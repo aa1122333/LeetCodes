@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
@@ -3715,29 +3718,24 @@ public class Solution {
     }
     //347. Top K Frequent Elements
     public static List<Integer> topKFrequent(int[] nums, int k) {
-    	List<Integer> s = new ArrayList<Integer>();
-        if(k==0) return s;
-        HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();
-        for(int i=0;i<nums.length;i++){
-        	if(map.containsKey(nums[i])){
-        		map.put(nums[i], (int)map.get(nums[i])+1);
-        	}
-        	else 
-        		map.put(nums[i], 1);
-        }
-        java.util.Iterator<Entry<Integer, Integer>> i = map.entrySet().iterator();
-        int[] num = new int[map.size()];
-        int m = 1;
-        while(i.hasNext()){
-        	Map.Entry<Integer, Integer> t = i.next();
-        	num[num.length-m] = t.getValue();
-        	m++;
-        }
-        Arrays.sort(num);
-        for(int j=0;j<k;j++){
-        	s.add(num[num.length-1-j]);
-        }
-        return s;
+	    	HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();
+	    	List<Integer>[]bucket = new List[nums.length+1];
+	    	for(int num:nums){
+	    		map.putIfAbsent(num, 0);
+	    		map.computeIfPresent(num, (key,oldVal)->oldVal+1);
+	    	}
+	    	for(int key:map.keySet()){
+	    		int freq = map.get(key);
+	    		if(bucket[freq]==null)
+	    			bucket[freq] = new ArrayList<>();
+	    		bucket[freq].add(key);
+	    	}
+	    	List<Integer> res = new ArrayList<>();
+	    	for(int p = bucket.length-1;p>=0&&res.size()<k;p--){
+	    		if(bucket[p]!=null)
+	    			res.addAll(bucket[p]);
+	    	}
+	    	return res;
     }
     //150. Evaluate Reverse Polish Notation
     public static int evalRPN(String[] tokens) {
@@ -3797,6 +3795,67 @@ public class Solution {
     		}
     	}
     	return nums[0];
+    }
+    //258. Add Digits
+    public static int addDigits(int num) {
+        return (num-1)%9+1;
+    }
+    //216. Combination Sum III
+    public static List<List<Integer>> combinationSum3(int k, int n) {
+    	List<List<Integer>> s = new ArrayList<List<Integer>>();
+        if(n==0||k==0) return s;
+        List<Integer> p = new ArrayList<Integer>();
+        backtracking_216(s, 1, 0, n, k, p);
+        return s;
+    }
+    
+    public static void backtracking_216(List<List<Integer>> s,int start,int sum,int n,int k,List<Integer> p){
+    	if(p.size()==k && sum==n){
+    		s.add(new ArrayList<Integer>(p));
+    		return ;
+    	}
+    	if(p.size()<k){
+	    	for(int i=start;i<10;i++){
+	    		if(sum+i<=n){
+	    			p.add(i);
+	    			backtracking_216(s,  i+1, sum+i, n, k, p);
+	    			p.remove(p.size()-1);
+	    		}
+	    		else break;
+	    	}
+    	}
+    }
+    //118. Pascal's Triangle
+    public static List<List<Integer>> generate(int numRows) {
+        List<List<Integer>> t = new ArrayList<List<Integer>>();
+        if(numRows==0) return t;
+        for(int i=1;i<=numRows;i++){
+        	List<Integer> p = new ArrayList<Integer>();
+        	for(int j=0;j<i;j++){
+        		if(j==0 || j==i-1) p.add(1);
+        		else {
+        			List<Integer> q = t.get(i-2);
+        			p.add(q.get(j)+q.get(j-1));
+        		}
+        	}
+        	t.add(p);
+        }
+        return t;
+    }
+    //119. Pascal's Triangle II
+    public static List<Integer> getRow(int rowIndex) {
+        List<Integer> s = new ArrayList<Integer>();
+        s.add(1);
+        if(rowIndex==0) return s;
+        for(int i=1;i<=rowIndex;i++){
+        	for(int j=i;j>0;j--){
+        		if(j==i) s.add(1);
+        		else {
+        			s.set(j, s.get(j)+s.get(j-1));
+        		}
+        	}
+        }
+        return s;
     }
     //220. Contains Duplicate III
     public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
@@ -4093,11 +4152,13 @@ public class Solution {
 		System.out.println(longestIncreasingPath2(s));*/
 		/*int [] s = {1,1,1,2,3,4,4,5,5,6,7};
 		System.out.println(topKFrequent(s,3));*/
-		String [] ts = {
+		/*String [] ts = {
 				"4","13","5","/","+"
 		};
-		System.out.println(evalRPN2(ts));
-		
+		System.out.println(evalRPN2(ts));*/
+		/*int []p= {1,1,1,1,2,2,2,2,3,4};
+		System.out.println(topKFrequent(p,1));*/
+		System.out.println(getRow(1));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
