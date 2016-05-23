@@ -3857,6 +3857,79 @@ public class Solution {
         }
         return s;
     }
+    //237. Delete Node in a Linked List
+    public static void deleteNode(ListNode node) {
+        if(node == null||node.next==null) return ;
+        node.val = node.next.val;
+        node.next = node.next.next;
+    }
+    //203. Remove Linked List Elements
+    public static ListNode removeElements(ListNode head, int val) {
+        if(head==null ) return null;
+        if(head.next==null){
+        	if(head.val==val) return null;
+        	else return head;
+        }
+        ListNode t = head;
+        while(t.val==val && t.next!=null) 
+        	deleteNode(t);
+        while(t.next!=null){
+        	if(t.next.val==val){
+        		t.next = t.next.next;
+        	}
+        		
+        	else t = t.next;
+        }
+        if(head.next==null){
+        	if(head.val==val) return null;
+        	else return head;
+        }
+        return head;
+    }
+    //55. Jump Game
+    public static boolean canJump(int[] nums) {
+       int n =nums.length;
+       if(n==1) return true;
+       if(n==0) return false;
+       int tar = n-1;
+       for(int i=n-2;i>=0;i--){
+    	   int gap = tar-i;
+    	   if(gap<=nums[i]) tar = i;
+       }
+       return tar==0;
+    }
+    //113. Path Sum II
+    public static List<List<Integer>> pathSum(TreeNode root, int sum) {
+        List<List<Integer>> s = new ArrayList<List<Integer>>();
+        if(root == null) return s;
+        List<Integer> p = new ArrayList<Integer>();
+        dfs_113(s, sum, 0, p, root);
+        return s;
+    }
+    
+    public static void dfs_113(List<List<Integer>> s,int sum,int curr,List<Integer> p,TreeNode root){
+    	if(root == null) return;
+    	else if(root.left ==null &&root.right==null){
+    		if((curr+root.val)==sum){
+    			p.add(root.val);
+    			s.add(new ArrayList<Integer>(p));
+    			p.remove(p.size()-1);
+    			return ;
+    		}
+    	}
+    	else {
+    		p.add(root.val);
+    		if(root.left!=null) {
+    			
+    			dfs_113(s, sum, curr+root.val, p, root.left);
+    		}
+    		if(root.right!=null) {
+    			dfs_113(s, sum, curr+root.val, p, root.right);
+    		}
+    		p.remove(p.size()-1);
+    	}
+    	
+    }
     //220. Contains Duplicate III
     public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
     	
@@ -4130,13 +4203,13 @@ public class Solution {
 /*		int [] n = {1,2,2,3,4,4,4,3,4,5,6,7,8};
 		System.out.println(longestConsecutive(n));
 		System.out.println(combinationSum2(n,8));*/
-		TreeNode t = new TreeNode(1);
+		/*TreeNode t = new TreeNode(1);
 		t.left = new TreeNode(2);
 		t.right = new TreeNode(3);
-		//t.left.left = new TreeNode(4);
+		t.left.left = new TreeNode(4);
 		t.right.left = new TreeNode(5);
 		t.left.right = new TreeNode(6);
-		/*t.left.right.right = new TreeNode(8);
+		t.left.right.right = new TreeNode(8);
 		t.left.right.left = new TreeNode(8);
 		t.left.right.right.right = new TreeNode(9);*/
 		
@@ -4158,7 +4231,32 @@ public class Solution {
 		System.out.println(evalRPN2(ts));*/
 		/*int []p= {1,1,1,1,2,2,2,2,3,4};
 		System.out.println(topKFrequent(p,1));*/
-		System.out.println(getRow(1));
+		ListNode root = new ListNode(0);
+		root.next = new ListNode(0);
+		root.next.next = new ListNode(0);
+		/*root.next.next.next= new ListNode(2);
+		root.next.next.next.next = new ListNode(2);
+		root.next.next.next.next.next = new ListNode(2);
+		root.next.next.next.next.next.next = new ListNode(5);
+		root.next.next.next.next.next.next.next = new ListNode(5);*/
+		/*ListNode tt = removeElements(root,0);
+		while(tt!=null){
+			System.out.println(root.val);
+			root = root.next;
+		}*/
+		/*int []m = {2,10,0,0,0,0,0,0,6,0,0,0,0,0};
+		System.out.println(canJump(m));*/
+		TreeNode t = new TreeNode(5);
+		t.left = new TreeNode(4);
+		t.right = new TreeNode(8);
+		t.left.left = new TreeNode(11);
+		t.right.left = new TreeNode(13);
+		t.right.right = new TreeNode(4);
+		t.right.right.left = new TreeNode(5);
+		t.right.right.right = new TreeNode(1);
+		t.left.left.right = new TreeNode(2);
+		t.left.left.left = new TreeNode(7);
+		System.out.println(pathSum(t,22));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
