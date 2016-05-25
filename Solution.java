@@ -3949,6 +3949,22 @@ public class Solution {
         }
         return false;
     }
+    //147. Insertion Sort List
+    public ListNode insertionSortList(ListNode head) {
+        ListNode hhead = new ListNode(Integer.MIN_VALUE);
+        while(head!=null){
+        	ListNode th = hhead;
+        	ListNode thn = hhead.next;
+        	while(thn!=null &&thn.val<head.val){
+        		th = thn;
+        		thn = thn.next;
+        	}
+        	th.next = head;
+        	head = head.next;
+        	th.next.next = thn;
+        }
+        return hhead.next;
+    }
     
 	public static void main(String[] args) {
 		
