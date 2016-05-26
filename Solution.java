@@ -3722,8 +3722,8 @@ public class Solution {
 	    	HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();
 	    	List<Integer>[]bucket = new List[nums.length+1];
 	    	for(int num:nums){
-	    		map.putIfAbsent(num, 0);
-	    		map.computeIfPresent(num, (key,oldVal)->oldVal+1);
+	    		/*map.putIfAbsent(num, 0);
+	    		map.computeIfPresent(num, (key,oldVal)->oldVal+1);*/
 	    	}
 	    	for(int key:map.keySet()){
 	    		int freq = map.get(key);
@@ -3965,7 +3965,43 @@ public class Solution {
         }
         return hhead.next;
     }
-    
+    //189. Rotate Array
+    public static void rotate(int[] nums, int k) {
+    	k %= nums.length;
+        reverse(nums, 0, nums.length - 1);
+        reverse(nums, 0, k - 1);
+        reverse(nums, k, nums.length - 1);
+    }
+    public static void reverse(int[] nums, int start, int end) {
+        while (start < end) {
+            int temp = nums[start];
+            nums[start] = nums[end];
+            nums[end] = temp;
+            start++;
+            end--;
+        }
+    }
+    //64. Minimum Path Sum
+    public static int minPathSum(int[][] grid) {
+    	if(grid.length==0 || grid[0].length==0) return 0;
+    	int x = grid.length;
+    	int y = grid[0].length;
+    	int[][] sum = new int[x][y];
+    	sum[x-1][y-1] = grid[x-1][y-1];
+    	for(int i=x-2;i>=0;i--){
+    		sum[i][y-1] = grid[i][y-1]+sum[i+1][y-1];
+    	}
+    	for(int i=y-2;i>=0;i--){
+    		sum[x-1][i] = grid[x-1][i]+sum[x-1][i+1];
+    	}
+    	for(int i=x-2;i>=0;i--)
+    		for(int j=y-2;j>=0;j--){
+    			sum[i][j] = Math.min(sum[i+1][j]+grid[i][j], sum[i][j+1]+grid[i][j]);
+    		}
+    			
+    	
+        return sum[0][0];
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -4261,9 +4297,9 @@ public class Solution {
 		System.out.println(evalRPN2(ts));*/
 		/*int []p= {1,1,1,1,2,2,2,2,3,4};
 		System.out.println(topKFrequent(p,1));*/
-		ListNode root = new ListNode(0);
+/*		ListNode root = new ListNode(0);
 		root.next = new ListNode(0);
-		root.next.next = new ListNode(0);
+		root.next.next = new ListNode(0);*/
 		/*root.next.next.next= new ListNode(2);
 		root.next.next.next.next = new ListNode(2);
 		root.next.next.next.next.next = new ListNode(2);
@@ -4276,7 +4312,7 @@ public class Solution {
 		}*/
 		/*int []m = {2,10,0,0,0,0,0,0,6,0,0,0,0,0};
 		System.out.println(canJump(m));*/
-		TreeNode t = new TreeNode(5);
+/*		TreeNode t = new TreeNode(5);
 		t.left = new TreeNode(4);
 		t.right = new TreeNode(8);
 		t.left.left = new TreeNode(11);
@@ -4286,8 +4322,15 @@ public class Solution {
 		t.right.right.right = new TreeNode(1);
 		t.left.left.right = new TreeNode(2);
 		t.left.left.left = new TreeNode(7);
-		System.out.println(pathSum(t,22));
-		System.out.println();
+		System.out.println(pathSum(t,22));*/
+		
+		int [][] grid = {
+				{2},
+				{4},
+				{3},
+				{2}
+		};
+		System.out.println(minPathSum(grid));
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
 
