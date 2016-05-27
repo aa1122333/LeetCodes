@@ -4002,6 +4002,66 @@ public class Solution {
     	
         return sum[0][0];
     }
+    //64-2
+    public int minPathSum2(int[][] grid) {
+        if(grid.length == 0)  return 0;
+
+        int r = grid.length;
+        int c = grid[0].length;
+
+        for(int i=0;i<r; i++) {
+            for(int j=0; j<c; j++) {
+                int leftSum = (j>0) ? grid[i][j-1] : Integer.MAX_VALUE;
+                int topSum = (i>0) ? grid[i-1][j] : Integer.MAX_VALUE;
+                if(i==0 && j==0) continue;
+
+                grid[i][j] += Math.min(leftSum, topSum);
+            }
+        }
+        return grid[r-1][c-1];
+    }
+    //134. Gas Station
+    public static int canCompleteCircuit(int[] gas, int[] cost) {
+    	if(gas.length==0||cost.length==0) return -1;
+    	int length = gas.length;
+    	int [] yugas = new int[length];
+    	for(int i=0;i<length;i++){
+    		yugas[i] = gas[i]-cost[i];
+    	}
+    	for(int i=0;i<length;i++){
+    		if(yugas[i]>=0){
+    			int currgas = gas[i]-cost[i];
+    			int n = i;
+    			for(int j=n+1;j!=n;j++){
+        			if(j==gas.length){
+        				if(n==0) break;
+        				j=0;
+        			
+        			}
+        			currgas = currgas + gas[j] - cost[j];
+        			if(currgas<0)  break;
+        		}
+        		if(currgas>=0) return n;
+    		}
+    	}
+    	return -1;
+    }
+    //134-2
+    public int canCompleteCircuit2(int[] gas, int[] cost) {
+        int startPoint = 0;
+        int sum = 0;
+        int totalLeftGas = 0;
+        for (int i = 0; i < gas.length; i++) {
+            int diff = gas[i] - cost[i];
+            totalLeftGas += diff;
+            sum += diff;
+            if (sum < 0) {
+                startPoint = i + 1;
+                sum = 0;
+            }
+        }
+        return totalLeftGas >= 0 ? startPoint : -1;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -4324,13 +4384,19 @@ public class Solution {
 		t.left.left.left = new TreeNode(7);
 		System.out.println(pathSum(t,22));*/
 		
-		int [][] grid = {
+		/*int [][] grid = {
 				{2},
 				{4},
 				{3},
 				{2}
 		};
-		System.out.println(minPathSum(grid));
+		System.out.println(minPathSum(grid));*/
+/*		int[] gas = {1};
+		int[]cost = {1};
+		System.out.println(canCompleteCircuit(gas,cost));*/
+
+
+		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
 
