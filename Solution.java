@@ -4062,6 +4062,33 @@ public class Solution {
         }
         return totalLeftGas >= 0 ? startPoint : -1;
     }
+    //58. Length of Last Word
+    public static int lengthOfLastWord(String s) {
+    	String t = s.replaceAll(" +", " ");
+        String [] ss = t.split(" ");
+        if(ss.length==1) return 0;
+        return ss[ss.length-1].length();
+    }
+    //58-2
+    public static int lengthOfLastWord2(String s) {
+    	char[] chars = s.toCharArray();
+    	int sum = 0;
+    	boolean flag = false;
+    	for(int i=chars.length-1;i>=0;i--){
+    		if(chars[i]==' ' && !flag) continue;
+    		else if(!flag && chars[i]!=' '){
+    			flag=true;
+    			sum++;
+    		}
+    		else if(flag && chars[i]==' '){
+    			break;
+    		}
+    		else {
+    			sum++;
+    		}
+    	}
+    	return sum;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -4395,7 +4422,7 @@ public class Solution {
 		int[]cost = {1};
 		System.out.println(canCompleteCircuit(gas,cost));*/
 
-
+		System.out.println(lengthOfLastWord2("a" ));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
