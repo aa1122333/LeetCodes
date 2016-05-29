@@ -4089,6 +4089,34 @@ public class Solution {
     	}
     	return sum;
     }
+    //263. Ugly Number
+    static Set<Integer> set = new HashSet<Integer>();
+    public static boolean isUgly(int nums) {
+    	if(!ini){
+    		ini = true;
+    		init();
+    		for(int i=0;i<3000;i++){
+        		set.add(num[i]);
+        	}
+    	}
+    	return set.contains(nums);
+    }
+    public static boolean isUgly2(int num) {
+    	if(num==1) return true;
+    	if(num<0) {
+    		if(num==Integer.MIN_VALUE) return true;
+    		num=Math.abs(num);
+    	}
+    	while(num!=1){
+    		if(num%2==0) num/=2;
+    		else if(num%3==0) num/=3;
+    		else if(num%5==0) num/=5;
+    		else {
+    			return false;
+    		}
+    	}
+    	return true;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -4422,7 +4450,7 @@ public class Solution {
 		int[]cost = {1};
 		System.out.println(canCompleteCircuit(gas,cost));*/
 
-		System.out.println(lengthOfLastWord2("a" ));
+		System.out.println(isUgly2(-1000));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
