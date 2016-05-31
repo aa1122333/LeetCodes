@@ -4117,6 +4117,25 @@ public class Solution {
     	}
     	return true;
     }
+    //230. Kth Smallest Element in a BST
+    public int kthSmallest(TreeNode root, int k) {
+        if(root==null) return 0;
+        Stack<TreeNode> s = new Stack<TreeNode>();
+        while(root!=null &&!s.isEmpty()){
+        	while(root!=null){
+        		s.push(root);
+        		root = root.left;
+        	}
+        	root = s.pop();
+        	if(--k == 0 ) break;
+        	root = root.right;
+        }
+        return root.val;
+    }
+    //319. Bulb Switcher
+    public int bulbSwitch(int n) {
+    	return (int) Math.sqrt(n);
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
