@@ -4136,6 +4136,28 @@ public class Solution {
     public int bulbSwitch(int n) {
     	return (int) Math.sqrt(n);
     }
+    //135. Candy
+    public int candy(int[] ratings) {
+    	if(ratings.length==0) return 0;
+        int[] tmp = new int[ratings.length];
+        int length = ratings.length;
+        tmp[0] =1;
+        for(int i=1;i<length;i++){
+        	if(ratings[i]>ratings[i-1]){
+        		tmp[i] = tmp[i-1]+1;
+        	}
+        	else 
+        		tmp[i] = 1;
+        }
+        int candy = tmp[length-1];
+        for(int i = length-2;i>=0;i--){
+        	if(ratings[i]>ratings[i+1] && tmp[i]<=tmp[i+1]){
+        		tmp[i] = tmp[i+1]+1;
+        	}
+        	candy += tmp[i];
+        }
+        return candy;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
