@@ -4062,6 +4062,7 @@ public class Solution {
         }
         return totalLeftGas >= 0 ? startPoint : -1;
     }
+    
     //58. Length of Last Word
     public static int lengthOfLastWord(String s) {
     	String t = s.replaceAll(" +", " ");
@@ -4157,6 +4158,190 @@ public class Solution {
         	candy += tmp[i];
         }
         return candy;
+    }
+    //106. Construct Binary Tree from Inorder and Postorder Traversal
+    public static TreeNode buildTree106(int[] inorder, int[] postorder) {
+        int i = 0;
+        int j = 0;
+        TreeNode t = null;
+        while(i<inorder.length && j<postorder.length){
+        	if(inorder[i]==postorder[j]){
+        		TreeNode node = new TreeNode(inorder[i]);
+        		node.left = t;
+        		t = node;
+        		i++;
+        		j++;
+        	}
+        	else {
+        		TreeNode node = new TreeNode(inorder[i]);
+        		node.left = t;
+        		t = node;
+        		int k = j;
+        		while(inorder[i]!=postorder[k]){
+        			k++;
+        		}
+        		int[]pinorder = Arrays.copyOfRange(inorder, i+1, i+1+k-j);
+        		int[]ppostorder = Arrays.copyOfRange(postorder, j, k);
+        		
+        		node = buildTree106(pinorder, ppostorder);
+        		t.right = node;
+        		i=k+1;
+        		j=k+1;
+        	}
+        }
+        return t;
+    }
+    //108. Convert Sorted Array to Binary Search Tree
+    public static TreeNode sortedArrayToBST(int[] nums) {
+        TreeNode root = null;
+        if(nums.length==0) return root;
+        if(nums.length==1) return root = new TreeNode(nums[0]);
+        int half = nums.length/2;
+        root = new TreeNode(nums[half]);
+        int []left = Arrays.copyOfRange(nums, 0, half);
+        int []right = Arrays.copyOfRange(nums, half+1, nums.length);
+        root.left = sortedArrayToBST(left);
+        root.right = sortedArrayToBST(right);
+        return root;
+    }
+    //108-2
+    public TreeNode sortedArrayToBST2(int[] nums) {
+        return helper(0, nums.length-1, nums);
+    }
+
+    public TreeNode helper(int start, int end, int[]nums){
+        if(start>end) return null;
+
+        int mid = start + (end - start)/2;
+
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = helper(start, mid-1, nums);
+        root.right = helper(mid+1, end, nums);
+
+        return root;
+    }
+    
+    //10. Regular Expression Matching
+    public static boolean isMatch(String s, String p) {
+        if(p.length()==0) return s.length()==0;
+        if(p.length()>1 && p.charAt(1)=='*'){
+        	if(isMatch(s,p.substring(2))){
+        		return true;
+        	}
+        	if(s.length()>0 &&( p.charAt(0)=='.'||p.charAt(0)==s.charAt(0))){
+        		return isMatch(s.substring(1),p);
+        	}
+        	return false;
+        }
+        else {
+        	if(s.length()>0 &&(p.charAt(0)=='.'||p.charAt(0)==s.charAt(0))){
+        		return isMatch(s.substring(1), p.substring(1));
+        	}
+        	return false;
+        }
+        	
+        
+    }
+    //10-2
+    char[] s1, p;
+    int sLength, pLength, noWildcard;
+    Boolean[][] dp;
+    public boolean isMatch2(String ss, String ps) {
+
+        s1 = ss.toCharArray();
+        p = ps.toCharArray();
+        sLength = s1.length;
+        pLength = p.length;
+        noWildcard = pLength - 1;
+        dp = new Boolean[pLength + 1][sLength + 1];
+        return isMatch(0, 0);
+    }
+
+    boolean isMatch(int pi, int si){
+        if(dp[pi][si] != null) return dp[pi][si];
+        while(true){
+
+            if(pi < noWildcard && p[pi+1] == '*'){
+                char c = p[pi];
+                pi += 2;
+
+                while(true){
+
+                    boolean isMatch = isMatch(pi, si);
+                    dp[pi][si] = isMatch;
+
+                    if(isMatch){
+                        return true;
+                    }
+
+                    if(si == sLength) return pi == pLength;
+
+                    if(c != '.' && c != s1[si]){
+                        return false;
+                    }
+
+                    si++;
+                }
+            }
+
+            if(pi == pLength || si == sLength) return pi == pLength && si == sLength;
+
+            if(p[pi] != '.' && p[pi] != s1[si]){
+                return false;
+            }
+
+            pi++;
+            si++;
+        }
+    }
+    //312. Burst Balloons
+    public static int maxCoins(int[] iNums) {
+        int[] nums = new int[iNums.length + 2];
+        int n = 1;
+        for (int x : iNums) if (x > 0) nums[n++] = x;
+        nums[0] = nums[n++] = 1;
+
+
+        int[][] dp = new int[n][n];
+        for(int i=2;i<n;i++)
+        	for(int left = 0;left<n-i;left++){
+        		int right = left + i;
+        		for(int k=left+1;k<right;k++){
+        			dp[left][right] = Math.max(dp[left][right], nums[k]*nums[left]*nums[right] + dp[left][k]+dp[k][right]);
+        		}
+        	}
+        return dp[0][n-1];
+    }
+    //350. Intersection of Two Arrays II
+    public static int[] intersect(int[] nums1, int[] nums2) {
+    	List<Integer> s = new ArrayList<Integer>();
+    	int n1 = nums1.length;
+    	int n2 = nums2.length;
+    	if(n1==0 || n2==0) return new int[0];
+    	Arrays.sort(nums1);
+    	Arrays.sort(nums2);
+    	int i=0;int j=0;
+    	while(i<n1 && j<n2){
+    		if(nums1[i]==nums2[j]){
+    			s.add(nums1[i]);
+    			i++;
+    			j++;
+    		}
+    		else if(nums1[i]<nums2[j]){
+    			i++;
+    		}
+    		else if(nums1[i]>nums2[j]){
+    			j++;
+    		}
+    	}
+    	int [] sol = new int[s.size()];
+    	for(int k=0;k<s.size();k++)
+    		sol[k] = s.get(k);
+    	return sol;
+    }
+    //84. Largest Rectangle in Histogram
+    public int largestRectangleArea(int[] heights) {
+        return 0;
     }
 	public static void main(String[] args) {
 		
@@ -4490,8 +4675,16 @@ public class Solution {
 /*		int[] gas = {1};
 		int[]cost = {1};
 		System.out.println(canCompleteCircuit(gas,cost));*/
-
-		System.out.println(isUgly2(-1000));
+		/*int [] s1 = {9,2,7,4,1,6,3,5,8};
+		int [] s2 = {9,7,4,2,6,8,5,3,1};
+		TreeNode t = null;
+		System.out.println(t = buildTree106(s1,s2));*/
+/*		int [] s= {1,2,3,4,5,6,7,8};
+		TreeNode t = sortedArrayToBST(s);*/
+		int [] s = {1,1,2,3,4,5,5,5};
+		int [] s2 = {1,2,2,3,4};
+		int p[];
+		System.out.println( p = intersect(s,s2));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
