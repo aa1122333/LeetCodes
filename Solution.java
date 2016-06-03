@@ -4163,6 +4163,7 @@ public class Solution {
     public static TreeNode buildTree106(int[] inorder, int[] postorder) {
         int i = 0;
         int j = 0;
+
         TreeNode t = null;
         while(i<inorder.length && j<postorder.length){
         	if(inorder[i]==postorder[j]){
@@ -4340,8 +4341,124 @@ public class Solution {
     	return sol;
     }
     //84. Largest Rectangle in Histogram
-    public int largestRectangleArea(int[] heights) {
-        return 0;
+    public static int largestRectangleArea(int[] heights) {
+    	int length = heights.length;
+    	int max = 0;
+    	Stack<Integer> s = new Stack<Integer>();
+    	for(int i=0;i<=length;i++){
+    		int curr = i==length?0:heights[i];
+    		if(s.isEmpty() || curr>heights[s.peek()]){
+    			s.push(i);
+    		}
+    		else {
+    			int curmax = s.pop();
+    			max = Math.max(max, heights[curmax]*(s.isEmpty()?i:i-1-s.peek()));
+    			i--;
+    		}
+    	}
+        return max;
+    }
+    //84-2
+    public int largestRectangleArea2(int[] height) {
+        int[] stack=new int[height.length];
+        int index=0,max=0;
+        for(int i=0;i<height.length;i++){
+        	
+            while(index!=0&&height[stack[index-1]]>height[i]){
+                if(index==1) max=Math.max(height[stack[--index]]*i,max);
+                else max=Math.max(height[stack[--index]]*(i-stack[index-1]-1),max);
+            }
+            stack[index++]=i;
+        }
+        
+        while(index!=0){
+            if(index==1) max=Math.max(height[stack[--index]]*height.length,max);
+            else max=Math.max(height[stack[--index]]*(height.length-stack[index-1]-1),max);
+        }
+        
+        return max;
+    }
+    //122. Best Time to Buy and Sell Stock II
+    public static int maxProfit_123(int[] prices) {
+    	if(prices==null || prices.length==0||prices.length==1) return 0;
+    	if(prices.length==2) return prices[1]-prices[0]>0?prices[1]-prices[0]:0;
+    	ArrayList<Integer> bottom = new ArrayList<Integer>();
+    	ArrayList<Integer> top = new ArrayList<Integer>();
+    	for(int i=1;i<prices.length-1;i++){
+    		if(prices[i]-prices[i-1]>0 && prices[i+1]-prices[i]<=0){
+    			top.add(prices[i]);
+    		}
+    		if(prices[i]-prices[i-1]<=0 && prices[i+1]-prices[i]>0){
+    			bottom.add(prices[i]);
+    		}
+    	}
+    	int sum=0;
+    	if(prices[0]-prices[1]<0)
+    		bottom.add(prices[0]);
+    	if(prices[prices.length-1]-prices[prices.length-2]>0)
+    		top.add(prices[prices.length-1]);
+    	for(int i=0;i<bottom.size();i++){
+    		sum +=top.get(i)-bottom.get(i);
+    	}
+        return sum;
+    }
+    //122-2
+    public int maxProfit122(int[] prices) {
+        int length = prices.length;
+         if (length < 2) {
+             return 0;
+         }
+         int profit = 0;
+         int lastBuy = prices[0];
+         for (int i = 1; i < length; i++) {
+             if (prices[i]>lastBuy) {
+                 profit = prices[i] - lastBuy + profit;
+             }
+             lastBuy = prices[i];
+         }
+         return profit;
+     }
+    //209. Minimum Size Subarray Sum
+    public static int minSubArrayLen(int s, int[] nums) {
+    	int start = 0;
+    	int min = Integer.MAX_VALUE;
+    	int sum=0;
+    	for(int end=0;end<nums.length;end++){
+    		sum+=nums[end];
+    		if(sum>=s) min = Math.min(min,end-start);
+    		while(start<nums.length-1 && sum-nums[start]>=s){
+    			sum = sum-nums[start];
+    			min = Math.min(min, end-start);
+    		}
+    	}
+    	return min==Integer.MAX_VALUE?0:min+1;
+    }
+    //209-2
+    public int minSubArrayLen2(int sum, int[] nums) {
+        int minlen = Integer.MAX_VALUE;
+        int curSum = 0;
+        int start = 0;
+        int end = 0;
+        while(start < nums.length){
+            if(curSum < sum && end < nums.length){
+                curSum += nums[end];
+                end++;
+            }
+            else if(curSum >= sum){
+                minlen = Math.min(minlen, end-start);
+                curSum -= nums[start];
+                start++;
+            }
+            else{
+                break;
+            }
+        }
+        return (minlen == Integer.MAX_VALUE) ? 0 : minlen;
+    }
+    //241. Different Ways to Add Parentheses
+    public List<Integer> diffWaysToCompute(String input) {
+    	
+        return null;
     }
 	public static void main(String[] args) {
 		
@@ -4681,10 +4798,16 @@ public class Solution {
 		System.out.println(t = buildTree106(s1,s2));*/
 /*		int [] s= {1,2,3,4,5,6,7,8};
 		TreeNode t = sortedArrayToBST(s);*/
-		int [] s = {1,1,2,3,4,5,5,5};
+/*		int [] s = {1,1,2,3,4,5,5,5};
 		int [] s2 = {1,2,2,3,4};
 		int p[];
-		System.out.println( p = intersect(s,s2));
+		System.out.println( p = intersect(s,s2));*/
+		
+
+		int[] h = {5334,6299,4199,9663,8945,3566,9509,3124,6026,6250,7475,5420,9201,9501,38,5897,4411,6638,9845,161,9563,8854,3731,5564,5331,4294,3275,1972,1521,2377,3701,6462,6778,187,9778,758,550,7510,6225,8691,3666,4622,9722,8011,7247,575,5431,4777,4032,8682,5888,8047,3562,9462,6501,7855,505,4675,6973,493,1374,3227,1244,7364,2298,3244,8627,5102,6375,8653,1820,3857,7195,7830,4461,7821,5037,2918,4279,2791,1500,9858,6915,5156,970,1471,5296,1688,578,7266,4182,1430,4985,5730,7941,3880,607,8776,1348,2974,1094,6733,5177,4975,5421,8190,8255,9112,8651,2797,335,8677,3754,893,1818,8479,5875,1695,8295,7993,7037,8546,7906,4102,7279,1407,2462,4425,2148,2925,3903,5447,5893,3534,3663,8307,8679,8474,1202,3474,2961,1149,7451,4279,7875,5692,6186,8109,7763,7798,2250,2969,7974,9781,7741,4914,5446,1861,8914,2544,5683,8952,6745,4870,1848,7887,6448,7873,128,3281,794,1965,7036,8094,1211,9450,6981,4244,2418,8610,8681,2402,2904,7712,3252,5029,3004,5526,6965,8866,2764,600,631,9075,2631,3411,2737,2328,652,494,6556,9391,4517,8934,8892,4561,9331,1386,4636,9627,5435,9272,110,413,9706,5470,5008,1706,7045,9648,7505,6968,7509,3120,7869,6776,6434,7994,5441,288,492,1617,3274,7019,5575,6664,6056,7069,1996,9581,3103,9266,2554,7471,4251,4320,4749,649,2617,3018,4332,415,2243,1924,69,5902,3602,2925,6542,345,4657,9034,8977,6799,8397,1187,3678,4921,6518,851,6941,6920,259,4503,2637,7438,3893,5042,8552,6661,5043,9555,9095,4123,142,1446,8047,6234,1199,8848,5656,1910,3430,2843,8043,9156,7838,2332,9634,2410,2958,3431,4270,1420,4227,7712,6648,1607,1575,3741,1493,7770,3018,5398,6215,8601,6244,7551,2587,2254,3607,1147,5184,9173,8680,8610,1597,1763,7914,3441,7006,1318,7044,7267,8206,9684,4814,9748,4497,2239};
+		System.out.println(minSubArrayLen(697439,h));
+        
+        
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
