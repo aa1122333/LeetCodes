@@ -4158,6 +4158,40 @@ public class Solution {
         }
         return candy;
     }
+    //130. Surrounded Regions
+    public static void solve(char[][] board) {
+    	if(board.length==0||board[0].length==0) return ;
+    	
+        for(int i=0;i<board[0].length;i++){
+        		change(board, 0, i);
+        		change(board,board.length-1,i);
+        }
+        for(int i=0;i<board.length;i++){
+        	change(board,i,0);
+        	change(board,i,board[0].length-1);
+        }
+        for(int i=0;i<board.length;i++)
+        	for(int j=0;j<board[0].length;j++){
+        		if(board[i][j]=='*') board[i][j] = 'O';
+        		else board[i][j] = 'X';
+        	}
+        System.out.println();
+    }
+    
+    public static void change(char[][] board,int x,int y){
+    	if(x>=board.length || y>=board[0].length || x<0 || y<0 || board[x][y]=='X'||board[x][y]=='*') return ;
+    	board[x][y] = '*';
+    	
+    	if(x-1>0)
+    		change(board, x-1, y);
+    	if(y-1>0)
+    		change(board, x, y-1);
+    	if(x+1<board.length)
+    		change(board, x+1, y);
+    	if(y+1<board[0].length)
+    		change(board, x, y+1);
+    	
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -4490,8 +4524,13 @@ public class Solution {
 /*		int[] gas = {1};
 		int[]cost = {1};
 		System.out.println(canCompleteCircuit(gas,cost));*/
-
-		System.out.println(isUgly2(-1000));
+		char[][] s = {
+				{'O','O','X','X'},
+				{'O','X','O','X'},
+				{'X','O','O','X'},
+				{'X','X','X','X'}
+		};
+		solve(s);
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
