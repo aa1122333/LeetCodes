@@ -1,10 +1,12 @@
 package leetcodeTest;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -4808,6 +4810,107 @@ public class Solution {
     	return sum;
     }
     
+    //9. Palindrome Number
+    public static boolean isPalindrome(int x) {
+    	if(x<0) return false;
+    	int t = 0;
+    	int r = x;
+    	while(r>0){
+    		t = t*10+r%10;
+    		r/=10;
+    	}
+    	if(t==x) return true;
+        return false;
+    }
+    //239. Sliding Window Maximum
+    public static int[] maxSlidingWindow(int[] nums, int k) {
+    	if(nums.length==0 ||nums.length<k) return null;
+    	int [] sol = new int[nums.length-k+1];
+    	int max = nums[0];
+    	int index=0;
+    	int maxindex = 0;
+    	for(int i=0;i<k;i++){
+    		if(nums[i]>max){
+    			max = nums[i];
+    			maxindex = i;
+    		}
+    	}
+    	sol[index++] = max;
+    	for(int i=k;i<nums.length;i++){
+    		if(nums[i]>max){
+    			max = nums[i];
+    			maxindex = i;
+    		}
+    		else if(i-k>=maxindex){
+    			int maxt = nums[i-k+1];
+    			int maxindext = i-k+1;
+    			for(int j=i-k+1;j<=i;j++){
+    				if(nums[j]>maxt){
+    					maxt = nums[j];
+    					maxindext = j;
+    				}
+    			}
+    			max = maxt;
+    			maxindex = maxindext;
+    		}
+    		
+    		sol[index++] = max;
+    	}
+        return sol;
+    }
+    //88. Merge Sorted Array
+    public static void merge(int[] nums1, int m, int[] nums2, int n) {
+    	int i = m - 1, j = n - 1, p = m + n - 1;
+        while(i >= 0 && j >= 0) nums1[p --] = nums1[i] > nums2[j] ? nums1[i --] : nums2[j --];
+        while(j >= 0) nums1[p --] = nums2[j --]; 
+    }
+    //322. Coin Change
+    public static int coinChange(int[] coins, int amount) {
+        if(coins.length==0) return -1;
+        int [] dp = new int[amount+1];
+        int sum = 0;
+        Arrays.sort(coins);
+        while(++sum<=amount){
+        	int min = -1;
+        	for(int coin:coins){
+        		if(sum<coin)
+        			break;
+        		if(dp[sum-coin]!=-1){
+        			int tmp = dp[sum-coin]+1;
+        			min = min<0?tmp:tmp<min?tmp:min;
+        		}
+        	}
+        	dp[sum] = min;
+        }
+        return dp[amount];
+    }
+    //322-2
+    private static int currmax ;
+    public static int coinChange2(int[] coins, int amount){
+    	if (amount == 0) {
+            return 0;
+        }
+
+        if (coins == null || coins.length == 0) {
+            return -1;
+        }
+        currmax = Integer.MAX_VALUE;
+        Arrays.sort(coins);
+        dpAndcut(coins, coins.length-1, amount, 0);
+        if(currmax==Integer.MAX_VALUE) return -1;
+        return currmax;
+    }
+    public static void dpAndcut(int[]coins,int curindex,int left,int curr){
+    	if(curindex<0 || curr+left/coins[curindex] >= currmax) return ;
+    	if(left==coins[curindex]){
+    		currmax = curr+1;
+    		return;
+    	}
+    	if(left > coins[curindex]){
+    		dpAndcut(coins, curindex, left-coins[curindex], curr+1);
+    	}
+    	dpAndcut(coins, curindex-1, left, curr);
+    }
     
 	public static void main(String[] args) {
 		
@@ -5170,8 +5273,10 @@ public class Solution {
 		t.left.left.right = new TreeNode(2);
 		t.left.left.left = new TreeNode(7);
 		System.out.println(levelOrderBottom(t));*/
-
-		System.out.println(countTheTriangle(3));
+		int[] n = {1,2,3};
+		int []n2= {3,5,6,9,14,18,31,33,45};
+		
+		System.out.println(coinChange2(n,11));
 
 		
 		System.out.println();
