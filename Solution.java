@@ -4912,6 +4912,43 @@ public class Solution {
     	dpAndcut(coins, curindex-1, left, curr);
     }
     
+    //49. Group Anagrams
+    public List<List<String>> groupAnagrams(String[] strs) {
+    	List<List<String>> s = new ArrayList<List<String>>();
+    	if(strs.length==0) return s;
+    	List<HashMap<Character,Integer>> his = new ArrayList<HashMap<Character,Integer>>();
+    	List<String> str = new ArrayList<String>();
+    	for(int i=0;i<strs.length;i++){
+    		char [] t = strs[i].toCharArray();
+    		HashMap<Character,Integer> map = new HashMap<Character,Integer>();
+    		for(int j=0;j<t.length;j++){
+    			if(map.containsKey(t[j])){
+    				map.put(t[j], map.get(t[j])+1);
+    				boolean flag2 = false;
+    				for(int k=0;k<str.size();k++){
+    					if(str.get(k).equals(strs[i])){
+    						flag2 = true;
+    						break;
+    					}
+    				}
+    					
+    			}
+    			else {
+    				map.put(t[j], 1);
+    			}
+    		}
+    		boolean flag = false;
+    		for(int j=0;j<map.size();j++){
+    			if(map.equals(his.get(i))){
+    				flag = true;
+    				break;
+    			}
+    		}
+    		if(!flag)
+    			his.add(map);
+    	}
+        return null;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -5273,11 +5310,17 @@ public class Solution {
 		t.left.left.right = new TreeNode(2);
 		t.left.left.left = new TreeNode(7);
 		System.out.println(levelOrderBottom(t));*/
-		int[] n = {1,2,3};
-		int []n2= {3,5,6,9,14,18,31,33,45};
-		
-		System.out.println(coinChange2(n,11));
 
+		
+		HashMap<Character,Integer> s = new HashMap<Character,Integer>();
+		s.put('s', 1);
+		s.put('a', 2);
+		s.put('e', 5);
+		HashMap<Character,Integer> t = new HashMap<Character,Integer>();
+		t.put('s', 1);
+		t.put('a', 2);
+		t.put('e', 4);
+		System.out.println(t.equals(s));
 		
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
