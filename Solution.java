@@ -4913,41 +4913,119 @@ public class Solution {
     }
     
     //49. Group Anagrams
-    public List<List<String>> groupAnagrams(String[] strs) {
+    public static List<List<String>> groupAnagrams(String[] strs) {
     	List<List<String>> s = new ArrayList<List<String>>();
     	if(strs.length==0) return s;
-    	List<HashMap<Character,Integer>> his = new ArrayList<HashMap<Character,Integer>>();
-    	List<String> str = new ArrayList<String>();
+    	HashMap<String,List<String>> map = new HashMap<String,List<String>>();
     	for(int i=0;i<strs.length;i++){
-    		char [] t = strs[i].toCharArray();
-    		HashMap<Character,Integer> map = new HashMap<Character,Integer>();
-    		for(int j=0;j<t.length;j++){
-    			if(map.containsKey(t[j])){
-    				map.put(t[j], map.get(t[j])+1);
-    				boolean flag2 = false;
-    				for(int k=0;k<str.size();k++){
-    					if(str.get(k).equals(strs[i])){
-    						flag2 = true;
-    						break;
-    					}
-    				}
-    					
-    			}
-    			else {
-    				map.put(t[j], 1);
-    			}
+    		String tmp = strs[i];
+    		char[] chartmp = tmp.toCharArray();
+    		Arrays.sort(chartmp);
+    		tmp = String.valueOf(chartmp);
+    		List<String> list = null;
+    		if(map.containsKey(tmp)){
+    			list = map.get(tmp);
     		}
-    		boolean flag = false;
-    		for(int j=0;j<map.size();j++){
-    			if(map.equals(his.get(i))){
-    				flag = true;
-    				break;
-    			}
-    		}
-    		if(!flag)
-    			his.add(map);
+    		else list = new ArrayList<String>();
+    		list.add(strs[i]);
+    		map.put(tmp, list);
     	}
-        return null;
+    	for(List<String> list:map.values()){
+    		Collections.sort(list);
+    		s.add(list);
+    	}
+    	
+        return s;
+    }
+    
+    //49-2
+    public static List<List<String>> groupAnagrams2(String[] strs) {
+    	int[] prime = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103};
+    	List<List<String>> sol = new ArrayList<>();
+    	HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();
+    	for(String str:strs){
+    		int key = 1;
+    		for(char c :str.toCharArray()){
+    			key*=prime[c-'a'];
+    		}
+    		List<String> list = null;
+    		if(map.containsKey(key)){
+    			list = sol.get(map.get(key));
+    		}
+    		else {
+    			list = new ArrayList<String>();
+    			sol.add(list);
+    			map.put(key, sol.size()-1);
+    		}
+    		list.add(str);
+    	}
+    	return sol;
+    }
+    
+    //41. First Missing Positive
+    public static int firstMissingPositive(int[] nums) {
+        if(nums.length==0) return 0;
+        int max = Integer.MIN_VALUE;
+        for(int n:nums){
+        	max=Math.max(max, n);
+        }
+        byte [] num = new byte[max+1];
+        for(int n:nums){
+        	if(n<0) continue;
+        	num[n] = 1;
+        }
+        for(int i=1;i<max;i++){
+        	if(num[i]==0)
+        		return i;
+        }
+        return max+1;
+    }
+    //1. Two Sum
+    public static int[] twoSum(int[] nums, int target) {
+        if(nums.length==0) return new int[0];
+        int []unsorted = new int[nums.length];
+        for(int i=0;i<nums.length;i++)
+        	unsorted[i] = nums[i];
+        Arrays.sort(nums);
+        int low = 0;
+        int high = nums.length-1;
+        while(low<high && low<nums.length && high>=0){
+        	if(nums[low]+nums[high]>target)
+        		high--;
+        	else if(nums[low]+nums[high]<target)
+        		low++;
+        	else {
+        		int[] n = {-1,-1};
+        		
+        		for(int i=0;i<unsorted.length;i++){
+        			if(unsorted[i]==nums[low] && n[0]==-1){ n[0] = i;unsorted[i]=Integer.MIN_VALUE;}
+        			if(unsorted[i]==nums[high] && n[1]==-1) { n[1] = i;unsorted[i]=Integer.MIN_VALUE;}
+        			if(n[0]!=-1 &&n[1]!=-1) break;
+        		}
+        		 Arrays.sort(n);
+        		 return n;
+        	}
+        }
+        return new int[0];
+    }
+    //206. Reverse Linked List
+    public static ListNode reverseList(ListNode head) {
+        if(head == null) return null;
+        if(head.next==null) return head;
+        ListNode newList = null;
+        while(head.next!=null){
+        	ListNode n = head.next;
+        	head.next = newList;
+        	newList = head;
+        	head = n;
+        }
+        head.next = newList;
+    	newList = head;
+    	return newList;
+    }    
+    //132. Palindrome Partitioning II
+    public static int minCut(String s) {
+        
     }
 	public static void main(String[] args) {
 		
@@ -5311,17 +5389,19 @@ public class Solution {
 		t.left.left.left = new TreeNode(7);
 		System.out.println(levelOrderBottom(t));*/
 
+		/*String [] s = {
+				"eat", "tea", "tan", "ate", "nat", "bat"
+		};*/
+		ListNode root = new ListNode(1);
+		root.next = new ListNode(2);
+		root.next.next = new ListNode(3);
+		root.next.next.next= new ListNode(4);
+		root.next.next.next.next = new ListNode(5);
+		root.next.next.next.next.next = new ListNode(6);
+		ListNode t = null;
+		t  = reverseList(root);
 		
-		HashMap<Character,Integer> s = new HashMap<Character,Integer>();
-		s.put('s', 1);
-		s.put('a', 2);
-		s.put('e', 5);
-		HashMap<Character,Integer> t = new HashMap<Character,Integer>();
-		t.put('s', 1);
-		t.put('a', 2);
-		t.put('e', 4);
-		System.out.println(t.equals(s));
-		
+		System.out.println();
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
