@@ -5025,7 +5025,120 @@ public class Solution {
     }    
     //132. Palindrome Partitioning II
     public static int minCut(String s) {
+    	char[] c = s.toCharArray();
+        int n = c.length;
+        int[] cut = new int[n];
+        boolean[][] pal = new boolean[n][n];
+
+        for(int i = 0; i < n; i++) {
+            int min = i;
+            for(int j = 0; j <= i; j++) {
+                if(c[j] == c[i] && (j + 1 > i - 1 || pal[j + 1][i - 1])) {
+                    pal[j][i] = true;  
+                    min = j == 0 ? 0 : Math.min(min, cut[j - 1] + 1);
+                }
+            }
+            cut[i] = min;
+        }
+        return cut[n - 1];
+    }
+    //179. Largest Number
+    public static PriorityQueue<Integer> max = new PriorityQueue<Integer>(111,new Comparator<Integer>() {
+
+		@Override
+		public int compare(Integer o1, Integer o2) {
+			// TODO Auto-generated method stub
+			if(o1.equals(o2)) return 0;
+			String a1 = String.valueOf(o1);
+			String a2 = String.valueOf(o2);
+			
+			int i = 0;
+			while(i<a1.length() && i<a2.length() && a1.charAt(i)==a2.charAt(i)  )
+				i++;
+			if(i==a1.length() && i!=a2.length()) return -1;
+			else if(i==a2.length() && i!=a1.length()) return 1;
+			else return a2.charAt(i)-a1.charAt(i);
+			
+		}
+		
+	});
+    public static String largestNumber(int[] nums) {
+    	String [] strs = new String[nums.length];
+    	for(int i=0;i<nums.length;i++)
+    		strs[i] = String.valueOf(nums[i]);
+    	Arrays.sort(strs,(str1,str2)->(str1+str2).compareTo(str2+str1));
+    	 if(strs[0].equals("0")) return "0";
+    	StringBuffer sb = new StringBuffer();
+    	for(String st:strs)
+    		sb.append(st);
+        return sb.toString();
         
+    }
+    //336. Palindrome Pairs
+    public static boolean isPalindrome_336(String s){
+    	int i=0;
+    	int j=s.length()-1;
+    	while(i<=j){
+    		if(s.charAt(i)!=s.charAt(j))
+    			return false;
+    		i++;
+    		j--;
+    	}
+    	return true;
+    }
+    
+    public static String reversestr(String str){
+    	StringBuffer sb = new StringBuffer(str);
+    	return sb.reverse().toString();
+    }
+    
+    public static List<List<Integer>> palindromePairs(String[] words) {
+        List<List<Integer>> sol = new ArrayList<List<Integer>>();
+        if(words==null || words.length==0)
+        	return sol;
+        HashMap<String,Integer> map = new HashMap<>();
+        for(int i=0;i<words.length;i++)
+        	map.put(words[i], i);
+        if(map.containsKey("")){
+        	int blank = map.get("");
+        	for(int i=0;i<words.length;i++){
+        		if(isPalindrome_336(words[i])){
+        			if(i==blank) continue;
+        			sol.add(Arrays.asList(blank,i));
+        			sol.add(Arrays.asList(i,blank));
+        		}
+        	}
+        }
+        for(int i=0;i<words.length;i++){
+        	String curr = reversestr(words[i]);
+        	if(map.containsKey(curr)){
+        		int tmp = map.get(curr);
+        		if(tmp==i) continue;
+        		sol.add(Arrays.asList(i,tmp));
+        	}
+        }
+        for(int i=0;i<words.length;i++){
+        	String curr = words[i];
+        	for(int b = 1;b<curr.length();b++){
+        		if(isPalindrome_336(curr.substring(0, b))){
+        			String cutb = reversestr(curr.substring(b));
+        			if(map.containsKey(cutb)){
+        				int found = map.get(cutb);
+        				if(found == i) continue;
+        				sol.add(Arrays.asList(found,i));
+        			}
+        		}
+        		if(isPalindrome_336(curr.substring(b))){
+        			String cutb = reversestr(curr.substring(0, b));
+        			if(map.containsKey(cutb)){
+        				int found = map.get(cutb);
+        				if(found==i) continue;
+        				sol.add(Arrays.asList(i,found));
+        			}
+        		}
+        	}
+        }
+        return sol;
     }
 	public static void main(String[] args) {
 		
@@ -5392,15 +5505,16 @@ public class Solution {
 		/*String [] s = {
 				"eat", "tea", "tan", "ate", "nat", "bat"
 		};*/
-		ListNode root = new ListNode(1);
+		/*ListNode root = new ListNode(1);
 		root.next = new ListNode(2);
 		root.next.next = new ListNode(3);
 		root.next.next.next= new ListNode(4);
 		root.next.next.next.next = new ListNode(5);
 		root.next.next.next.next.next = new ListNode(6);
 		ListNode t = null;
-		t  = reverseList(root);
-		
+		t  = reverseList(root);*/
+		String[] n = {"abcd","dcba","lls","s","sssll"};
+		System.out.println(palindromePairs(n));
 		System.out.println();
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
