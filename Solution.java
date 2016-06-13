@@ -5066,7 +5066,7 @@ public class Solution {
     	String [] strs = new String[nums.length];
     	for(int i=0;i<nums.length;i++)
     		strs[i] = String.valueOf(nums[i]);
-    	Arrays.sort(strs,(str1,str2)->(str1+str2).compareTo(str2+str1));
+    	//Arrays.sort(strs,(str1,str2)->(str1+str2).compareTo(str2+str1));
     	 if(strs[0].equals("0")) return "0";
     	StringBuffer sb = new StringBuffer();
     	for(String st:strs)
@@ -5139,6 +5139,67 @@ public class Solution {
         	}
         }
         return sol;
+    }
+    //3. Longest Substring Without Repeating Characters
+    public static int lengthOfLongestSubstring(String s) {
+    	char[] str = s.toCharArray();
+    	HashMap<Character,Integer> map = new HashMap<>();
+    	int sum = 0;
+    	int tsum=0;
+    	for(int i=0;i<str.length;i++){
+    		if(!map.containsKey(str[i])){
+    			map.put(str[i],i);
+    			tsum++;
+    		}
+    		else if(map.containsKey(str[i])){
+    			if(tsum>sum)
+    				sum = tsum;
+    			i = map.get(str[i]);
+    			tsum = 0;
+    			map.clear();
+    		}
+    	}
+    	if(tsum>sum)
+    		sum = tsum;
+        return sum;
+    } 
+    
+    //3-2
+    public static int lengthOfLongestSubstring2(String s) {
+    	int max = 0;
+    	Deque<Character> dq = new ArrayDeque<Character>();
+    	char[]str = s.toCharArray();
+    	for(int i=0;i<str.length;i++){
+    		if(dq.contains(str[i])){
+    			if(dq.size()>max)
+    				max = dq.size();
+    			while(dq.peekFirst()!=str[i])
+    				dq.removeFirst();
+    			dq.removeFirst();
+    			dq.addLast(str[i]);
+    		}
+    		else {
+    			dq.addLast(str[i]);
+    		}
+    	}
+    	if(dq.size()>max)
+    		max = dq.size();
+    	return max;
+    }
+    //3-3
+    public static int lengthOfLongestSubstring3(String s) {
+	    int[] map = new int[128];
+	    int max = 0, j = 0;
+	    char[] str = s.toCharArray();
+	    int length = s.length();
+	
+	    for(int i = 0; i < length; i++) {
+	        if(map[str[i]] > 0)
+	            j =  Math.max(j, map[str[i]]);
+	        map[str[i]] = i + 1;
+	        max = Math.max(max, i - j + 1);
+	    }
+	    return max;
     }
 	public static void main(String[] args) {
 		
@@ -5513,8 +5574,9 @@ public class Solution {
 		root.next.next.next.next.next = new ListNode(6);
 		ListNode t = null;
 		t  = reverseList(root);*/
-		String[] n = {"abcd","dcba","lls","s","sssll"};
-		System.out.println(palindromePairs(n));
+/*		String[] n = {"abcd","dcba","lls","s","sssll"};
+		System.out.println(palindromePairs(n));*/
+		System.out.println(lengthOfLongestSubstring2("bpfbhmipx"));
 		System.out.println();
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
