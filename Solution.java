@@ -5201,6 +5201,39 @@ public class Solution {
 	    }
 	    return max;
     }
+    //83. Remove Duplicates from Sorted List
+    public static ListNode deleteDuplicates(ListNode head) {
+        if(head==null) return null;
+        if(head.next==null) return head;
+        ListNode t = head;
+        while(head.next!=null){
+        	ListNode next = head.next;
+        	if(head.val==next.val){
+        		head.next=next.next;
+        	}
+        	else head = head.next;
+        }
+        return t;
+    }
+    //38. Count and Say
+    public static String countAndSay(int n) {
+        
+        StringBuffer sb = new StringBuffer("1");
+        for(int j=1;j<n;j++){
+        	StringBuffer tb = new StringBuffer();
+        	int curr = sb.charAt(0);
+        	int length = 1;
+	        for(int i=1;i<sb.length();i++){
+	        	if(curr!=sb.charAt(i)){
+	        		sb.append((char)length+curr);
+	        	}
+	        	else 
+	        		length++;
+	        }
+	        sb = tb;
+        }
+        return sb.toString();
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -5576,8 +5609,13 @@ public class Solution {
 		t  = reverseList(root);*/
 /*		String[] n = {"abcd","dcba","lls","s","sssll"};
 		System.out.println(palindromePairs(n));*/
-		System.out.println(lengthOfLongestSubstring2("bpfbhmipx"));
-		System.out.println();
+/*		ListNode root = new ListNode(1);
+		root.next = new ListNode(1);
+		root.next.next = new ListNode(1);
+		root.next.next.next= new ListNode(4);
+		root.next.next.next.next = new ListNode(4);
+		root.next.next.next.next.next = new ListNode(6);*/
+		System.out.println(countAndSay(5));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
