@@ -5047,7 +5047,7 @@ public class Solution {
 
 		@Override
 		public int compare(Integer o1, Integer o2) {
-			// TODO Auto-generated method stub
+			
 			if(o1.equals(o2)) return 0;
 			String a1 = String.valueOf(o1);
 			String a2 = String.valueOf(o2);
@@ -5234,6 +5234,34 @@ public class Solution {
         }
         return sb.toString();
     }
+    //45. Jump Game II
+    public static int jump(int[] nums) {
+       if(nums.length==1)
+    	   return 0;
+       int jump = 1;
+       int target = nums.length-1;
+       int max = nums[0];
+       if(max>=target)
+    	   return jump;
+       int pre = 0;
+       int next;
+       for(int i=1;i<nums.length;i++){
+    	   next = i+nums[i];
+    	   if(next>max){
+    		   if(i>pre){
+    			   jump++;
+    			   pre = max;
+    		   }
+    		   max = next;
+    		   if(max>=target){
+    			   return jump;
+    		   }
+    	   }
+       }
+       return jump;
+    }
+    //338. Counting Bits
+    
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -5615,7 +5643,8 @@ public class Solution {
 		root.next.next.next= new ListNode(4);
 		root.next.next.next.next = new ListNode(4);
 		root.next.next.next.next.next = new ListNode(6);*/
-		System.out.println(countAndSay(5));
+		int [] s = {2,1,1,1,2,1,4};
+		System.out.println(jump(s));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
