@@ -5409,6 +5409,184 @@ public class Solution {
     	}
     	return true;
     }
+    //126. Word Ladder II
+    public static List<List<String>> findLadders3(String beginWord, String endWord, Set<String> wordList) {
+        Set<String> fwd = new HashSet<String>();
+        fwd.add(beginWord);
+        Set<String> bwd = new HashSet<String>();
+        bwd.add(endWord);
+        Map<String,List<String>> hs = new HashMap<String,List<String>>();
+        bfs(fwd, bwd, wordList, false, hs);
+        List<List<String>> result = new ArrayList<List<String>>();
+        if(!isConnected) return result;
+        List<String> tmp = new ArrayList<String>();
+        tmp.add(beginWord);
+        dfs_126(result, tmp, beginWord, endWord, hs);
+        return result;
+    }   
+    static boolean isConnected = false;
+    public static void bfs(Set<String> forward,Set<String> backward,Set<String> dict,boolean swap,Map<String,List<String>> hs){
+    	if(forward.isEmpty() || backward.isEmpty()){
+    		return ;
+    	}
+    	
+    	if(forward.size()>backward.size()){
+    		bfs(backward, forward, dict, !swap, hs);
+    		return ;
+    	}
+    	
+    	dict.removeAll(forward);
+    	dict.removeAll(backward);
+    	Set<String> set3 = new HashSet<String>();
+    	
+    	for(String str:forward){
+    		for(int i=0;i<str.length();i++){
+    			char[] ary = str.toCharArray();
+    			for(char j='a';j<='z';j++){
+    				ary[i] = j;
+    				String tmp = new String(ary);
+    				if(!backward.contains(tmp) && !dict.contains(tmp)){
+    					continue;
+    				}
+    				
+    				String key = !swap?str:tmp;
+    				String val = !swap?tmp:str;
+    				if(!hs.containsKey(key)) hs.put(key, new ArrayList<String>());
+    				if(backward.contains(tmp)){
+    					hs.get(key).add(val);
+    					isConnected = true;
+    				}
+    				if(!isConnected && dict.contains(tmp)){
+    					hs.get(key).add(val);
+    					set3.add(tmp);
+    				}
+    			}
+    		}
+    	}
+    	if(!isConnected){
+    		bfs(set3, backward, dict, swap, hs);
+    	}
+    }
+    
+    public static void dfs_126(List<List<String>> result,List<String> tmp,String start,String end,Map<String,List<String>> hs){
+    	if(start.equals(end)){
+    		result.add(new ArrayList<String>(tmp));
+    		return ;
+    	}
+    	
+    	if(!hs.containsKey(start)){
+    		return ;
+    	}
+    	for(String s:hs.get(start)){
+    		tmp.add(s);
+    		dfs_126(result, tmp, s, end, hs);
+    		tmp.remove(tmp.size()-1);
+    	}
+    }
+    //76. Minimum Window Substring
+    public static String minWindow(String s, String t) {
+    	char[] s_array = s.toCharArray();
+        char[] t_array = t.toCharArray();
+        int[] map = new int[256];
+        int end = 0;
+        int start = 0;
+        int min_length = Integer.MAX_VALUE;
+        for(int i = 0; i < t_array.length; i++)
+            map[t_array[i]] ++;
+        int count = t_array.length;
+        int min_start = 0;
+        while(end < s_array.length)
+        {
+            if(map[s_array[end]] > 0)
+            {
+                count--;
+            }
+            map[s_array[end]] --;
+            while(count == 0)
+            {
+                if((end - start + 1) < min_length)
+                {
+                    min_length = end - start + 1;
+                    min_start = start;
+                }
+                map[s_array[start]] ++;
+                if(map[s_array[start]] > 0){
+                    count ++;
+                }
+                start++;
+            }
+            end ++;
+
+        }
+        if( min_start+min_length > s_array.length)
+            return "";
+        return s.substring(min_start, min_start+min_length);
+    }
+    //268. Missing Number
+    public static int missingNumber(int[] nums) {
+    	if(nums.length==0) return 0;
+    	if(nums.length==1) {
+    		if(nums[0]==1) return 0;
+    		if(nums[0]==0) return 1;
+    	}
+    	Arrays.sort(nums);
+        return findmissing(0, nums.length-1, nums);
+    }
+    
+    public static int findmissing(int start,int end,int[] nums){
+    	if(start+1==end){
+    		if(nums[start]+1==nums[end]){
+    			if(end==nums[end])
+    				return end+1;
+    			else 
+    				return nums[start]-1;
+    		}
+    		else 
+    			return start+1;
+    	}
+    	int index = (start+end+1)/2;
+    	if(index!=nums[index]){
+    		return findmissing(start, index, nums);
+    	}
+    	else {
+    		return findmissing(index, end, nums);
+    	}
+    }
+    //268-2
+    public static int missingNumber2(int[] nums) {
+    	int curr = nums.length;
+    	for(int i=0;i<nums.length;i++){
+    		if(nums[i]!=i){
+    			int t = nums[i];
+    			while(t!=i){
+    				if(t==nums.length){
+    					nums[i] = t;
+    					curr = i;
+    					break;
+    				}
+    				int tmp = nums[t];
+    				nums[t] = t;
+    				t = tmp;
+    			}
+    			
+    		}
+    	}
+    	return curr;
+    }
+    //268-3
+    public int missingNumber3(int[] nums) {
+        int sum = 0, i = 0;
+
+        for (; i < nums.length; i++)
+            sum = sum + i - nums[i];
+
+        return (sum + i);
+    }
+    //31. Next Permutation
+    public void nextPermutation(int[] nums) {
+        
+
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -5800,6 +5978,19 @@ public class Solution {
 		System.out.println(findLadders("hot","dog",set));*/
 		/*System.out.println(isInterleave("aabcc","dbbca","aadbbcbcac"));*/
 		System.out.println(isIsomorphic("title","plptl"));
+
+/*		Set<String> s1 = new HashSet<String>();
+		s1.add("hit");
+		
+		s1.add("hot");
+		s1.add("dot");
+		s1.add("lot");
+		s1.add("log");
+		s1.add("dog");*/
+		/*System.out.println(minWindow("ADOBECODEBANC","ABC"));*/
+		int [] s = {4,3,1,5,2,6};
+		System.out.println(missingNumber2(s));
+
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
