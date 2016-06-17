@@ -5261,7 +5261,154 @@ public class Solution {
        return jump;
     }
     //338. Counting Bits
+    public static int[] countBits(int num) {
+    	int s[] = new int[num+1];
+    	int curr = 2;
+        for(int i=1;i<=num;i++){
+        	if(i>=curr){
+        		curr=curr<<1;
+        	}
+        	if(i%2==1){
+        		s[i]=s[i/2]+1;
+        	}
+        	else {
+        		s[i]=s[i/2];
+        	}
+        }
+        return s;
+    }
+    //126. Word Ladder II
+    public static List<List<String>> findLadders(String beginWord, String endWord, Set<String> wordList) {
+    	List<List<String>> s = new ArrayList<List<String>>();
+    	List<String> curr = new ArrayList<String>();
+    	curr.add(beginWord);
+    	Set<String> visited = new HashSet<String>();
+        bfs(beginWord, endWord, curr, s, wordList,visited);
+        return s;
+    }
     
+    public static void bfs(String begin,String end,List<String> curr,List<List<String>> sol,Set<String> list,Set<String> visited){
+    	if(onlyOneChange(begin, end)){
+    		curr.add(end);
+    		if(sol.size()!=0){
+	    		if(sol.get(0).size()==curr.size()){
+		    		sol.add(new ArrayList<String>(curr));
+	    		}
+	    		else if(sol.get(0).size()>curr.size()){
+	    			for(int i=0;i<sol.size();i++)
+	    				sol.remove(i);
+	    			sol.add(new ArrayList<String>(curr));
+	    		}
+    		}
+    		else {
+    			sol.add(new ArrayList<String>(curr));
+    		}
+    		curr.remove(curr.size()-1);
+    		return ;
+    	}
+    	for(String curstr:list){
+    		if(!visited.contains(curstr) && onlyOneChange(begin, curstr)){
+    			visited.add(curstr);
+    			curr.add(curstr);
+    			bfs(curstr, end, curr, sol,list,visited);
+    			curr.remove(curr.size()-1);
+    			visited.remove(curstr);
+    		}
+    	}
+    }
+    
+    public static boolean onlyOneChange(String s1,String s2){
+    	char[] c1 = s1.toCharArray();
+    	char[] c2 = s2.toCharArray();
+    	int dif = 0;
+    	for(int i=0;i<s1.length();i++){
+    		if(c1[i]!=c2[i]){
+    			dif++;
+    		}
+    		if(dif>1)
+    			return false;
+    	}
+    	if(dif==1)
+    		return true;
+    	else return false;
+    }
+    //97. Interleaving String
+    public static boolean isInterleave(String s1, String s2, String s3) {
+        int l1 = s1.length();
+        int l2 = s2.length();
+        if(l1+l2!=s3.length())
+        	return false;
+        boolean [][]map = new boolean [l1+1][l2+1];
+        char[] str1 = s1.toCharArray();
+        char[] str2 = s2.toCharArray();
+        char[] str3 = s3.toCharArray();
+        for(int i=0;i<l1+1;i++){
+        	for(int j=0;j<l2+1;j++){
+        		if(i==0&&j==0)
+        			map[i][j] = true;
+        		else if(i==0)
+        			map[i][j] = (map[i][j-1] && (str2[j-1]==str3[i+j-1]));
+        		else if(j==0)
+        			map[i][j] = (map[i-1][j] && (str1[i-1]==str3[i+j-1]));
+        		else 
+        			map[i][j] = ((map[i][j-1] && (str2[j-1]==str3[i+j-1]) )||(map[i-1][j] && (str1[i-1]==str3[i+j-1])));
+        	}
+        }
+        return map[l1][l2];
+    }
+    //97-2
+    public boolean isInterleave2(String s1, String s2, String s3) {
+        int l1 = s1.length();
+        int l2 = s2.length();
+        int l3 = s3.length();
+        if (l1 + l2 != l3) {
+            return false;
+        }
+        if (l1 > l2) return isInterleave(s2, s1, s3);
+        boolean[] dp = new boolean[l1 + 1];
+        char[] v1 = s1.toCharArray();
+        char[] v2 = s2.toCharArray();
+        char[] v3 = s3.toCharArray();
+        dp[0] = true;
+        for (int j = 0; j < l1; j++) {
+            dp[j + 1] = dp[j] && v1[j] == v3[j];
+        }
+        for (int i = 0; i < l2; i++) {
+            dp[0] = dp[0] && v2[i] == v3[i];// initialize the first column in each row
+            for (int j = 0; j < l1; j++) {
+                int index = i + j + 1;
+                dp[j + 1] = (dp[j] && v1[j] == v3[index]) || (dp[j + 1] && v2[i] == v3[index]);
+            }
+        }
+        return dp[l1];
+    }
+    //205. Isomorphic Strings
+    public static boolean isIsomorphic(String s, String t) {
+    	if(s.length()!=t.length()) return false;
+    	if(s.length()==0 || t.length()==0){
+    		if(s.length()==0 && t.length()==0) return true;
+    		else return false;
+    	}
+    	HashMap<Character,Integer> map1 = new HashMap<Character,Integer>();
+    	HashMap<Character,Integer> map2 = new HashMap<Character,Integer>();
+    	char[]s1 = s.toCharArray();
+    	char[]s2 = t.toCharArray();
+    	for(int i=0;i<s.length();i++){
+    		int q ;
+    		int p ;
+    		if(!map1.containsKey(s1[i])){
+    			map1.put(s1[i], map1.size());
+    		}
+    		if(!map2.containsKey(s2[i])){
+    			map2.put(s2[i], map2.size());
+    		}
+    		q=map1.get(s1[i]);
+    		p=map2.get(s2[i]);
+    		if(q!=p)
+    			return false;
+    	}
+    	return true;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -5643,8 +5790,16 @@ public class Solution {
 		root.next.next.next= new ListNode(4);
 		root.next.next.next.next = new ListNode(4);
 		root.next.next.next.next.next = new ListNode(6);*/
-		int [] s = {2,1,1,1,2,1,4};
-		System.out.println(jump(s));
+		/*Set<String> set = new HashSet<String>();
+		
+		set.add("hot");
+		set.add("dog");
+		set.add("cog");
+		set.add("pot");
+		set.add("dot");
+		System.out.println(findLadders("hot","dog",set));*/
+		/*System.out.println(isInterleave("aabcc","dbbca","aadbbcbcac"));*/
+		System.out.println(isIsomorphic("title","plptl"));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
