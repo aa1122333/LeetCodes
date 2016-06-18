@@ -5409,6 +5409,26 @@ public class Solution {
     	}
     	return true;
     }
+    //205-2
+    public static boolean isIsomorphic2(String s, String t) {
+    	int m = s.length();
+        if (m <= 1) {
+            return true;
+        }
+        int[] sToT = new int[256];
+        int[] tToS = new int[256];
+        char[] sValue = s.toCharArray();
+        char[] tValue = t.toCharArray();
+        for (int i = 0; i < m; i++) {
+            if (sToT[sValue[i]] == 0 && tToS[tValue[i]] == 0) {
+                sToT[sValue[i]] = tValue[i];
+                tToS[tValue[i]] = sValue[i];
+            } else if (sToT[sValue[i]] != tValue[i] || tToS[tValue[i]] != sValue[i]) {
+                return false;
+            } 
+        }
+        return true;
+    }
     //126. Word Ladder II
     public static List<List<String>> findLadders3(String beginWord, String endWord, Set<String> wordList) {
         Set<String> fwd = new HashSet<String>();
@@ -5583,9 +5603,81 @@ public class Solution {
         return (sum + i);
     }
     //31. Next Permutation
-    public void nextPermutation(int[] nums) {
-        
-
+    public static void nextPermutation(int[] nums) {
+        int i = nums.length-2;
+        for(;i>=0&& nums[i]>=nums[i+1];i--)
+        	;
+        if(i>=0){
+        	int j = i+1;
+        	for(;j<nums.length && nums[i]<nums[j];j++)
+        		;
+        	swap(nums,i,j-1);
+        }
+        i++;
+        int k = nums.length-1;
+        for(;i<k;i++,k--)
+        	swap(nums,i,k);
+    }
+    
+    public static void swap(int [] nums,int i,int j){
+    	int t = nums[i];
+    	nums[i] = nums[j];
+    	nums[j] = t;
+    }
+    //224. Basic Calculator
+    public static int calculate_224(String s) {
+        int []sol = new int[2];
+        sol = cal(s.toCharArray(), 0);
+        return sol[0];
+    }
+    
+    public static int[] cal(char[] s,int start){
+    	int [] tmp = new int[2];
+    	int i = start;
+    	int sum = 0;
+    	int sign = 1;
+    	while(i<s.length){
+    		if(s[i]-'0'>=0 && s[i]-'0'<=9){
+    			int curr = 0;
+    			while(i<s.length && s[i]-'0'>=0 && s[i]-'0'<=9){
+    				curr =curr*10 + s[i]-'0';
+    				i++;
+    			}
+    			sum += sign*curr;
+    			continue;
+    		}
+    		if(s[i]==' '){
+    			i++;
+    			continue;
+    		}
+    		if(s[i]=='+'){
+    			i++;
+    			sign = 1;
+    			continue;
+    		}
+    		if(s[i]=='-'){
+    			i++;
+    			sign = -1;
+    			continue;
+    		}
+    		if(s[i]=='('){
+    			int[] t = new int[2];
+    			t = cal(s, i+1);
+    			sum += sign * t[0];
+    			i = t[1]+1;
+    			continue;
+    		}
+    		if(s[i]==')'){
+    			int []t = new int[2];
+    			t[0] = sum;
+    			t[1] = i;
+    			return t;
+    		}
+    			
+    	}
+    	tmp[0]=sum;
+    	tmp[1]=i;
+    	return tmp;
     }
 	public static void main(String[] args) {
 		
@@ -5977,7 +6069,7 @@ public class Solution {
 		set.add("dot");
 		System.out.println(findLadders("hot","dog",set));*/
 		/*System.out.println(isInterleave("aabcc","dbbca","aadbbcbcac"));*/
-		System.out.println(isIsomorphic("title","plptl"));
+/*		System.out.println(isIsomorphic2("title","plpty"));*/
 
 /*		Set<String> s1 = new HashSet<String>();
 		s1.add("hit");
@@ -5988,9 +6080,11 @@ public class Solution {
 		s1.add("log");
 		s1.add("dog");*/
 		/*System.out.println(minWindow("ADOBECODEBANC","ABC"));*/
-		int [] s = {4,3,1,5,2,6};
-		System.out.println(missingNumber2(s));
-
+/*		int [] s = {4,3,1,5,2,6};
+		System.out.println(missingNumber2(s));*/
+/*		int [] nums = {3,2,1,4,5,3,3,2,4,2,1,4};
+		nextPermutation(nums);*/
+		System.out.println(calculate_224("2147483647"));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
