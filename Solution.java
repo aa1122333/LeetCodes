@@ -5679,6 +5679,82 @@ public class Solution {
     	tmp[1]=i;
     	return tmp;
     }
+    //227. Basic Calculator II
+    public static int calculate_227(String s) {
+        int pre = 0 ,curr = 0,sign = 1,num = 0;
+        char op = '+';
+        for(int i=0;i<s.length();i++){
+        	char c = s.charAt(i);
+        	if(Character.isDigit(c)){
+        		num = num*10+c-'0';
+        		if(i==s.length()-1 || !Character.isDigit(s.charAt(i+1))){
+        			switch(op){
+        			case '+':curr = num;break;
+        			case '-':curr = num;break;
+        			case '*':curr = curr * num;break;
+        			case '/':curr = curr / num;break;
+        			}
+        		}
+        	}
+        	else if(c=='+'||c=='-'||c=='*'||c=='/'){
+        		op = c;
+        		num = 0;
+        		if(c=='+'||c=='-'){
+        			pre +=sign*curr;
+        			sign = c=='+'?1:-1;
+        		}
+        	}
+        }
+        return pre + sign*curr;
+    }
+    //95. Unique Binary Search Trees II
+    public static List<TreeNode> generateTrees(int n) {
+    	if(n==0) return new ArrayList<TreeNode>();
+        return genTree(1, n);
+    }
+    
+    public static List<TreeNode> genTree(int start,int end){
+    	List<TreeNode> list = new ArrayList<TreeNode>();
+    	if(start>end){
+    		list.add(null);
+    		return list;
+    	}
+    	if(start == end){
+    		list.add(new TreeNode(start));
+    		return list;
+    	}
+    	List<TreeNode> left,right;
+    	for(int i=start;i<=end;i++){
+    		left = genTree(start, i-1);
+    		right = genTree(i+1, end);
+    		for(TreeNode l:left){
+    			for(TreeNode r:right){
+    				TreeNode root = new TreeNode(i);
+    				root.left = l;
+    				root.right = r;
+    				list.add(root);
+    			}
+    		}
+    	}
+    	return list;
+    }
+    //162. Find Peak Element
+    public static int findPeakElement(int[] nums) {
+        int length = nums.length;
+        if(length==0) return -1;
+        int l = 0;
+        int r = length-1;
+        while(l<=r){
+        	if(l==r)
+        		return l;
+        	int mid = (l+r)/2;
+        	if(nums[mid]<nums[mid+1])
+        		l = mid+1;
+        	else r = mid;
+        }
+        return -1;
+
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -6084,7 +6160,8 @@ public class Solution {
 		System.out.println(missingNumber2(s));*/
 /*		int [] nums = {3,2,1,4,5,3,3,2,4,2,1,4};
 		nextPermutation(nums);*/
-		System.out.println(calculate_224("2147483647"));
+		int [] s = {1,2,3,2,6,5,4,3};
+		System.out.println(findPeakElement(s));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
