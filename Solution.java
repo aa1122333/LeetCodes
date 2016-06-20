@@ -22,6 +22,7 @@ import java.util.TreeSet;
 
 import javax.management.Query;
 import javax.swing.text.AbstractDocument.BranchElement;
+import javax.swing.text.StyledEditorKit.UnderlineAction;
 import javax.swing.text.html.HTMLDocument.Iterator;
 
 public class Solution {
@@ -5755,6 +5756,176 @@ public class Solution {
         return -1;
 
     }
+    //300. Longest Increasing Subsequence
+    public static int lengthOfLIS(int[] nums) {
+        int length = nums.length;
+        if(length==0) return 0;
+        int []dp = new int[nums.length+1];
+        dp[0] = 1;
+        int max = 1;
+        for(int i=1;i<nums.length;i++){
+        	dp[i]=1;
+        	for(int j = i-1;j>=0;j--){
+        		if(nums[i]>nums[j]){
+        			dp[i] = Math.max(dp[i], dp[j]+1);
+        			if(max<dp[i])
+        				max = dp[i];
+        		}
+        	}
+        }
+        return max;
+    }
+    //300-2
+    public static int lengthOfLIS2(int[] nums) {
+    	if(nums == null || nums.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        int len = 0;
+        for(int i = 1; i < nums.length; i++) {
+            if(nums[i] > dp[len]) {
+                dp[++len] = nums[i];
+            }
+            else {
+                int index = search(dp, len, nums[i]);
+                dp[index] = nums[i];
+            }
+        }
+        return len + 1;
+    }
+    private static int search(int[] dp, int len, int val) {
+        int start = 0;
+        while(start <= len) {
+            int mid = start + (len - start) / 2;
+            if(dp[mid] == val) {
+                return mid;
+            }
+            else if(dp[mid] < val) {
+                start = mid + 1;
+            }
+            else {
+                len = mid - 1;
+            }
+        }
+        return start;
+    }
+    public static List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+    	List<List<Integer>> sol = new ArrayList<List<Integer>>();
+        if(root == null)
+        	return sol;
+        Stack<TreeNode> s = new Stack<TreeNode>();
+        s.push(root);
+        int index = 1;
+        while(!s.empty()){
+        	List<TreeNode> list = new ArrayList<TreeNode>();
+        	List<Integer> tmp = new ArrayList<Integer>();
+        	while(!s.isEmpty()){
+        		TreeNode tn = s.pop();
+        		list.add(tn);
+        		tmp.add(tn.val);
+        	}
+        	for(TreeNode t:list){
+        		if(index%2==1){
+        			if(t.left!=null) s.push(t.left);
+        			if(t.right!=null) s.push(t.right);
+        		}
+        		else {
+        			if(t.right!=null) s.push(t.right);
+        			if(t.left!=null) s.push(t.left);
+        		}
+        	}
+        	index++;
+        	sol.add(tmp);
+        }
+        return sol;
+    }
+    //133. Clone Graph
+    class UndirectedGraphNode {
+    	 int label;
+    	 List<UndirectedGraphNode> neighbors;
+    	 UndirectedGraphNode(int x) { label = x; neighbors = new ArrayList<UndirectedGraphNode>(); }
+    };  
+    HashMap<Integer,UndirectedGraphNode> map_133 = new HashMap<Integer,UndirectedGraphNode>(); 
+    public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) {
+    	if(node == null) return null;
+    	UndirectedGraphNode clone = new UndirectedGraphNode(node.label);
+    	map_133.put(node.label, clone);
+    	for(UndirectedGraphNode t:node.neighbors){
+    		if(!map_133.containsKey(t.label)){
+    			clone.neighbors.add(cloneGraph(t));
+    		}
+    		else {
+    			clone.neighbors.add(map_133.get(t.label));
+    		}
+    	}
+        return clone;
+    }
+    //221. Maximal Square
+    public static int maximalSquare(char[][] matrix) {
+        if(matrix.length==0||matrix[0].length==0) return 0;
+        int [][] dp = new int [matrix.length][matrix[0].length];
+        int max = 0;
+        for(int i=0;i<matrix.length;i++){
+        	for(int j=0;j<matrix[0].length;j++){
+        		if(matrix[i][j]=='1'){
+        			if(i-1>=0 && j-1>=0){
+        				int t = dp[i-1][j-1];
+        				boolean flag = true;
+        				int curr = 1;
+        				for(int k = 1;k<=t;k++){
+        					flag = (matrix[i-k][j]=='1')&&(matrix[i][j-k]=='1');
+        					if(!flag)
+        						break;
+        					else 
+        						curr++;
+        				}
+        				if(flag){
+        					dp[i][j] = dp[i-1][j-1]+1;
+        					max = max<dp[i][j]?dp[i][j]:max;
+        				}
+        				else {
+        					dp[i][j] = curr;
+        					max = max<dp[i][j]?dp[i][j]:max;
+        				}
+        					
+        			}
+        			else{ 
+        				dp[i][j] = 1;
+        				max = max<dp[i][j]?dp[i][j]:max;
+        			}
+        		}
+        	}
+        }
+        return (int) Math.pow(max, 2);
+    }
+    //80. Remove Duplicates from Sorted Array II
+    public static int removeDuplicates2(int[] nums) {
+    	if(nums.length==0) return 0;
+    	if(nums.length==1) return 1;
+    	int length = 1;
+    	int j = 1;
+    	while(j<nums.length){
+    		if(nums[j]==nums[length-1]){
+    			if(length-1<=0)
+    				length++;
+    			else if(nums[length-1]==nums[length-2]){
+    				
+    			}
+    			else {
+    				nums[length] = nums[j];
+    				length++;
+    			}
+    		}
+    		else{
+    			nums[length] = nums[j];
+				length++;
+    		}
+    		j++;
+    	}
+
+        return length;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -6160,8 +6331,26 @@ public class Solution {
 		System.out.println(missingNumber2(s));*/
 /*		int [] nums = {3,2,1,4,5,3,3,2,4,2,1,4};
 		nextPermutation(nums);*/
-		int [] s = {1,2,3,2,6,5,4,3};
-		System.out.println(findPeakElement(s));
+/*		int [] s = {1,2,3,2,6,5,4,3};
+		System.out.println(findPeakElement(s));*/
+/*		int [] s = {5,23,42,4,1,8,10,11,3};
+		System.out.println(lengthOfLIS2(s));*/
+/*		TreeNode t = new TreeNode(5);
+		t.left = new TreeNode(4);
+		t.right = new TreeNode(8);
+		t.left.left = new TreeNode(11);
+		t.right.left = new TreeNode(13);
+		t.right.right = new TreeNode(4);*/
+/*		char [][] m = {
+				{'0','0','0','1'},
+				{'1','1','0','1'},
+				{'1','1','1','1'},
+				{'0','1','0','1'},
+				{'0','1','1','1'},
+		};
+		System.out.println(maximalSquare(m));*/
+		int []s = {1,1,1,2,2,2,2,2,2,2,4,4,5,6};
+		System.out.println(removeDuplicates2(s));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
