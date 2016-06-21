@@ -5810,6 +5810,7 @@ public class Solution {
         }
         return start;
     }
+    //103. Binary Tree Zigzag Level Order Traversal
     public static List<List<Integer>> zigzagLevelOrder(TreeNode root) {
     	List<List<Integer>> sol = new ArrayList<List<Integer>>();
         if(root == null)
@@ -5925,6 +5926,39 @@ public class Solution {
     	}
 
         return length;
+    }
+  //166. Fraction to Recurring Decimal
+    public static String fractionToDecimal(int numerator, int denominator) {
+        if(denominator==0) return "";
+        if(numerator==0) return "0";
+        StringBuffer sb = new StringBuffer();
+        Long n = new Long(numerator);
+        Long d = new Long(denominator);
+        if(n*d<0) sb.append("-");
+
+        n = Math.abs(n);
+        d = Math.abs(d);
+        sb.append(Long.toString(n/d));
+        Long rest = n%d;
+        if(rest == 0) return sb.toString();
+        else sb.append(".");
+        HashMap<Long,Integer> map = new HashMap<Long,Integer>();
+        while(rest>0){
+        	if(map.containsKey(rest)){
+        		sb.insert(map.get(rest),"(");
+        		sb.append(")");
+        		break;
+        	}
+        	map.put(rest,sb.length() );
+        	rest*=10;
+        	sb.append(Long.toString(rest/d));
+        	rest%=d;
+        }
+        return sb.toString();
+    }
+    //131. Palindrome Partitioning
+    public List<List<String>> partition(String s) {
+        
     }
 	public static void main(String[] args) {
 		
