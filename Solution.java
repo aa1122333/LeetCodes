@@ -5957,9 +5957,82 @@ public class Solution {
         return sb.toString();
     }
     //131. Palindrome Partitioning
-    public List<List<String>> partition(String s) {
-        
+    public static List<List<String>> partition(String s) {
+    	char[] c = s.toCharArray();
+    	int length = s.length();
+    	boolean [][] dp = new boolean[length][length];
+    	for(int i=0;i<length;i++)
+    		for(int j=0;j<length-i;j++)
+    			dp[j][j+i] = c[j]==c[j+i] && (i<=1 || dp[j+1][j+i-1]);
+    	List<String> t = new ArrayList<String>();
+    	List<List<String>> sol = new ArrayList<List<String>>();
+    	dfs_131(0, s, dp, t, sol);
+        return sol;
     }
+    
+    private static void dfs_131(int curr,String s,boolean[][] dp,List<String> path,List<List<String>> sol){
+    	if(curr >=s.length()){
+    		sol.add(new ArrayList<String>(path));
+    		return ;
+    	}
+    	for(int i=curr;i<s.length();i++){
+    		if(dp[curr][i]){
+    			path.add(s.substring(curr, i+1));
+    			dfs_131(i+1, s, dp, path, sol);
+    			path.remove(path.size()-1);
+    			
+    		}
+    	}
+    }
+    //215. Kth Largest Element in an Array
+    public static int findKthLargest(int[] nums, int k) {
+        if(nums.length==0) return 0;
+        if(nums.length==1 && k==1) return nums[0];
+        return findKth(nums, 0, nums.length-1, k);
+    }
+    
+    public static int findKth(int []nums,int start,int end,int k){
+    	 if(nums.length==0) return 0;
+         if(nums.length==1 && k==1) return nums[0];
+         int curr = nums[start];
+         int i = start;
+         int j = end;
+         while(i<j){
+        	 while(i<j  && nums[j]>=curr) j--;
+        	 while(i<j  && nums[i]<=curr) i++;
+        	 
+        	 if(i<j){
+        		 int t = nums[i];
+        		 nums[i] = nums[j];
+        		 nums[j] = t;
+        	 }
+         }
+         nums[start] = nums[i];
+         nums[i] = curr;
+         if(end-i+1==k) return nums[i];
+         else if(end-i+1>k) return findKth(nums, i+1, end, k);
+         else return findKth(nums, start, i-1, k-(end-j+1));
+    }
+    /*public void quicksort(int left,int right,int []s){
+		if(left<right){
+			int i = left;
+			int j = right;
+			int tmp = s[i];
+			while(i<j){
+				while(j>i && s[j]>=tmp) j--;
+				while(i<j && s[i]<=tmp) i++;
+				if(i<j){
+					int t = s[i];
+					s[i] = s[j];
+					s[j] = t;
+				}
+			}
+			s[left] = s[i];
+			s[i] = tmp;
+			quicksort(left, i-1, s);
+			quicksort(i+1, right, s);
+		}
+	}*/
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -6383,8 +6456,12 @@ public class Solution {
 				{'0','1','1','1'},
 		};
 		System.out.println(maximalSquare(m));*/
-		int []s = {1,1,1,2,2,2,2,2,2,2,4,4,5,6};
-		System.out.println(removeDuplicates2(s));
+/*		int []s = {1,1,1,2,2,2,2,2,2,2,4,4,5,6};
+		System.out.println(removeDuplicates2(s));*/
+/*		String s = "aabba";
+		System.out.println(partition(s));*/
+		int []s={6};
+		System.out.println(findKthLargest(s,1));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
