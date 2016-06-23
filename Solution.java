@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeSet;
@@ -6033,6 +6034,150 @@ public class Solution {
 			quicksort(i+1, right, s);
 		}
 	}*/
+    public static int findKthLargest2(int[] nums, int k) {
+
+        return select(nums, k-1);
+    }
+
+    // Quick select
+    private static int select(int[] nums, int k) {
+        int left = 0, right = nums.length-1;
+        while(true) {
+            if(left == right)
+                return nums[left];
+            int pivotIndex = medianOf3(nums, left, right);
+            pivotIndex = partition(nums, left, right, pivotIndex);
+            if(pivotIndex == k)
+                return nums[k];
+            else if(pivotIndex > k)
+                right = pivotIndex-1;
+            else
+                left = pivotIndex+1;
+        }
+    }
+
+    //Use median-of-three strategy to choose pivot
+    private static int medianOf3(int[] nums, int left, int right) {
+        int mid = left + (right - left) / 2;
+        if(nums[right] > nums[left])
+            swap2(nums, left, right);
+        if(nums[right] > nums[mid])
+            swap2(nums, right, mid);
+        if(nums[mid] > nums[left])
+            swap2(nums,left, mid);
+        return mid;
+    }
+
+    private static int partition(int[] nums, int left, int right, int pivotIndex) {
+        int pivotValue = nums[pivotIndex];
+        swap2(nums, pivotIndex, right);
+        int index = left;
+        for(int i = left; i < right; ++i) {
+            if(nums[i] > pivotValue) {
+                swap2(nums, index, i);
+                ++index;
+            }
+        }
+        swap2(nums, right, index);
+        return index;
+    }
+
+    private static void swap2(int[] nums, int a, int b) {
+        int temp = nums[a];
+        nums[a] = nums[b];
+        nums[b] = temp;
+    }
+    
+    public static void mergesort(int[] nums){
+    	int [] k = new int [nums.length];
+    	merge_recursive(nums, k, 0, nums.length-1);
+    	
+    }
+    public static void merge_recursive(int[] nums,int[] k,int start,int end ){
+    	if(start>=end) return ;
+    	int mid = ((end-start)>>1)+start;
+    	int start1 = start;
+    	int end1 = mid;
+    	int start2 = mid+1;
+    	int end2 = end;
+    	merge_recursive(nums, k, start1, end1);
+    	merge_recursive(nums, k, start2, end2);
+    	int curr = start;
+    	while(start1<=end1 && start2<=end2)
+    		k[curr++] = nums[start1]<nums[start2]?nums[start1++]:nums[start2++];
+    	while(start1<=end1)
+    		k[curr++] = nums[start1++];
+    	while(start2<=end2)
+    		k[curr++] = nums[start2++];
+    	for(int i= start;i<=end;i++)
+    		nums[i] = k[i];
+    	
+    }
+    
+    public static void mergesort_2(int []arr){
+    	int l = arr.length;
+    	int [] rst = new int [l];
+    	int block,start;
+    	for(block=1;block<l;block*=2){
+    		for(start = 0;start<l;start+=2*block){
+    			int low = start;
+    			int mid = (start+block)<l?(start+block):l;
+    			int high = (start+2*block)<l?(start+2*block):l;
+    			int start1 = low,end1 = mid;
+    			int start2 = mid,end2 = high;
+    			while(start1<end1 && start2<end2)
+    				rst[low++] = arr[start1]<arr[start2]?arr[start1++]:arr[start2++];
+    			while(start1<end1)
+    				rst[low++] = arr[start1++];
+    			while(start2<end2)
+    				rst[low++] = arr[start2++];
+    		}
+    		int [] tmp = arr;
+    		arr = rst;
+    		rst = tmp;
+    	}
+    	rst = arr;
+    }
+    //148. Sort List
+    public static ListNode sortList(ListNode head) {
+    	if(head == null || head.next == null) return head;
+    	ListNode fast = head.next.next;
+    	ListNode slow = head;
+    	while(fast!=null && fast.next!=null){
+    		fast = fast.next.next;
+    		slow = slow.next;
+    	}
+    	ListNode p1 = sortList(slow.next);
+    	slow.next = null;
+    	ListNode p2 = sortList(head);
+        return mergeList(p2, p1);
+    }
+    public static ListNode mergeList(ListNode head,ListNode mid){
+    	ListNode thead = new ListNode(0);
+    	ListNode sol = thead;
+    	while(head!=null && mid!=null){
+    		if(head.val<mid.val){
+    			thead.next = head;
+    			head = head.next;
+    		}
+    		else {
+    			thead.next = mid;
+    			mid = mid.next;
+    		}
+    		thead = thead.next;
+    	}
+    	thead.next = head==null?mid:head;
+    	return sol.next;
+    }
+    //236. Lowest Common Ancestor of a Binary Tree
+    public static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        
+    }
+    public static List<TreeNode> LCA(TreeNode root,TreeNode p,TreeNode q,List<TreeNode> curr){
+
+    		 
+    		
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -6460,8 +6605,18 @@ public class Solution {
 		System.out.println(removeDuplicates2(s));*/
 /*		String s = "aabba";
 		System.out.println(partition(s));*/
-		int []s={6};
-		System.out.println(findKthLargest(s,1));
+/*		int []s={6,8,3,1,7,2,4,5};
+		mergesort_2(s);
+		System.out.println(findKthLargest2(s,3));
+		for(int i=0;i<s.length;i++)
+			System.out.println(s[i]);*/
+		ListNode root = new ListNode(5);
+		root.next = new ListNode(1);
+		root.next.next = new ListNode(6);
+		root.next.next.next= new ListNode(3);
+		root.next.next.next.next = new ListNode(2);
+		root.next.next.next.next.next = new ListNode(4);
+		root = sortList(root);
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
