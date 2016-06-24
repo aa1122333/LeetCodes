@@ -6169,14 +6169,199 @@ public class Solution {
     	thead.next = head==null?mid:head;
     	return sol.next;
     }
+    //214. Shortest Palindrome
+    public static String shortestPalindrome(String s) {
+        if(s.length()<=1) return s;
+        String st = s+" "+new StringBuffer(s).reverse().toString();
+        int [] next = new int[st.length()];
+        for(int i=1;i<st.length();i++){
+        	int curr = next[i-1];
+        	while(curr>0 && st.charAt(i)!=st.charAt(curr))
+        		curr = next[curr-1];
+        	if(st.charAt(i)==st.charAt(curr))
+        		next[i] = curr+1;
+        }
+        return new StringBuffer(s.substring(next[st.length()-1])).reverse().toString() + s;
+    }
+    //65. Valid Number
+    public boolean isNumber(String str) {
+        if ( str == null || str.isEmpty() ) return false;
+
+        int start = 0;
+        int end  = str.length() - 1;
+
+        while (start < str.length()-1 &&  str.charAt(start) == ' ')
+            start ++;
+
+        while (end >= start +1 &&  str.charAt(end) == ' ')
+            end --;
+
+        if( (start - end ==0) &&  (str.charAt(start) < '0' || str.charAt(start) > '9') )
+            return false;   
+
+        if (str.charAt(start)== '+' || str.charAt(start)== '-') {
+            if (str.charAt(start+1) == '.' && (end - start == 1))
+                return false;
+            start++;
+        }
+
+        int point = -1;  
+        int e = -1;      
+
+        for (int i = start; i <=end; i++){
+
+            if (str.charAt(i) == '.') {
+                if (point == -1) 
+                    point = i;  
+                else return false;
+            }
+
+            if (str.charAt(i) == 'e')  {
+                if (e==-1)   
+                    e= i;
+                else return false;
+            }
+
+            if (e == start || e==end) return false; 
+            if (point > e && e!= -1 ) return false;
+            if (point == start && e== start +1) return false;
+
+            if ( (str.charAt(i) < '0' || str.charAt(i) > '9')  && str.charAt(i) !='.' && str.charAt(i) != 'e' ) {
+
+                if (  (str.charAt(i) == '+' || str.charAt(i) == '-')  && e== i-1 && i!=end ) {  }
+
+                else    return false;
+            }
+        }
+        return true;
+    }
     //236. Lowest Common Ancestor of a Binary Tree
     public static TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null || root == p || root == q) return root;
+        TreeNode l = lowestCommonAncestor(root.left, p, q);
+        TreeNode r = lowestCommonAncestor(root.right, p, q);
+        return l==null?r:r==null?l:root;// that case means that one of the two nodes was found on the left and the other was found on the right. And then the root is their LCA.
+    }
+    //316. Remove Duplicate Letters
+    public static String removeDuplicateLetters(String s) {
+        int []letters = new int[26];
+        for(int i=0;i<s.length();i++) letters[s.charAt(i)-'a']++;
+        int min = 0;
+        for(int i=0;i<s.length();i++){
+        	if(s.charAt(i)<s.charAt(min)) min = i;
+        	if(--letters[s.charAt(i)-'a']==0) break;
+        }
+        return s.length()==0?"":s.charAt(min)+""+removeDuplicateLetters(new StringBuffer(s.substring(min+1)).toString().replace(""+s.charAt(min), ""));
+    }
+    //316-2
+    public String removeDuplicateLetters2(String s) {
+        int len = s.length();
+        if (len == 0) return s;
+        int[] l = new int[26];
+        char[] c = s.toCharArray();
+        for (int i = 0; i < len; i++) {
+            l[(int)c[i]-'a']++;
+        }
+        char[] stack = new char[len];
+        int top = 0;
+        for (int i = 0; i < len; i++) {
+            int val = (int)c[i]-'a';
+            if (top == 0) {
+                stack[top++] = c[i];
+                l[val]--;
+                l[val] = -l[val];
+            } else {
+                while (top!=0 && c[i] <= stack[top-1] && l[(int)stack[top-1]-'a'] != 0 && l[val] > 0) {
+                    char cc = stack[--top];
+                    l[(int)cc-'a'] = -l[(int)cc-'a'];
+                }
+                if (l[val] < 0) {
+                    l[val]++;
+                } else {
+                    stack[top++] = c[i];
+                    l[val]--;
+                    l[val] = -l[val];
+                }
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < top; i++) {
+            sb.append(stack[i]);
+        }
+        return sb.toString();
+    }
+    //34. Search for a Range
+    public static int searchmin;
+    public static int searchmax;
+    public static int[] searchRange(int[] nums, int target) {
+    	searchmin = -1;
+    	searchmax = -1;
+    	bs_min(nums, 0, nums.length-1, target);
+    	bs_max(nums, 0, nums.length-1, target);
+    	int [] sol = new int[2];
+    	sol[0] = searchmin;
+    	sol[1] = searchmax;
+    	return sol;
         
     }
-    public static List<TreeNode> LCA(TreeNode root,TreeNode p,TreeNode q,List<TreeNode> curr){
+    public static void bs_min(int []nums,int start,int end,int target){
+    	if(start>end) return ;
+    	if(start==end && searchmin==-1){
+    		if(nums[start]!=target) return ;
+    		else searchmin = nums[start];
+    	}
+    	int mid = ((end-start)>>1)+start;
+        if(nums[mid]==target){
+        	if(mid>0 &&nums[mid-1]<target) searchmin = mid;
+        	else if(mid==0) searchmin = 0;
+        	else {
+        		bs_min(nums, start, mid-1, target);
+        		bs_min(nums, mid+1, end, target);
+        	}
+        }
+        else if(nums[mid]>target) bs_min(nums, start, mid-1, target);
+        else if(nums[mid]<target) bs_min(nums, mid+1, end, target);
+        
+    }
+    public static void bs_max(int []nums,int start,int end,int target){
+    	if(start>end) return ;
+    	if(start==end && searchmax==-1){
+    		if(nums[start]!=target) return ;
+    		else searchmax = nums[start];
+    	}
+    	int mid = ((end-start)>>1)+start;
+        if(nums[mid]==target){
+        	if(mid<nums.length-1 && nums[mid+1]>target) searchmax = mid;
+        	else if(mid == nums.length-1)  searchmax = mid;
+        	else {
+        		bs_max(nums, start, mid-1, target);
+        		bs_max(nums, mid+1, end, target);
+        	}
+        }
+        else if(nums[mid]>target) bs_max(nums, start, mid-1, target);
+        else if(nums[mid]<target) bs_max(nums, mid+1, end, target);
+        
+    }
+    public int[] searchRange2(int[] A, int target) {
+        int start = findPosition(A, target, false);
+        int end = findPosition(A, target, true);
+        return new int[]{start, end};
+    }
 
-    		 
-    		
+    private int findPosition(int[] A, int target, boolean isLast) {
+        int low = 0, high = A.length-1, index = -1;
+        while (low <= high) {
+            int mid = low + ((high - low) >> 1);
+            if(isLast){
+                if (A[mid] <= target) low = mid + 1;
+                else high = mid-1;
+            } else{
+                if (A[mid] < target) low = mid + 1;
+                else high = mid-1;
+            }
+            if(A[mid] == target) index = mid; /** update index */
+        }
+        return index;
     }
 	public static void main(String[] args) {
 		
@@ -6610,13 +6795,19 @@ public class Solution {
 		System.out.println(findKthLargest2(s,3));
 		for(int i=0;i<s.length;i++)
 			System.out.println(s[i]);*/
-		ListNode root = new ListNode(5);
+/*		ListNode root = new ListNode(5);
 		root.next = new ListNode(1);
 		root.next.next = new ListNode(6);
 		root.next.next.next= new ListNode(3);
 		root.next.next.next.next = new ListNode(2);
 		root.next.next.next.next.next = new ListNode(4);
-		root = sortList(root);
+		root = sortList(root);*/
+/*		System.out.println(shortestPalindrome("aacecaaa"));*/
+		/*System.out.println(removeDuplicateLetters("bacdacbd"));*/
+		int [] s = {6,6,7};
+		int [] z = searchRange(s,6);
+		for(int i:z)
+			System.out.println(i);
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
