@@ -6363,6 +6363,51 @@ public class Solution {
         }
         return index;
     }
+    //24. Swap Nodes in Pairs
+    public static ListNode swapPairs(ListNode head) {
+        if(head == null || head.next==null) return head;
+        
+        ListNode pre = new ListNode(0);
+        pre.next = head;
+        ListNode thead = pre;
+        while(head!=null && head.next!=null){
+        	ListNode tail = head.next.next;
+        	pre.next = head.next;
+        	pre.next.next = head;
+        	head.next = tail;
+        	pre = pre.next.next;
+        	head = head.next;
+        }
+        return thead.next;
+    }
+    //210. Course Schedule II
+    public static int[] findOrder(int numCourses, int[][] prerequisites) {
+        if(numCourses==0) return new int[0];
+        List<List<Integer>> adjs = new ArrayList<>(numCourses);
+        int [] d = new int[numCourses];
+        int n = numCourses;
+        while(n-->0) adjs.add(new ArrayList<>());
+        for(int i=0;i<prerequisites.length;i++){
+        	d[prerequisites[i][0]]++;
+        	 adjs.get(prerequisites[i][1]).add(prerequisites[i][0]);
+        }
+        Stack<Integer> s = new Stack();
+        for(int i=0;i<numCourses;i++){
+        	if(d[i]==0) s.add(i);
+        }
+        int [] path = new int [numCourses];
+        int length = 0;
+        while(!s.isEmpty()){
+        	int curr=s.pop();
+        	path[length++] = curr;
+        	for (int to : adjs.get(curr)) {
+                d[to]--;
+                if (d[to] == 0) s.push(to);
+            }
+        	
+        }
+        return length==numCourses?path:new int[0];
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -6804,10 +6849,28 @@ public class Solution {
 		root = sortList(root);*/
 /*		System.out.println(shortestPalindrome("aacecaaa"));*/
 		/*System.out.println(removeDuplicateLetters("bacdacbd"));*/
-		int [] s = {6,6,7};
+/*		int [] s = {6,6,7};
 		int [] z = searchRange(s,6);
 		for(int i:z)
-			System.out.println(i);
+			System.out.println(i);*/
+/*		ListNode root = new ListNode(1);
+		root.next = new ListNode(2);
+		root.next.next = new ListNode(3);
+		root.next.next.next= new ListNode(4);
+		root.next.next.next.next = new ListNode(5);
+		root = swapPairs(root);*/
+		int [][] s = {
+				{5,8},
+				{3,5},
+				{1,9},
+				{4,5},
+				{0,2},
+				{1,9},
+				{7,8},
+				{4,9}
+		};
+		int [] t ;
+		System.out.println(t = findOrder(10,s));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
