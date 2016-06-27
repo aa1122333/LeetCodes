@@ -1406,7 +1406,7 @@ public class Solution {
         return head.next;
     }
     //57. Insert Interval
-      public class Interval {
+      public static class Interval {
           int start;
           int end;
           Interval() { start = 0; end = 0; }
@@ -6408,6 +6408,174 @@ public class Solution {
         }
         return length==numCourses?path:new int[0];
     }
+    //210-2
+    public static int[] findOrder2(int numCourses, int[][] prerequisites) {
+    	List[] map = new List[numCourses];
+    	int [] visited = new int[numCourses];
+    	List<Integer> ans = new ArrayList<Integer>();
+    	for(int i=0;i<numCourses;i++)
+    		map[i] = new ArrayList<Integer>();
+    	for(int i=0;i<prerequisites.length;i++)
+    		map[prerequisites[i][0]].add(prerequisites[i][1]);
+    	for(int i=0;i<numCourses;i++)
+    		if(dfs_210(map, i, ans, visited)==false) return new int[0];
+    	int [] an = new int[ans.size()];
+    	for(int i=0;i<ans.size();i++)
+    		an[i]=ans.get(i);
+    	return an;
+    }
+    
+    public static boolean dfs_210(List[] map,int req,List<Integer> ans,int [] visited){
+    	if(visited[req]==0){
+    		visited[req] = 1;
+    		for(int i=0;i<map[req].size();i++)
+    			if(dfs_210(map, (int)map[req].get(i), ans, visited)==false)
+    				visited[req]=2;
+    	}
+    	else if(visited[req]==1){
+    		return false;
+    	}
+    	else if(visited[req]==2){
+    		return true;
+    	}
+    	ans.add(req);
+    	return true;
+    }
+    //207. Course Schedule
+    public static boolean canFinish(int numCourses, int[][] prerequisites) {
+        if(numCourses==0) return false;
+        int [] degree = new int [numCourses];
+        List<List<Integer>> map = new ArrayList<List<Integer>>();
+        for(int i=0;i<numCourses;i++)
+        	map.add(new ArrayList<Integer>());
+        for(int i=0;i<prerequisites.length;i++){
+        	degree[prerequisites[i][0]]++;
+        	map.get(prerequisites[i][1]).add(prerequisites[i][0]);
+        }
+        Stack<Integer> s = new Stack<Integer>();
+        for(int i=0;i<numCourses;i++){
+        	if(degree[i]==0)
+        		s.add(i);
+        }
+        while(!s.isEmpty()){
+        	int curr = s.pop();
+        	for(int t:map.get(curr)){
+        		degree[t]--;
+        		if(degree[t]==0)
+        			s.add(t);
+        	}
+        		
+        }
+        boolean flag = true;
+        for(int i=0;i<numCourses;i++)
+        	if(degree[i]!=0){
+        		flag = false;
+        		break;
+        	}
+        return flag;
+    }
+    //145. Binary Tree Postorder Traversal
+    public static List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> s = new ArrayList<Integer>();
+        postT(root, s);
+        return s;
+    }
+    public static void postT(TreeNode root,List<Integer> s){
+    	if(root==null) return ;
+    	if(root.left!=null) postT(root.left, s);
+    	if(root.right!=null) postT(root.right, s);
+    	s.add(root.val);
+    }
+    
+    //145-iteratively
+    public static List<Integer> postorderTraversal2(TreeNode root) {
+    	
+    	List<Integer> s = new ArrayList<Integer>();
+    	if(root == null) return s;
+    	Stack<TreeNode> nodes = new Stack<TreeNode>();
+    	Stack<TreeNode> st = new Stack<TreeNode>();
+    	
+    	nodes.push(root);
+    	while(!nodes.isEmpty()){
+    		TreeNode curr = nodes.pop();
+    		st.add(curr);
+    		if(curr.left!=null) nodes.add(curr.left);
+    		if(curr.right!=null) nodes.add(curr.right);
+    	}
+    	while(!st.isEmpty()){
+    		s.add(st.pop().val);
+    	}
+    	return s;
+    }
+    //56. Merge Intervals
+    public static List<Interval> merge(List<Interval> intervals) {
+        if(intervals.isEmpty()) return intervals;
+        PriorityQueue<Interval> queue = new PriorityQueue<Solution.Interval>(intervals.size(), (i1,i2)->i1.start-i2.start);
+        queue.addAll(intervals);
+        List<Interval> sol = new ArrayList<Interval>();
+        Interval curr = queue.poll();
+        int start = curr.start;
+        int end = curr.end;
+        while(!queue.isEmpty()){
+        	Interval t = queue.poll();
+        	if(t.start<end){
+        		end = Math.max(t.end, end);
+        	}
+        	else {
+        		sol.add(new Interval(start, end));
+        		start = t.start;
+        		end = t.end;
+        	}
+        }
+        sol.add(new Interval(start, end));
+        return sol;
+    }
+    //309. Best Time to Buy and Sell Stock with Cooldown
+    public static int maxProfit2(int[] prices) {
+    	if(prices == null || prices.length < 2){
+            return 0;
+        }
+        int len = prices.length;
+        int[] sell = new int[len];
+        int[] cooldown = new int[len];
+        sell[1] = prices[1] - prices[0];
+        for(int i = 2; i < prices.length; ++i){
+            cooldown[i] = Math.max(sell[i - 1], cooldown[i - 1]);
+            sell[i] = prices[i] - prices[i - 1] + Math.max(sell[i - 1], cooldown[i - 2]);
+        }
+        return Math.max(sell[len - 1], cooldown[len - 1]);
+    }
+    //309-2
+    public static int maxProfit3(int[] prices) {
+        int sell = 0, prev_sell = 0, buy = Integer.MIN_VALUE, prev_buy;
+        for (int price : prices) {
+            prev_buy = buy;
+            buy = Math.max(prev_sell - price, prev_buy);
+            prev_sell = sell;
+            sell = Math.max(prev_buy + price, prev_sell);
+        }
+        return sell;
+    }
+    //6. ZigZag Conversion
+    public String convert(String s, int numRows) {
+        if(numRows == 1) return s;
+        char[] str = s.toCharArray();
+        int jump = (numRows - 1) * 2;
+        StringBuilder result = new StringBuilder();
+        for(int i = 0; i < numRows; i++) {
+            if(i == 0 || i == numRows - 1) {
+                for(int j = i; j < str.length; j += jump) {
+                    result.append(str[j]);
+                } 
+            } else {
+                for(int j = i, k = jump - i; j < str.length; j += jump, k += jump) {
+                    result.append(str[j]);
+                    if(k < str.length) result.append(str[k]);
+                }
+            }
+        }
+        return result.toString();
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -6859,7 +7027,7 @@ public class Solution {
 		root.next.next.next= new ListNode(4);
 		root.next.next.next.next = new ListNode(5);
 		root = swapPairs(root);*/
-		int [][] s = {
+		/*int [][] s = {
 				{5,8},
 				{3,5},
 				{1,9},
@@ -6870,7 +7038,26 @@ public class Solution {
 				{4,9}
 		};
 		int [] t ;
-		System.out.println(t = findOrder(10,s));
+		System.out.println(t = findOrder(10,s));*/
+/*		List[] s = new List[10];
+		s[0] = new ArrayList();
+		s[0].add(123);*/
+/*		int [][] s = {
+				{1,0},
+				{3,1},
+				{2,3},
+				{1,2}
+		};
+		System.out.println(canFinish(4,s));*/
+/*		TreeNode t = new TreeNode(1);
+		t.left = new TreeNode(2);
+		t.right = new TreeNode(3);
+		t.left.left = new TreeNode(11);
+		t.right.left = new TreeNode(13);
+		t.right.right = new TreeNode(4);
+		System.out.println(postorderTraversal2(null));*/
+		int [] s = {2,5,1,2,6,4,3,1,2,1,7};
+		System.out.println(maxProfit3(s));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
