@@ -6576,6 +6576,174 @@ public class Solution {
         }
         return result.toString();
     }
+    //187. Repeated DNA Sequences
+    
+    public static Map<Character,Integer> dna = new HashMap<Character,Integer>();
+    static{dna.put('A', 0);dna.put('T', 1);dna.put('G', 2);dna.put('C',3);}
+    public static int LPW = (int)Math.pow(dna.size(), 9); 
+    public static List<String> findRepeatedDnaSequences(String s) {
+        Set<String> res = new HashSet<>();
+        Set<Integer> hashs = new HashSet<>();
+        for(int i=0,currhash=0;i<s.length();i++){
+        	if(i>9) 
+        		currhash -= LPW*dna.get(s.charAt(i-10));
+        	currhash = dna.size() * currhash + dna.get(s.charAt(i));
+        	if(i>8 && !hashs.add(currhash)) {
+        		res.add(s.substring(i-9,i+1));
+        	}
+        }
+        return new ArrayList(res);
+    }
+    //187-2
+    public static List<String> findRepeatedDnaSequences2(String DNA) {
+        ArrayList<String> res = new ArrayList<String>();
+        if(DNA.length()<10)    return res;
+        HashSet<Integer> once = new HashSet<Integer>();
+        HashSet<Integer> twice = new HashSet<Integer>();
+        int[] map = new int[26];
+        map['A'-'A'] = 0;
+        map['C'-'A'] = 1;
+        map['G'-'A'] = 2;
+        map['T'-'A'] = 3;
+        int enc = 0;
+        for(int i=0; i<9; ++i){
+            enc <<=2;
+            enc |= map[DNA.charAt(i)-'A'];
+        }
+        for(int j=9; j<DNA.length(); ++j){
+            enc <<=2;
+            enc &= 0xfffff;
+            enc |= map[DNA.charAt(j)-'A'];
+            if(!once.add(enc) && twice.add(enc))
+                res.add(DNA.substring(j-9,j+1));
+        }
+        return res;
+    }
+    
+    //given input 43261596 (represented in binary as 00000010100101000001111010011100), return 964176192 (represented in binary as 00111001011110000010100101000000)
+    //190. Reverse Bits
+    public static int reverseBits(long n) {
+        int sol = 0;
+        int index = 0;
+        while(index<32){
+        	sol<<=1;
+        	long t = n%2;
+        	sol+=t;
+            index++;
+            n>>>=1;
+        }
+        return sol;
+    }
+    //190-2
+    private final Map<Byte, Integer> cache = new HashMap<Byte, Integer>();
+    public int reverseBits(int n) {
+        byte[] bytes = new byte[4];
+        for (int i = 0; i < 4; i++) 
+            bytes[i] = (byte)((n >>> 8*i) & 0xFF);
+        int result = 0;
+        for (int i = 0; i < 4; i++) {
+            result += reverseByte(bytes[i]); 
+            if (i < 3)
+                result <<= 8;
+        }
+        return result;
+    }
+
+    private int reverseByte(byte b) {
+        Integer value = cache.get(b);
+        if (value != null)
+            return value;
+        value = 0;
+        // reverse by bit
+        for (int i = 0; i < 8; i++) {
+            value += ((b >>> i) & 1);
+            if (i < 7)
+                value <<= 1;
+        }
+        cache.put(b, value);
+        return value;
+    }
+    //22. Generate Parentheses
+    public static List<String> generateParenthesis(int n) {
+    	List<String> s = new ArrayList<String>();
+        if(n==0) return s;
+        backtracking(n, 0, 0, s, "");
+        return s;
+    }
+    
+    public static void backtracking(int n,int l,int r,List<String> sol,String curr){
+    	if(l==n){
+    		String s = curr;
+    		for(int i=l+r;i<n*2;i++)
+    			s=s+')';
+    		sol.add(s);
+    		return ;
+    	}
+    	if(l==r){
+    		backtracking(n, l+1, r, sol, curr+"(");
+    	}
+    	else if(l>r){
+    		backtracking(n, l+1, r, sol, curr+"(");
+    		backtracking(n, l, r+1, sol, curr+")");
+    	}
+    }
+    //327. Count of Range Sum
+    
+    public static int countRangeSum(int[] nums, int lower, int upper) {
+    	 int n = nums.length;
+    	    long[] sums = new long[n + 1];
+    	    for (int i = 0; i < n; ++i)
+    	        sums[i + 1] = sums[i] + nums[i];
+    	    return countWhileMergeSort(sums, 0, n + 1, lower, upper);
+    }
+    
+    private static int countWhileMergeSort(long[] sums, int start, int end, int lower, int upper) {
+        if (end - start <= 1) return 0;
+        int mid = (start + end) / 2;
+        int count = countWhileMergeSort(sums, start, mid, lower, upper) 
+                  + countWhileMergeSort(sums, mid, end, lower, upper);
+        int j = mid, k = mid, t = mid;
+        long[] cache = new long[end - start];
+        for (int i = start, r = 0; i < mid; ++i, ++r) {
+            while (k < end && sums[k] - sums[i] < lower) k++;
+            while (j < end && sums[j] - sums[i] <= upper) j++;
+            while (t < end && sums[t] < sums[i]) cache[r++] = sums[t++];
+            cache[r] = sums[i];
+            count += j - k;
+        }
+        System.arraycopy(cache, 0, sums, start, t - start);
+        return count;
+    }
+    //82. Remove Duplicates from Sorted List II
+    public static ListNode deleteDuplicates2(ListNode head) {
+        if(head == null || head.next==null) return head;
+        ListNode sol = new ListNode(0);
+        sol.next = head;
+        ListNode thead = sol;
+        int curr = head.val;
+        head = head.next;
+        while(head!=null){
+        	if(head.val==curr){
+        		while(head!=null && head.val==curr)
+        			head = head.next;
+        		if(head == null){
+        			thead.next = null;
+        			break;
+        		}
+        		else {
+        			thead.next = head;
+        			curr = head.val;
+        			head = head.next;
+        		}
+        	}
+        	else {
+        		thead = thead.next;
+        		curr = head.val;
+        		head=head.next;
+        	}
+        }
+        return sol.next;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -7056,8 +7224,20 @@ public class Solution {
 		t.right.left = new TreeNode(13);
 		t.right.right = new TreeNode(4);
 		System.out.println(postorderTraversal2(null));*/
-		int [] s = {2,5,1,2,6,4,3,1,2,1,7};
-		System.out.println(maxProfit3(s));
+/*		int [] s = {2,5,1,2,6,4,3,1,2,1,7};
+		System.out.println(maxProfit3(s));*/
+/*		System.out.println(findRepeatedDnaSequences2("AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"));*/
+/*		System.out.println(reverseBits(2147483648L));*/
+/*		int [] s= {1,5,2,0,-1,-4,6,-3};
+		System.out.println(countRangeSum(s,-2,2));*/
+		ListNode root = new ListNode(1);
+		root.next = new ListNode(2);
+		root.next.next = new ListNode(3);
+		root.next.next.next= new ListNode(3);
+		root.next.next.next.next = new ListNode(3);
+		root.next.next.next.next.next = new ListNode(3);
+		ListNode t ;
+		System.out.println(t = deleteDuplicates2(root));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
