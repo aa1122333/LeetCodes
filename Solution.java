@@ -3168,15 +3168,19 @@ public class Solution {
     }
     
     //154. Find Minimum in Rotated Sorted Array II
-    public int findMin2(int[] nums) {
-        int start=0,mid=0,end=nums.length-1;
-        while(start<end){
-            mid=start+(end-start)/2;
-            if(nums[mid]>nums[end]) start=mid+1;
-            else if(nums[mid]==nums[end]) end--;
-            else end=mid;
-        }
-        return nums[start];
+    public static int findMin2(int[] nums) {
+    	 int l = 0, r = nums.length-1;
+         while (l < r) {
+             int mid = (l + r) / 2;
+             if (nums[mid] < nums[r]) {
+                 r = mid;
+             } else if (nums[mid] > nums[r]){
+                 l = mid + 1;
+             } else {  
+                 r--; 
+             }
+         }
+         return nums[l];
     }
     
     //204. Count Primes
@@ -6757,7 +6761,56 @@ public class Solution {
     }*/
     //28. Implement strStr()
     public static int strStr(String haystack, String needle) {
-        
+    	if(haystack.length()<needle.length()) return -1;
+        if(needle.length()==0) return 0;
+        int [] next = new int [needle.length()+1];
+        nextbuilt(next, needle);
+        int j=0;
+        for(int i=0;i<haystack.length();i++){
+        	
+        	while(j>0 && haystack.charAt(i)!=needle.charAt(j))
+        		j = next[j];
+        	if(haystack.charAt(i)==needle.charAt(j)) j++;
+        	if(j==needle.length())
+        		return i-needle.length()+1;
+        }
+        return -1;
+    }
+    
+    public static void nextbuilt(int[]next,String sub){
+    	int j = 0;
+    	next[0]=next[1]=0;
+    	for(int i=1;i<sub.length();i++){
+    		while(j>0 && sub.charAt(i)!=sub.charAt(j)) 
+    			j = next[j];
+    		if(sub.charAt(i)==sub.charAt(j)) j++;
+    		next[i+1] = j;
+    	}
+    }
+    //345. Reverse Vowels of a String
+    public static String reverseVowels(String s) {
+    	if(s.length()<=1) return s;
+        char[] str = s.toCharArray();
+        int i=0;
+        int j=s.length()-1;
+        HashSet<Character> set = new HashSet<Character>();
+        set.add('a');
+        set.add('e');
+        set.add('i');
+        set.add('o');
+        set.add('u');
+        while(i<j){
+        	while(i<s.length() && !set.contains(str[i])) i++;
+        	while(j>=0 && !set.contains(str[j])) j--;
+        	if(i<j){
+        		char t = str[i];
+        		str[i] = str[j];
+        		str[j] = t;
+        		i++;
+        		j--;
+        	}
+        }
+        return String.valueOf(str);
     }
 	public static void main(String[] args) {
 		
@@ -7245,14 +7298,20 @@ public class Solution {
 /*		System.out.println(reverseBits(2147483648L));*/
 /*		int [] s= {1,5,2,0,-1,-4,6,-3};
 		System.out.println(countRangeSum(s,-2,2));*/
-		ListNode root = new ListNode(1);
+/*		ListNode root = new ListNode(1);
 		root.next = new ListNode(2);
 		root.next.next = new ListNode(3);
 		root.next.next.next= new ListNode(3);
 		root.next.next.next.next = new ListNode(3);
 		root.next.next.next.next.next = new ListNode(3);
 		ListNode t ;
-		System.out.println(t = deleteDuplicates2(root));
+		System.out.println(t = deleteDuplicates2(root));*/
+/*		System.out.println(strStr("mississippi","issip"));
+		String s1 = "asgsgdas";
+		s1.indexOf("ss");*/
+		/*int [] s = {4,5,5,5,6,7,8,1,2,3,3};
+		System.out.println(findMin2(s));*/
+		System.out.println(reverseVowels(""));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
