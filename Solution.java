@@ -6812,6 +6812,47 @@ public class Solution {
         }
         return String.valueOf(str);
     }
+    //112. Path Sum
+    public boolean hasPathSum(TreeNode root, int sum) {
+        if(root==null) return false;
+        if(root.left!=null){
+            
+            if(hasPathSum(root.left,sum-root.val)) return true;
+        }
+        if(root.right!=null){
+            
+            if(hasPathSum(root.right,sum-root.val)) return true;
+        }
+        if(root.left==null && root.right==null && root.val==sum) return true;
+        
+        return false;
+    }
+    //332. Reconstruct Itinerary
+    public static HashMap<String,HashSet<String>> maps = new HashMap<>();
+    public List<String> findItinerary(String[][] tickets) {
+    	List<String> list = new ArrayList<>();
+    	if(tickets.length==0 || tickets[0].length==0) return list;
+    	maps = new HashMap<>();
+    	for(int i=0;i<tickets.length;i++){
+    		if(!maps.containsKey(tickets[i][0])){
+    			HashSet<String> t = new HashSet<>();
+    			t.add(tickets[i][1]);
+    			maps.put(tickets[i][0], t);
+    		}
+    		else {
+    			HashSet<String> t = maps.get(tickets[i][0]);
+    			if(!t.contains(tickets[i][1])){
+    				t.add(tickets[i][1]);
+    				maps.put(tickets[i][0], t);
+    			}
+    		}
+    	}
+        return null;
+    }
+    
+    public static void dfs_332(List<String> sol,String curr,int length,List<String> path,HashSet<String> visited){
+    	
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
