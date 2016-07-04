@@ -6828,30 +6828,107 @@ public class Solution {
         return false;
     }
     //332. Reconstruct Itinerary
-    public static HashMap<String,HashSet<String>> maps = new HashMap<>();
-    public List<String> findItinerary(String[][] tickets) {
+    public static HashMap<String,ArrayList<String>> maps = new HashMap<>();
+    public static List<String> findItinerary(String[][] tickets) {
     	List<String> list = new ArrayList<>();
     	if(tickets.length==0 || tickets[0].length==0) return list;
     	maps = new HashMap<>();
+    	HashSet<String> has = new HashSet<String>();
+    	int length = tickets.length+1;
     	for(int i=0;i<tickets.length;i++){
     		if(!maps.containsKey(tickets[i][0])){
-    			HashSet<String> t = new HashSet<>();
+    			ArrayList<String> t = new ArrayList<>();
     			t.add(tickets[i][1]);
     			maps.put(tickets[i][0], t);
     		}
     		else {
-    			HashSet<String> t = maps.get(tickets[i][0]);
-    			if(!t.contains(tickets[i][1])){
-    				t.add(tickets[i][1]);
-    				maps.put(tickets[i][0], t);
-    			}
+    			ArrayList<String> t = maps.get(tickets[i][0]);
+    			t.add(tickets[i][1]);
+    			maps.put(tickets[i][0], t);
     		}
     	}
-        return null;
+    	List<String> sol = new ArrayList<String>();
+    	sol.add("JFK");
+    	dfs_332(sol,length,"JFK");
+        return sol;
     }
     
-    public static void dfs_332(List<String> sol,String curr,int length,List<String> path,HashSet<String> visited){
+    public static boolean dfs_332(List<String> sol,int length,String curr){
+    	if(sol.size()==length){
+    		return true;
+    	}
+    	ArrayList<String> t = maps.get(curr);
+    	if(t==null) return false;
+    	Collections.sort(t);
+		for (int i=0;i<t.size();i++) {
+			String currs = t.get(i);
+			t.remove(i);
+			maps.put(curr,t);
+			sol.add(currs);
+			if (dfs_332(sol, length, currs))
+				return true;
+			sol.remove(sol.size() - 1);
+			t.add(i, currs);
+			maps.put(curr, t);
+
+		}
+    	return false;
     	
+    }
+    //332-2
+    public List<String> findItinerary2(String[][] tickets) {
+        for (String[] ticket : tickets)
+            targets.computeIfAbsent(ticket[0], k -> new PriorityQueue()).add(ticket[1]);
+        visit("JFK");
+        return route;
+    }
+
+    Map<String, PriorityQueue<String>> targets = new HashMap<>();
+    List<String> route = new LinkedList();
+
+    void visit(String airport) {
+        while(targets.containsKey(airport) && !targets.get(airport).isEmpty())
+            visit(targets.get(airport).poll());
+        route.add(0, airport);
+    }
+    //72. Edit Distance
+    public static int minDistance(String word1, String word2) {
+    	int [][] dp = new int[word1.length()+1][word2.length()+1];
+    	for(int i=0;i<=word1.length();i++)
+    		dp[i][0]=i;
+    	for(int i=0;i<=word2.length();i++)
+    		dp[0][i]=i;
+    	for(int i=1;i<=word1.length();i++)
+    		for(int j=1;j<=word2.length();j++){
+    			if(word1.charAt(i-1)==word2.charAt(j-1))
+    				dp[i][j] = dp[i-1][j-1];
+    			else 
+    				dp[i][j] = Math.min(dp[i][j-1], Math.min(dp[i-1][j],dp[i-1][j-1]))+1;
+    		}
+        return dp[word1.length()][word2.length()];
+    }
+  //174. Dungeon Game
+    public static int calculateMinimumHP(int[][] dungeon) {
+    	
+    	if(dungeon.length==0||dungeon[0].length==0) return 0;
+    	int [][] dp = new int[dungeon.length+1][dungeon[0].length+1];
+    	for(int i=0;i<dungeon.length;i++)
+    		Arrays.fill(dp[i], Integer.MIN_VALUE);
+    	int min = Integer.MAX_VALUE;
+    	for(int i=1;i<=dungeon.length;i++)
+    		for(int j=1;j<=dungeon[0].length;j++){
+    			if(i==0 && j==0) dp[0][0] = dungeon[0][0];
+    			else if(i==0){
+    				dp[0][j]=dp[0][j-1]+dungeon[0][j];
+    			}
+    			else if(j==0){
+    				dp[i][0]=dp[i][0]+dungeon[i][0];
+    			}
+    			else {
+    				dp[i][j] = Math.max(dp[i-1][j]+dungeon[i][j], dp[i][j-1]+dungeon[i][j]);
+    			}
+    		}
+        return min;
     }
 	public static void main(String[] args) {
 		
@@ -7352,7 +7429,18 @@ public class Solution {
 		s1.indexOf("ss");*/
 		/*int [] s = {4,5,5,5,6,7,8,1,2,3,3};
 		System.out.println(findMin2(s));*/
-		System.out.println(reverseVowels(""));
+		/*System.out.println(reverseVowels(""));*/
+		/*String[][] t = {
+				{"AXA","EZE"},{"EZE","AUA"},{"ADL","JFK"},{"ADL","TIA"},{"AUA","AXA"},{"EZE","TIA"},{"EZE","TIA"},{"AXA","EZE"},{"EZE","ADL"},{"ANU","EZE"},{"TIA","EZE"},{"JFK","ADL"},{"AUA","JFK"},{"JFK","EZE"},{"EZE","ANU"},{"ADL","AUA"},{"ANU","AXA"},{"AXA","ADL"},{"AUA","JFK"},{"EZE","ADL"},{"ANU","TIA"},{"AUA","JFK"},{"TIA","JFK"},{"EZE","AUA"},{"AXA","EZE"},{"AUA","ANU"},{"ADL","AXA"},{"EZE","ADL"},{"AUA","ANU"},{"AXA","EZE"},{"TIA","AUA"},{"AXA","EZE"},{"AUA","SYD"},{"ADL","JFK"},{"EZE","AUA"},{"ADL","ANU"},{"AUA","TIA"},{"ADL","EZE"},{"TIA","JFK"},{"AXA","ANU"},{"JFK","AXA"},{"JFK","ADL"},{"ADL","EZE"},{"AXA","TIA"},{"JFK","AUA"},{"ADL","EZE"},{"JFK","ADL"},{"ADL","AXA"},{"TIA","AUA"},{"AXA","JFK"},{"ADL","AUA"},{"TIA","JFK"},{"JFK","ADL"},{"JFK","ADL"},{"ANU","AXA"},{"TIA","AXA"},{"EZE","JFK"},{"EZE","AXA"},{"ADL","TIA"},{"JFK","AUA"},{"TIA","EZE"},{"EZE","ADL"},{"JFK","ANU"},{"TIA","AUA"},{"EZE","ADL"},{"ADL","JFK"},{"ANU","AXA"},{"AUA","AXA"},{"ANU","EZE"},{"ADL","AXA"},{"ANU","AXA"},{"TIA","ADL"},{"JFK","ADL"},{"JFK","TIA"},{"AUA","ADL"},{"AUA","TIA"},{"TIA","JFK"},{"EZE","JFK"},{"AUA","ADL"},{"ADL","AUA"},{"EZE","ANU"},{"ADL","ANU"},{"AUA","AXA"},{"AXA","TIA"},{"AXA","TIA"},{"ADL","AXA"},{"EZE","AXA"},{"AXA","JFK"},{"JFK","AUA"},{"ANU","ADL"},{"AXA","TIA"},{"ANU","AUA"},{"JFK","EZE"},{"AXA","ADL"},{"TIA","EZE"},{"JFK","AXA"},{"AXA","ADL"},{"EZE","AUA"},{"AXA","ANU"},{"ADL","EZE"},{"AUA","EZE"}
+		};
+		System.out.println(findItinerary(t));*/
+		/*System.out.println(minDistance("osdfasfsfe","poefowefoefe"));*/
+		int [][] s = {
+				{-2,-3,3},
+				{-5,-10,1},
+				{10,30,-5}
+		};
+		System.out.println(calculateMinimumHP(s));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
