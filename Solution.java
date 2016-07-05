@@ -6930,6 +6930,42 @@ public class Solution {
     		}
         return min;
     }
+    //102. Binary Tree Level Order Traversal
+    public static List<List<Integer>> levelOrder(TreeNode root) {
+    	List<List<Integer>> sol = new ArrayList<List<Integer>>();
+    	if(root == null) return sol;
+    	List<TreeNode> list = new ArrayList<>();
+    	
+    	list.add(root);
+    	while(!list.isEmpty()){
+    		List<TreeNode> tlist = new ArrayList<TreeNode>();
+    		List<Integer> tsol = new ArrayList<>();
+    		for(TreeNode t:list){
+    			tsol.add(t.val);
+    			if(t.left!=null)
+    				tlist.add(t.left);
+    			if(t.right!=null)
+    				tlist.add(t.right);
+    		}
+    		sol.add(tsol);
+    		list = tlist;
+    	}
+        return sol;
+    }
+    //102-2
+    public List<List<Integer>> levelOrder2(TreeNode root) {
+        List<List<Integer>> levels = new ArrayList<>();
+        levelOrder(root, 0, levels);
+        return levels;
+    }
+
+    public void levelOrder(TreeNode node, int level, List<List<Integer>> levels) {
+        if (node == null) return;
+        if (levels.size() == level) levels.add(new ArrayList<>());
+        levels.get(level++).add(node.val);
+        levelOrder(node.left, level, levels);
+        levelOrder(node.right, level, levels);
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -7435,12 +7471,19 @@ public class Solution {
 		};
 		System.out.println(findItinerary(t));*/
 		/*System.out.println(minDistance("osdfasfsfe","poefowefoefe"));*/
-		int [][] s = {
+/*		int [][] s = {
 				{-2,-3,3},
 				{-5,-10,1},
 				{10,30,-5}
 		};
-		System.out.println(calculateMinimumHP(s));
+		System.out.println(calculateMinimumHP(s));*/
+		TreeNode t = new TreeNode(1);
+		t.left = new TreeNode(2);
+		t.right = new TreeNode(3);
+		t.left.left = new TreeNode(11);
+		t.right.left = new TreeNode(13);
+		t.right.right = new TreeNode(4);
+		System.out.println(levelOrder(t));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
