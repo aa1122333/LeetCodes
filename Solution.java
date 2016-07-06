@@ -6966,6 +6966,30 @@ public class Solution {
         levelOrder(node.left, level, levels);
         levelOrder(node.right, level, levels);
     }
+    //349. Intersection of Two Arrays
+    public static int[] intersection(int[] nums1, int[] nums2) {
+    	if(nums1.length==0 || nums2.length==0) return new int[0];
+    	HashSet<Integer> set = new HashSet<Integer>();
+    	HashSet<Integer> sol = new HashSet<Integer>();
+    	for(int s:nums1){
+    		if(!set.contains(s))
+    			set.add(s);
+    	}
+    	for(int s:nums2){
+    		if(set.contains(s))
+    			sol.add(s);
+    	}
+    	int [] intersetion = new int[sol.size()];
+    	int index = 0;
+    	for(int i:sol)
+    		intersetion[index++] = i;
+        return intersetion;
+    }
+    //235. Lowest Common Ancestor of a Binary Search Tree
+    public TreeNode lowestCommonAncestor2(TreeNode root, TreeNode p, TreeNode q) {
+    	
+        return new TreeNode(1);
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -7477,13 +7501,18 @@ public class Solution {
 				{10,30,-5}
 		};
 		System.out.println(calculateMinimumHP(s));*/
-		TreeNode t = new TreeNode(1);
+/*		TreeNode t = new TreeNode(1);
 		t.left = new TreeNode(2);
 		t.right = new TreeNode(3);
 		t.left.left = new TreeNode(11);
 		t.right.left = new TreeNode(13);
 		t.right.right = new TreeNode(4);
-		System.out.println(levelOrder(t));
+		System.out.println(levelOrder(t));*/
+		int s[] = {1,1,2,5,4,3,3,2};
+		int t[] = {1,2,2,2,3};
+		int []y = intersection(s,t);
+		for(int i:y)
+		System.out.println(i);
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
