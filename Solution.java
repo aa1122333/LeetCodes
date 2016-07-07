@@ -6986,9 +6986,150 @@ public class Solution {
         return intersetion;
     }
     //235. Lowest Common Ancestor of a Binary Search Tree
-    public TreeNode lowestCommonAncestor2(TreeNode root, TreeNode p, TreeNode q) {
+    public static TreeNode lowestCommonAncestor2(TreeNode root, TreeNode p, TreeNode q) {
+    	if(root == null || root.val==p.val || root.val == q.val) return root;
+    	if(p.val>q.val){
+    		TreeNode t = p;
+    		p = q;
+    		q = t;
+    	}
+    	if(root.val<p.val) return lowestCommonAncestor2(root.right, p, q);
+    	else if(root.val >q.val) return lowestCommonAncestor2(root.left, p, q);
+    	else {
+    		TreeNode t1 = lowestCommonAncestor2(root.left, p, q);
+    		TreeNode t2 = lowestCommonAncestor2(root.right, p, q);
+    		return t1==null?t2:t2==null?t1:root;
+    	}
+    }
+    //32. Longest Valid Parentheses
+    public static int longestValidParentheses(String s) {
+    	int sum = 0;
+    	Stack<Integer> index = new Stack<Integer>();
+    	Stack<Character> stack = new Stack<>();
+    	char[] str = s.toCharArray();
+    	index.push(-1);
+    	stack.push('|');
+    	for(int i=0;i<str.length;i++){
+    		if(str[i]==')' && stack.peek()=='('){
+    			stack.pop();
+    			index.pop();
+    			sum = Math.max(sum, i-index.peek());
+    		}
+    		else{
+    			stack.push(str[i]);
+    			index.push(i);
+    		}
+    	}
+        return sum;
+    }
+    
+    public int longestValidParentheses2(String s) {
+		int max = 0, left = 0, len = s.length();
+		int[] ans = new int[len];
+		int[] leftans = new int[len+10];
+		for(int i=0;i<len;i++){
+			if(s.charAt(i) == '('){
+				leftans[++left] = 0;
+			}
+			else{
+				if(left!=0){
+					ans[i] = ans[i-1]+2+leftans[left];
+					if(ans[i] > max) max = ans[i];
+					left--;
+					if(i+1<len && s.charAt(i+1) == '('){
+						leftans[++left] = ans[i++];
+					}
+				}else{
+					ans[i] = 0 ;
+				}
+			}
+		}
+		return max;
+	}
+    //299. Bulls and Cows
+    public static String getHint(String secret, String guess) {
+    	HashMap<Character,Integer> map = new HashMap<>();
+    	char []s = secret.toCharArray();
+    	char []g = guess.toCharArray();
+    	int A = 0;
+    	int B = 0;
+    	boolean [] same = new boolean[s.length];
+    	for(int i=0;i<s.length;i++){
+    		if(s[i]==g[i]){
+    			A++;
+    			same[i] = true;
+    		}
+    		else {
+    			if(!map.containsKey(s[i])){
+    				map.put(s[i], 1);
+        		}
+        		else {
+        			map.put(s[i], map.get(s[i])+1);
+        		}
+    		}
+    	}
+    	for(int i=0;i<s.length;i++){
+    		if(!same[i]){
+    			if(map.containsKey(g[i])){
+    				B++;
+    				int t = map.get(g[i])-1;
+    				if(t==0)
+    					map.remove(g[i]);
+    				else 
+    					map.put(g[i], t);
+    			}
+    		}
+    	}
     	
-        return new TreeNode(1);
+        return A+"A"+B+"B";
+    }
+    //299-2
+    public static String getHint2(String secret, String guess) {
+    	int [] nums = new int[10];
+    	char []s = secret.toCharArray();
+    	char []g = guess.toCharArray();
+    	int A = 0;
+    	int B = 0;
+    	boolean [] same = new boolean[s.length];
+    	for(int i=0;i<s.length;i++){
+    		if(s[i]==g[i]){
+    			A++;
+    			same[i] = true;
+    		}
+    		else {
+    			nums[s[i]-'0']++;
+    		}
+    	}
+    	for(int i=0;i<s.length;i++){
+    		if(!same[i]){
+    			if(nums[g[i]-'0']!=0){
+    				nums[g[i]-'0']--;
+    				B++;
+    			}
+    		}
+    	}
+		return A+"A"+B+"B";
+    }
+    //29. Divide Two Integers
+    public static int divide(int dividend, int divisor) {
+    	if(divisor==1) return dividend;
+    	if(dividend==0) return 0;
+    	if(divisor==0 || (dividend==Integer.MIN_VALUE&&divisor==-1)) return Integer.MAX_VALUE;
+    	int sign = (((divisor<0)^(dividend<0))?-1:1);
+    	long s1 = Math.abs((long)divisor);
+    	long s2 = Math.abs((long)dividend);
+    	long sol = 0;
+    	while(s2>=s1){
+    		long tmp = s1;
+    		long t = 1;
+    		while(s2>(tmp<<1)){
+    			t<<=1;
+    			tmp<<=1;
+    		}
+    		s2-=tmp;
+    		sol+=t;
+    	}
+    	return (int)(sol*sign);
     }
 	public static void main(String[] args) {
 		
@@ -7508,11 +7649,27 @@ public class Solution {
 		t.right.left = new TreeNode(13);
 		t.right.right = new TreeNode(4);
 		System.out.println(levelOrder(t));*/
-		int s[] = {1,1,2,5,4,3,3,2};
+		/*int s[] = {1,1,2,5,4,3,3,2};
 		int t[] = {1,2,2,2,3};
 		int []y = intersection(s,t);
 		for(int i:y)
-		System.out.println(i);
+		System.out.println(i);*/
+		/*TreeNode t = new TreeNode(6);
+		t.left = new TreeNode(2);
+		t.right = new TreeNode(8);
+		t.left.left = new TreeNode(0);
+		t.right.left = new TreeNode(7);
+		t.right.right = new TreeNode(9);
+		t.left.right = new TreeNode(4);
+		t.left.right.right = new TreeNode(5);
+		t.left.right.left = new TreeNode(3);
+		TreeNode t1 = new TreeNode(3);
+		TreeNode t2 = new TreeNode(5);
+		TreeNode t3 = new TreeNode(0);
+		System.out.println(lowestCommonAncestor2(t3,t1,t2).val);*/
+		/*System.out.println(longestValidParentheses("))((()(()()))))"));*/
+		/*System.out.println(getHint("1123","0111"));*/
+		System.out.println(divide(6,3));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
