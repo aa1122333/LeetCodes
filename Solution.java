@@ -7131,6 +7131,115 @@ public class Solution {
     	}
     	return (int)(sol*sign);
     }
+    //101. Symmetric Tree
+    public static boolean isSymmetric(TreeNode root) {
+    	if(root == null) return true;
+		return isSym(root.left, root.right);
+    }
+    
+    public static boolean isSym(TreeNode left,TreeNode right){
+    	if(left==null && right==null) return true;
+    	if((left==null && right!=null)||left!=null && right==null) return false;
+    	if(left.val!=right.val){
+    		return false;
+    	}
+    	return isSym(left.left,right.right)&&isSym(left.right, right.left);
+    }
+    //143. Reorder List
+    public static void reorderList(ListNode head) {
+    	ListNode bNode = head, fNode = head;
+        while(fNode != null && fNode.next != null){
+            fNode = fNode.next.next;
+            bNode = bNode.next;
+        }
+        if(bNode == null || bNode.next == null) return;
+        fNode = bNode.next;
+        //reverse the last half of the linklist eg:1,2,3,4,5,6,7,8 => 1,2,3,4,5,8,7,6 
+        while(fNode != null && fNode.next != null){
+            ListNode tmp = fNode.next;
+            fNode.next = tmp.next;
+            tmp.next = bNode.next;
+            bNode.next = tmp;
+        }
+        fNode = bNode.next;//fnode point to the reversed half list fnode->8->7->6->null
+        bNode.next = null;
+        bNode = head;
+        while(fNode != null){
+            ListNode tmp = fNode.next;
+            fNode.next = bNode.next;
+            bNode.next = fNode;
+            bNode = fNode.next;
+            fNode = tmp;
+        }
+    }
+    //310. Minimum Height Trees
+    public static List<Integer> findMinHeightTrees(int n, int[][] edges) {
+    	if(n==1) return Collections.singletonList(0);
+    	List<Set<Integer>> sets = new ArrayList<>(n);
+    	for(int i=0;i<n;i++) sets.add(i, new HashSet<>());
+    	for(int[] edge:edges){
+    		sets.get(edge[0]).add(edge[1]);
+    		sets.get(edge[1]).add(edge[0]);
+    	}
+    	List<Integer> lf = new ArrayList<>();
+    	for(int i=0;i<sets.size();i++){
+    		if(sets.get(i).size()==1)
+    			lf.add(i);
+    	}
+    	while(n>2){
+    		n-=lf.size();
+    		List<Integer> tmp = new ArrayList<>();
+    		for(int curr:lf){
+    			int t=sets.get(curr).iterator().next();
+    			sets.get(t).remove(curr);
+    			if(sets.get(t).size()==1) tmp.add(t);
+    		}
+    		lf = tmp;
+    	}
+        return lf;
+    }
+    //35. Search Insert Position
+    public static int searchInsert(int[] nums, int target) {
+    	if(nums.length==0) return 0;
+    	int start = 0;
+    	int end = nums.length;
+    	while(start<end){
+    		int mid = start+ (end-start)/2;
+    		if(nums[mid]==target)
+    			return mid;
+    		else if(nums[mid]<target){
+    			if(mid<nums.length-1 && nums[mid+1]>target) 
+    				return mid+1;
+    			start = mid+1;
+    		}
+    		else {
+    			if(mid>0 && nums[mid-1]<target)
+    				return mid;
+    			end = mid-1;
+    		}
+    	}
+    	
+    	if(start==nums.length) return nums.length;
+    	if(nums[start]>target){
+    		if(start==0) return 0;
+    		return start-1;
+    	}
+    	else if(nums[start]==target) return start;
+    	else return start+1;
+    }
+    //75. Sort Colors
+    public void sortColors(int[] nums) {
+    	int r = 0;
+    	int w = 0;
+    	int b = 0;
+        for(int i=0;i<nums.length;i++){
+        	switch(nums[i]){
+        		case 0: r++;break;
+        		case 1: w++;break;
+        		case 2: b++;break;
+        	}
+        }
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -7669,7 +7778,34 @@ public class Solution {
 		System.out.println(lowestCommonAncestor2(t3,t1,t2).val);*/
 		/*System.out.println(longestValidParentheses("))((()(()()))))"));*/
 		/*System.out.println(getHint("1123","0111"));*/
-		System.out.println(divide(6,3));
+		/*System.out.println(divide(6,3));*/
+		/*TreeNode t = new TreeNode(1);
+		t.left = new TreeNode(2);
+		t.right = new TreeNode(2);
+		t.left.left = new TreeNode(3);
+		t.right.left = new TreeNode(4);
+		t.right.right = new TreeNode(3);
+		System.out.println(isSymmetric(t));*/
+		/*ListNode root = new ListNode(1);
+		root.next = new ListNode(2);
+		root.next.next = new ListNode(3);
+		root.next.next.next= new ListNode(4);
+		root.next.next.next.next = new ListNode(5);
+		root.next.next.next.next.next = new ListNode(6);
+		root.next.next.next.next.next.next = new ListNode(7);
+		root.next.next.next.next.next.next.next = new ListNode(8);
+		reorderList(root);*/
+		/*int [][] s = {
+				{0,3},
+				{1,3},
+				{2,3},
+				{4,3},
+				{5,4}
+		};
+		System.out.println(findMinHeightTrees(6,s));*/
+		int []s = {1,3,5,9,12};
+		for(int i=0;i<15;i++)
+		System.out.println(i+":"+searchInsert(s,i));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
