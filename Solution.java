@@ -7228,7 +7228,7 @@ public class Solution {
     	else return start+1;
     }
     //75. Sort Colors
-    public void sortColors(int[] nums) {
+    public static void sortColors(int[] nums) {
     	int r = 0;
     	int w = 0;
     	int b = 0;
@@ -7239,6 +7239,313 @@ public class Solution {
         		case 2: b++;break;
         	}
         }
+        int [] sol = new int[nums.length];
+        b = w+r;
+        w = r;
+        r = 0;
+        int index=0;
+        for(int i=0;i<nums.length;i++){
+        	if(nums[i]==0){
+        		sol[r++]=0;
+        	}
+        	else if(nums[i]==1){
+        		sol[w++]=1;
+        	}
+        	else {
+        		sol[b++]=2;
+        	}
+        }
+        for(int i=0;i<nums.length;i++)
+        	nums[i] = sol[i];
+    }
+    
+    //37. Sudoku Solver https://discuss.leetcode.com/topic/50252/share-my-3ms-java-solution
+    public void solveSudoku(char[][] board) {
+        //9rows+9columns+9blocks
+        int[] checkers = new int[27];
+        List<Integer> emptyList = new ArrayList<Integer>(81);
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] != '.') {
+                    fillNum(checkers, i, j, getCharValue(board[i][j]));
+                } else {
+                    //save empty row&column
+                    emptyList.add(i * 9 + j);
+                }
+            }
+        }
+
+        int count = emptyList.size();
+        if (count > 0) {
+            int[] empty = new int[count];
+            for (int i = 0; i < count; i++) {
+                empty[i] = emptyList.get(i);
+            }
+            solveSudoku(checkers, board, empty, count);
+        }
+    }
+
+    private boolean solveSudoku(int[] checkers, char[][] board, int[] empty, int count) {
+        while (count > 0) {
+            int k = 0;
+            for (; k < count; k++) {
+                int idx = empty[k];
+                int i = idx / 9;
+                int j = idx % 9;
+                int num = getUniqueNum(checkers, i, j);
+                //fill unique number
+                if (num > 0) {
+                    empty[k] = empty[count - 1];
+                    empty[count - 1] = -1;
+                    fillNum(checkers, i, j, num);
+                    board[i][j] = getChar(num);
+                    count--;
+                    break;
+                } else if (num == -1) {
+                    return false;
+                }
+            }
+            if (count != 0 && k == count) {
+                int idx = empty[count - 1];
+                int i = idx / 9;
+                int j = idx % 9;
+                List<Integer> vals = getAvailableNum(checkers, i, j);
+                for (Integer val : vals) {
+                    char[][] tmpBoard = new char[9][9];
+                    copyBoard(tmpBoard, board);
+                    int[] tmpCheckers = checkers.clone();
+                    int[] tmpEmpty = empty.clone();
+                    tmpBoard[i][j] = getChar(val);
+                    fillNum(tmpCheckers, i, j, val);
+                    if (solveSudoku(tmpCheckers, tmpBoard, tmpEmpty, count - 1)) {
+                        copyBoard(board, tmpBoard);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
+    void copyBoard(char[][] dest, char[][] source) {
+        for (int i = 0; i < 9; i++) {
+            dest[i] = source[i].clone();
+        }
+    }
+
+    private List<Integer> getAvailableNum(int[] checkers, int i, int j) {
+        int[] idxs = getIndexs(i, j);
+        int val = checkers[idxs[0]] | checkers[idxs[1]] | checkers[idxs[2]];
+        List<Integer> result = new ArrayList<Integer>();
+        for (int k = 1; k <= 9; k++) {
+            if ((val & (1 << k)) >> k != 1) {
+                result.add(k);
+            }
+        }
+        return result;
+    }
+
+    private int getUniqueNum(int[] checkers, int i, int j) {
+        int[] idxs = getIndexs(i, j);
+        int val = checkers[idxs[0]] | checkers[idxs[1]] | checkers[idxs[2]];
+        if (val == 1022) {
+            //invalid board
+            return -1;
+        }
+        for (int k = 1; k <= 9; k++) {
+            if ((val & (1 << k)) >> k != 1) {
+                if ((val >> (k + 1)) == (1 << (9 - k)) - 1) {
+                    return k;
+                } else {
+                    break;
+                }
+            }
+        }
+        //multi-number
+        return 0;
+    }
+
+    private void fillNum(int[] checkers, int i, int j, int num) {
+        int[] idxs = getIndexs(i, j);
+        checkers[idxs[0]] |= (1 << num);
+        checkers[idxs[1]] |= (1 << num);
+        checkers[idxs[2]] |= (1 << num);
+    }
+
+    private int[] getIndexs(int i, int j) {
+        return new int[] { i, 9 + j, 18 + (i / 3 * 3 + j / 3) };
+    }
+
+    private int getCharValue(char i) {
+        if (i == '.') {
+            return 0;
+        } else {
+            return i - '1' + 1;
+        }
+    }
+
+    private char getChar(int i) {
+        return (char) ('1' - 1 + i);
+    }
+    //23. Merge k Sorted Lists
+    //TLE
+    public static ListNode mergeKLists(ListNode[] lists) {
+    	
+    	if(lists==null || lists.length==0) return null;
+    	int k = lists.length;
+    	if(k==1) return lists[0];
+    	
+    	int index = 0;
+    	ListNode sol = lists[0];
+    	while(++index<k && sol==null)
+    		sol = lists[index];
+    	for(int i=index;i<k;i++){
+    		ListNode l1 = sol;
+    		ListNode l2 = lists[i];
+    		if(l2==null) continue;
+    		ListNode t = new ListNode(0);
+    		ListNode t1 = t;
+    		while(l1!=null && l2!=null){
+    			if(l1.val>l2.val){
+    				t.next = l2;
+    				t = t.next;
+    				l2 = l2.next;
+    			}
+    			else {
+    				t.next = l1;
+    				t = t.next;
+    				l1 = l1.next;
+    			}
+    		}
+    		if(l1!=null) t.next = l1;
+    		if(l2!=null) t.next = l2;
+    		while(t.next!=null) t = t.next;
+    		sol = t1.next;
+    	}
+        return sol;
+    }
+	public static ListNode mergeKLists2(ListNode[] lists) {
+	    	
+	    	if(lists==null || lists.length==0) return null;
+	    	int k = lists.length;
+	    	if(k==1) return lists[0];
+	    	if(lists.length==2)
+	    		 return merge2List(lists[0], lists[1]);
+	    	ListNode s1 = mergeKLists2(copyList(lists, 0, k/2));
+	    	ListNode s2 = mergeKLists2(copyList(lists, k/2, k));
+	    	return merge2List(s1, s2);
+	}
+	public static ListNode[] copyList(ListNode[] lists, int start, int end) {
+        if (start >= end || end > lists.length) {
+            return null;
+        }
+
+        ListNode[] result = new ListNode[end - start];
+        int index = 0;
+        for (int i = start; i < end; i++) {
+            result[index] = lists[i];
+            index++;
+        }
+
+        return result;
+    }
+    public static ListNode merge2List(ListNode root1,ListNode root2){
+    	if(root1==null) return root2;
+    	if(root2==null) return root1;
+    	ListNode sol = new ListNode(0);
+    	ListNode curr = sol;
+    	while(root1!=null && root2!=null){
+			if(root1.val>root2.val){
+				curr.next = root2;
+				curr = curr.next;
+				root2 = root2.next;
+			}
+			else {
+				curr.next = root1;
+				curr = curr.next;
+				root1 = root1.next;
+			}
+		}
+    	if(root1!=null) curr.next = root1;
+		if(root2!=null) curr.next = root2;
+    	return sol.next;
+    }
+    //129. Sum Root to Leaf Numbers
+    public static int sum_129 = 0; 
+    public static int sumNumbers(TreeNode root) {
+    	if(root == null) return 0;
+    	sumNum(root, 0);
+        return sum_129;
+    }
+    
+    public static void sumNum(TreeNode root,int curr){
+    	int t = curr*10+root.val;
+    	if(root.left==null && root.right==null){
+    		sum_129 += t;
+    	}
+    	else {
+    		if(root.left!=null)
+    			sumNum(root.left, t);
+    		if(root.right!=null)
+    			sumNum(root.right, t);
+    	}
+    	
+    }
+    //318. Maximum Product of Word Lengths
+    public static int maxProduct(String[] words) {
+    	if(words==null || words.length==0) return 0;
+    	int length = words.length;
+    	int [] val = new int[length];
+    	for(int i=0;i<length;i++){
+    		String t = words[i];
+    		val[i] = 0;
+    		for(int j=0;j<t.length();j++){
+    			val[i] |= 1<<(t.charAt(j)-'a');
+    		}
+    	}
+    	int max = 0;
+    	for(int i=0;i<length;i++)
+    		for(int j=i+1;j<length;j++)
+    			if((val[i]&val[j])==0 && (words[i].length()*words[j].length()>max))
+    				max = words[i].length()*words[j].length();
+        return max;
+    }
+    //4. Median of Two Sorted Arrays
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+    	int len1 = nums1.length;
+        int len2 = nums2.length;
+        boolean isEven = ((len1+len2)%2==0);
+        if (len1>len2){
+            return findMedianSortedArrays(nums2, nums1);
+        }
+
+        if (len1==0) return isEven? (nums2[len2/2]+nums2[(len2/2)-1])/2.0:(double)nums2[len2/2];
+       
+        int start = 0, end = len1, mid = (len1+len2+1)/2;
+        while (start<=end){
+            int i = start+(end-start)/2;
+            int j = mid-i;
+            
+            if (j>=1 && i<len1 && nums2[j-1]>nums1[i]) start=i+1;
+            else if (i>=1 && j<len2 && nums1[i-1]>nums2[j]) end=i-1;
+            else {
+                int min_right = 0;
+                int max_left = 0;
+                
+                if (j == 0) max_left = nums1[i-1];
+                else if (i == 0) max_left = nums2[j-1];
+                else max_left = Math.max(nums1[i-1], nums2[j-1]);
+                
+                if (j == len2) min_right = nums1[i];
+                else if (i == len1) min_right = nums2[j];
+                else min_right = Math.min(nums1[i],nums2[j]);
+               
+                if (isEven) return (min_right+max_left)/2.0; 
+                else return (double)max_left;
+            }
+        }
+        return 0.0;
     }
 	public static void main(String[] args) {
 		
@@ -7803,9 +8110,53 @@ public class Solution {
 				{5,4}
 		};
 		System.out.println(findMinHeightTrees(6,s));*/
-		int []s = {1,3,5,9,12};
+		/*int []s = {1,3,5,9,12};
 		for(int i=0;i<15;i++)
-		System.out.println(i+":"+searchInsert(s,i));
+		System.out.println(i+":"+searchInsert(s,i));*/
+		/*int []s = {1,0};
+		sortColors(s);*/
+		/*ListNode root = new ListNode(1);
+		root.next = new ListNode(3);
+		root.next.next = new ListNode(4);
+		root.next.next.next= new ListNode(8);
+		root.next.next.next.next = new ListNode(11);
+		root.next.next.next.next.next = new ListNode(21);
+		root.next.next.next.next.next.next = new ListNode(24);
+		root.next.next.next.next.next.next.next = new ListNode(41);
+		ListNode root2 =new ListNode(0);
+		root2.next = new ListNode(2);
+		root2.next.next = new ListNode(5);
+		root2.next.next.next= new ListNode(9);
+		root2.next.next.next.next = new ListNode(14);
+		root2.next.next.next.next.next = new ListNode(16);
+		root2.next.next.next.next.next.next = new ListNode(27);
+		root2.next.next.next.next.next.next.next = new ListNode(29);
+		ListNode root3 = new ListNode(1);
+		root3.next = new ListNode(2);
+		root3.next.next = new ListNode(8);
+		root3.next.next.next= new ListNode(15);
+		root3.next.next.next.next = new ListNode(16);
+		root3.next.next.next.next.next = new ListNode(22);
+		root3.next.next.next.next.next.next = new ListNode(25);
+		root3.next.next.next.next.next.next.next = new ListNode(59);
+		ListNode[]s= new ListNode[3];
+		s[0] = root;
+		s[1] = root2;
+		s[2] = root3;
+		ListNode t = null;
+		System.out.println(t = mergeKLists2(s));*/
+		TreeNode t = new TreeNode(0);
+		t.left = new TreeNode(1);
+	/*	t.right = new TreeNode(8);
+		t.left.left = new TreeNode(0);
+		t.right.left = new TreeNode(7);
+		t.right.right = new TreeNode(9);*/
+		/*System.out.println(sumNumbers(t));*/
+		String [] s = {
+				"abcw", "baz", "foo", "bar", "xtfn", "abcdef"
+
+		};
+		System.out.println(maxProduct(s));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
