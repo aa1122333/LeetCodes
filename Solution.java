@@ -7547,6 +7547,41 @@ public class Solution {
         }
         return 0.0;
     }
+    //282. Expression Add Operators
+    public static List<String> addOperators(String num, int target) {
+    	List<String> sol = new ArrayList<>();
+    	if(num.length()==0) return sol;
+    	char [] path = new char[num.length()*2-1];
+    	char[]digits = num.toCharArray();
+    	long t = 0;
+    	for(int i=0;i<digits.length;i++){
+    		t = t*10+digits[i]-'0';
+    		path[i] = digits[i];
+    		dvd(sol, path, i+1, 0, t, digits, i+1, target);
+    		if(t==0) break;
+    	}
+    	
+    	return sol;
+    }
+    public static void dvd(List<String> sol,char[]path,int len,long left,long curr,char[]digits,int pos,int target){
+    	if(pos==digits.length){
+    		if(left+curr==target) sol.add(new String(path,0,len));
+    		return ;
+    	}
+    	long t = 0;
+    	int j = len + 1;
+    	for(int i=pos;i<digits.length;i++){
+    		t = t*10+digits[i]-'0';
+    		path[j++] = digits[i];
+    		path[len] = '+';
+    		dvd(sol, path, j, left+curr, t, digits, i+1, target);
+    		path[len] = '-';
+    		dvd(sol, path, j, left+curr, -t, digits, i+1, target);
+    		path[len] = '*';
+    		dvd(sol, path, j, left, curr*t, digits, i+1, target);
+    		if(digits[pos]=='0') break;
+    	}
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -8152,11 +8187,12 @@ public class Solution {
 		t.right.left = new TreeNode(7);
 		t.right.right = new TreeNode(9);*/
 		/*System.out.println(sumNumbers(t));*/
-		String [] s = {
+		/*String [] s = {
 				"abcw", "baz", "foo", "bar", "xtfn", "abcdef"
 
 		};
-		System.out.println(maxProduct(s));
+		System.out.println(maxProduct(s));*/
+		System.out.println(addOperators("105",5));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
