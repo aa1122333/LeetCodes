@@ -7582,6 +7582,70 @@ public class Solution {
     		if(digits[pos]=='0') break;
     	}
     }
+    //99. Recover Binary Search Tree
+    public void recoverTree(TreeNode root) {
+    	Deque<TreeNode> stack = new LinkedList<>();
+        boolean firstTime = true;
+        TreeNode m = null, n = null, pre = null;
+        while (true) {
+            while (root != null) {
+                stack.push(root);
+                root = root.left;
+            }
+            if (stack.isEmpty()) {
+                break;
+            }
+            TreeNode node = stack.pop();
+            if (pre != null && pre.val > node.val) {
+                if (firstTime) {
+                    m = pre;
+                    firstTime = false;
+                }
+                n = node;
+            }
+            pre = node;
+            root = node.right;
+        }
+        int tmp = m.val;
+        m.val = n.val;
+        n.val = tmp;
+    }
+    //20. Valid Parentheses
+    public static boolean isValid(String s) {
+        if(s.length()==0) return true;
+        Stack<Character> stack = new Stack<Character>();
+        char[] str = s.toCharArray();
+        for(int i=0;i<str.length;i++){
+        	if(str[i]=='{'||str[i]=='['||str[i]=='(')
+        		stack.add(str[i]);
+        	else if((str[i]=='}'||str[i]==']'||str[i]==')')&&stack.isEmpty())
+        		return false;
+        	else if(str[i]==')'  && stack.pop()!='(')
+        		return false;
+        	else if(str[i]=='}'  && stack.pop()!='{')
+        		return false;
+        	else if(str[i]==']'  && stack.pop()!='[')
+        		return false;
+        }
+        if(stack.isEmpty()) return true;
+        return false;
+    }
+    //226. Invert Binary Tree
+    public static TreeNode invertTree(TreeNode root) {
+    	if(root == null ) return root;
+    	if(root.left!=null) root.left = invertTree(root.left);
+    	if(root.right!=null) root.right = invertTree(root.right);
+    	TreeNode t = root.right;
+    	root.right = root.left;
+    	root.left = t;
+        return root;
+    }
+    //326. Power of Three
+    public static boolean isPowerOfThree(int n) {
+        int [] s = {1, 3, 9, 27, 81, 243, 729, 2187, 6561, 19683, 59049, 177147, 531441, 1594323, 4782969, 14348907, 43046721, 129140163, 387420489, 1162261467};
+        if(Arrays.binarySearch(s, n)<0) return false;
+        else return true;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -8180,9 +8244,9 @@ public class Solution {
 		s[2] = root3;
 		ListNode t = null;
 		System.out.println(t = mergeKLists2(s));*/
-		TreeNode t = new TreeNode(0);
+		/*TreeNode t = new TreeNode(0);
 		t.left = new TreeNode(1);
-	/*	t.right = new TreeNode(8);
+		t.right = new TreeNode(8);
 		t.left.left = new TreeNode(0);
 		t.right.left = new TreeNode(7);
 		t.right.right = new TreeNode(9);*/
@@ -8192,7 +8256,19 @@ public class Solution {
 
 		};
 		System.out.println(maxProduct(s));*/
-		System.out.println(addOperators("105",5));
+		/*System.out.println(addOperators("105",5));*/
+		/*System.out.println(isValid("())"));*/
+		/*TreeNode t = new TreeNode(4);
+		t.left = new TreeNode(2);
+		t.right = new TreeNode(7);
+		t.left.left = new TreeNode(1);
+		t.left.right = new TreeNode(3);
+		t.left.right.left = new TreeNode(5);
+		t.left.right.right = new TreeNode(8);
+		t.right.left = new TreeNode(6);
+		t.right.right = new TreeNode(9);
+		System.out.println(t = invertTree(t));*/
+		System.out.println(isPowerOfThree(9));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
