@@ -7646,6 +7646,94 @@ public class Solution {
         if(Arrays.binarySearch(s, n)<0) return false;
         else return true;
     }
+    //306. Additive Number
+    public boolean isAdditiveNumber(String num) {
+    	if(num.length()==0) return false;
+    	
+    	for(int i=1;i<num.length()/2;i++){
+    		for(int j=1;Math.max(i, j)<num.length()-i-j;j++){
+    			if(isValid(i, j, num)) return true;
+    		}
+    	}
+        return false;
+    }
+    
+    public static boolean isValid(int i,int j,String num){
+    	if(num.charAt(0)=='0' && i>1) return false;
+    	if(num.charAt(i)=='0' && j>1) return false;
+    	String curr = "";
+    	Long s1 = Long.parseLong(num.substring(0, i));
+    	Long s2 = Long.parseLong(num.substring(i,i+j));
+    	for(int n=i+j;n<num.length();n+=curr.length()){
+    		s2 = s1+s2;
+    		s1 = s2-s1;
+    		curr = s2.toString();
+    		if(!num.startsWith(curr, n)) return false;
+    	}
+    	return true;
+    }
+    //160. Intersection of Two Linked Lists
+    public static ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if(headA==null || headB==null) return null;
+        int a = 0;
+        int b = 0;
+        ListNode t = headA;
+        while(t!=null){
+        	t = t.next;
+        	a++;
+        }
+        t = headB;
+        while(t!=null){
+        	t = t.next;
+        	b++;
+        }
+        boolean flag = false;
+        if(a<b){
+        	int s = b;
+        	b = a;
+        	a = s;
+        	flag = true;
+        }
+        ListNode t2 = headB;
+        t = headA;
+        for(int i=0;i<a-b;i++){
+        	if(flag)
+        		t2 = t2.next;
+        	else
+        		t=t.next;
+        }
+        while(t!=null && t2!=null){
+        	if(t==t2)
+        		return t;
+        	t=t.next;
+        	t2=t2.next;
+        }
+        return null;
+    }
+    //71. Simplify Path
+    public static String simplifyPath(String path) {
+    	if(path.length()==0) return  "/";
+    	String [] strs = path.split("/");
+    	Stack<String> s = new Stack<String>();
+    	for(int i=0;i<strs.length;i++){
+    		String tst = strs[i].trim();
+    		if(tst.equals(".")) continue;
+    		else if(tst.equals("..")){
+    			if(!s.isEmpty())
+    				s.pop();
+    		}
+    		else if(tst.length()==0)
+    			continue;	
+    		else s.push(tst);
+    	}
+    	String sol = "";
+    	if(!s.isEmpty())
+    		sol = s.pop();
+    	while(!s.isEmpty()){
+    		sol = s.pop()+"/"+sol;
+    	}
+        return "/"+sol;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -8268,7 +8356,17 @@ public class Solution {
 		t.right.left = new TreeNode(6);
 		t.right.right = new TreeNode(9);
 		System.out.println(t = invertTree(t));*/
-		System.out.println(isPowerOfThree(9));
+		/*System.out.println(isPowerOfThree(9));*/
+		/*ListNode root3 = new ListNode(1);
+		root3.next = new ListNode(2);
+		root3.next.next = new ListNode(8);
+		root3.next.next.next= new ListNode(15);
+		root3.next.next.next.next = new ListNode(16);
+		ListNode root = new ListNode(1);
+		root.next = new ListNode(3);
+		
+		System.out.println(getIntersectionNode(root,root3));*/
+		System.out.println(simplifyPath("/home////foo/"));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
