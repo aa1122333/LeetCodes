@@ -7734,6 +7734,103 @@ public class Solution {
     	}
         return "/"+sol;
     }
+    //68. Text Justification
+    public List<String> fullJustify(String[] words, int maxWidth) {
+    	List<String> lines = new ArrayList<String>();
+        
+        int index = 0;
+        while (index < words.length) {
+            int count = words[index].length();
+            int last = index + 1;
+            while (last < words.length) {
+                if (words[last].length() + count + 1 > maxWidth) break;
+                count += words[last].length() + 1;
+                last++;
+            }
+            
+            StringBuilder builder = new StringBuilder();
+            int diff = last - index - 1;
+            if (last == words.length || diff == 0) {
+                for (int i = index; i < last; i++) {
+                    builder.append(words[i] + " ");
+                }
+                builder.deleteCharAt(builder.length() - 1);
+                for (int i = builder.length(); i < maxWidth; i++) {
+                    builder.append(" ");
+                }
+            } else {
+                int spaces = (maxWidth - count) / diff;
+                int r = (maxWidth - count) % diff;
+                for (int i = index; i < last; i++) {
+                    builder.append(words[i]);
+                    if (i < last - 1) {
+                        for (int j = 0; j <= (spaces + ((i - index) < r ? 1 : 0)); j++) {
+                            builder.append(" ");
+                        }
+                    }
+                }
+            }
+            lines.add(builder.toString());
+            index = last;
+        }
+        
+        
+        return lines;
+    }
+    //152. Maximum Product Subarray
+    public static int maxProduct(int[] nums) {
+        int length = nums.length;
+        if(length==0) return 0;
+        int max = nums[0];
+        int postmax = nums[0];
+        int min = nums[0];
+        int currmax = max;
+        int currmin = max;
+        for(int i=1;i<length;i++){
+        	max = Math.max(Math.max(currmax*nums[i], currmin*nums[i]), nums[i]);
+        	min = Math.min(Math.min(currmin*nums[i], currmax*nums[i]), nums[i]);
+        	postmax = Math.max(postmax, max);
+        	currmax = max;
+        	currmin = min;
+        }
+        
+        return postmax;
+    }
+    //140. Word Break II
+    public static List<String> wordBreak(String s, Set<String> wordDict) {
+    	List<String> results = new ArrayList<>();
+        if (s == null || s.length() == 0) {
+            return results;
+        }
+        char[] vals = s.toCharArray();
+        int maxLen = 0;
+        for (String word : wordDict) maxLen = Math.max(maxLen, word.length());
+        words(vals, 0, maxLen, new StringBuilder(), wordDict, new HashSet<>(), results);
+        return results;
+    }
+    
+    public static boolean words(char[] vals, int index, int maxLen, StringBuilder sb, Set<String> wordDict, Set<Integer> notQualified, List<String> results){
+    	 if (index >= vals.length) {
+             results.add(sb.toString().trim());
+             return true;
+         }
+         int sbLen = sb.length();
+         boolean isPathFound = false;
+         for (int i = index; i <= index + maxLen && i < vals.length; i++) {
+             String temp = new String(vals, index, i - index + 1);
+             if (wordDict.contains(temp)) {
+                 if (!notQualified.contains(i + 1)) {
+                     sb.append(temp).append(" ");
+                     isPathFound = words(vals, i + 1, maxLen, sb, wordDict, notQualified, results) || isPathFound;
+                     sb.setLength(sbLen);
+                 }
+             }
+             
+         }
+         if (!isPathFound) notQualified.add(index);
+         return isPathFound;
+    }
+    
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -8366,7 +8463,16 @@ public class Solution {
 		root.next = new ListNode(3);
 		
 		System.out.println(getIntersectionNode(root,root3));*/
-		System.out.println(simplifyPath("/home////foo/"));
+		/*System.out.println(simplifyPath("/home////foo/"));*/
+		/*int []s = {1,-5,3,-7,-3,9,2};
+		System.out.println(maxProduct(s));*/
+		Set<String> hash = new HashSet<String>();
+		hash.add("aaaa");
+		hash.add("aa");
+		hash.add("a");
+		hash.add("sand");
+		hash.add("dog");
+		System.out.println(wordBreak("aaaaaaa",hash));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
