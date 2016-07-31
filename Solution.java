@@ -7830,7 +7830,251 @@ public class Solution {
          if (!isPathFound) notQualified.add(index);
          return isPathFound;
     }
+    //5. Longest Palindromic Substring
+    public String longestPalindrome(String s) {
+        int length = s.length();
+    	if(length==0) return "";
+    	char[] str = s.toCharArray();
+    	int maxlen = 1;
+    	String sol = String.valueOf(str[0]);
+    	for(int i=0;i<length;i++){
+    		if(i>0&&i<length-1 && str[i-1]==str[i+1]){
+    			int j=0;
+    			while((i-j-1>=0 && i+j+1<length)&& (str[i-j-1]==str[i+j+1])){
+    				j++;
+    			}
+    			int curr = j*2+1;
+    			if(curr>maxlen){
+    				maxlen = curr;
+    				sol = s.substring(i-j, i+j+1);
+    			}
+    		}
+    		
+    		if(i<length-1 && str[i+1]==str[i]){
+    			int j=1;
+    			while((i-j+1>=0 && i+j<length)&& (str[i-j+1]==str[i+j]) ) j++;
+    			j--;
+    			if(maxlen<j*2){
+    					
+    				maxlen = j*2;
+    				sol = s.substring(i-j+1, i+j+1);
+    			}
+    		}
+    	}
+        return sol;
+    }
+    //7. Reverse Integer
+    public int reverse(int x) {
+        long sum = 0;
+    	boolean sign = false;
+    	if(x<0)
+    		sign = true;
+    	while(x!=0){
+    		sum = sum*10+x%10;
+    		x=x/10;
+    		if(sum>Integer.MAX_VALUE || sum<Integer.MIN_VALUE ) return 0;
+    	}
+        return (int)sum;
+    }
+    //13. Roman to Integer
+    public int romanToInt(String s) {
+        int sum=0;
+        if(s.indexOf("IV")!=-1){sum-=2;}
+        if(s.indexOf("IX")!=-1){sum-=2;}
+        if(s.indexOf("XL")!=-1){sum-=20;}
+        if(s.indexOf("XC")!=-1){sum-=20;}
+        if(s.indexOf("CD")!=-1){sum-=200;}
+        if(s.indexOf("CM")!=-1){sum-=200;}
+        
+        char c[]=s.toCharArray();
+        int count=0;
+        
+       for(;count<=s.length()-1;count++){
+           if(c[count]=='M') sum+=1000;
+           if(c[count]=='D') sum+=500;
+           if(c[count]=='C') sum+=100;
+           if(c[count]=='L') sum+=50;
+           if(c[count]=='X') sum+=10;
+           if(c[count]=='V') sum+=5;
+           if(c[count]=='I') sum+=1;
+           
+       }
+   
+         return sum;
+    }
+    //17. Letter Combinations of a Phone Number
+    public static char[][] phone = {
+    	{'a','b','c'},{'d','e','f'},{'g','h','i'},{'j','k','l'},
+    	{'m','n','o'},{'p','q','r','s'},{'t','u','v'},{'w','x','y','z'}
+    };
+    public List<String> letterCombinations(String digits) {
+        List<String> sol = new ArrayList<>();
+        if(digits.length()==0) return sol;
+    	char[] s = digits.toCharArray();
+    	char[] tmp = new char[s.length];
+    	combination(sol, s, 0, tmp);
+        return sol;
+    }
     
+    public static void combination(List<String>sol,char[] s,int curr,char[] tmp){
+    	if(curr == s.length){
+    		sol.add(new String(tmp));
+    		return ;
+    	}
+    	if(s[curr]-'0'>9 || s[curr]-'0'<2) return ;
+    	char[] num = phone[s[curr]-'0'-2];
+    	for(int i=0;i<num.length;i++){
+    		tmp[curr] = num[i];
+    		combination(sol, s, curr+1, tmp);
+    	}
+    }
+    //19. Remove Nth Node From End of List
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        if(head==null ) return head;
+        ListNode tmp = head;
+        int num = 0;
+        while(tmp!=null){
+            num++;
+            tmp = tmp.next;
+        }
+        tmp = head;
+        ListNode pre = null;
+        num = num-n;
+        for(int i=0;i<num;i++){
+            pre = tmp;
+            tmp = tmp.next;
+        }
+        if(pre==null) return head.next;
+        pre.next = tmp.next;
+        return head;
+    }
+    //21. Merge Two Sorted Lists
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if(l1==null) return l2;
+        if(l2==null) return l1;
+        ListNode sol = new ListNode(0);
+        ListNode s = sol;
+        while(l1!=null && l2!=null){
+            if(l1.val<l2.val){
+                sol.next = l1;
+                l1 = l1.next;
+                sol = sol.next;
+            }
+            else {
+                sol.next = l2;
+                l2 = l2.next;
+                sol = sol.next;
+            }
+        }
+        while(l1!=null) {
+            sol.next = l1;
+            l1 = l1.next;
+            sol = sol.next;
+        }
+        while(l2!=null) {
+            sol.next = l2;
+            l2 = l2.next;
+            sol = sol.next;
+        }
+        return s.next;
+    }
+    //36. Valid Sudoku
+    public boolean isValidSudoku(char[][] board) {
+        boolean[][] map = new boolean[27][10];
+       for(int i = 0 ; i < board.length ; i++)
+           for(int j = 0 ; j < board[0].length ; j++){
+               if(board[i][j] == '.') continue;
+               int index = board[i][j] - '0';
+               int ik = i, jk = 9 + j, gk = (18 + (i/3)*3 + j/3);
+               if(map[ik][index] || map[jk][index] || map[gk][index]) 
+                   return false;
+               map[ik][index] = map[jk][index] = map[gk][index] = true;
+            }
+        return true;
+    }
+    //44. Wildcard Matching
+    boolean isMatch_44(String str, String pattern) {
+        int s = 0, p = 0, match = 0, starIdx = -1;            
+        while (s < str.length()){
+            if (p < pattern.length()  && (pattern.charAt(p) == '?' || str.charAt(s) == pattern.charAt(p))){
+                s++;
+                p++;
+            }
+            else if (p < pattern.length() && pattern.charAt(p) == '*'){
+                starIdx = p;
+                match = s;
+                p++;
+            }
+            else if (starIdx != -1){
+                p = starIdx + 1;
+                match++;
+                s = match;
+            }
+            else return false;
+        }
+        while (p < pattern.length() && pattern.charAt(p) == '*')
+            p++;
+        return p == pattern.length();
+    }
+    //61. Rotate List
+    public static ListNode rotateRight(ListNode head, int k) {
+    	if(head==null||head.next==null) return head;
+    	ListNode h = head;
+    	int length = 1;
+    	ListNode tail=head;
+    	while(h.next!=null){
+    		length++;
+    		h = h.next;
+    	}
+    	tail = h;
+    	h = head;
+    	if(k%length==0) return head;
+    	for(int i=0;i<length-(k%length)-1;i++){
+    		h = h.next;
+    	}
+    	tail.next = head;
+    	head = h.next;
+    	h.next=null;
+		return head;
+        
+    }
+    //63. Unique Paths II
+    //TLE
+    static int totalpath = 0;
+    public static int uniquePathsWithObstacles2(int[][] obstacleGrid) {
+    	if(obstacleGrid.length==0 || obstacleGrid[0].length==0) return 0;
+    	totalpath = 0;
+    	dfs_63(obstacleGrid, 0, 0);
+        return totalpath;
+    }
+    
+    public static void dfs_63(int[][] map,int x,int y){
+    	if(x==map.length-1 && y==map[0].length-1){
+    		totalpath++;
+    		return ;
+    	}
+    	if(x+1<map.length && map[x+1][y]==0){
+    		dfs_63(map, x+1, y);
+    	}
+    	if(y+1<map[0].length && map[x][y+1]==0){
+    		dfs_63(map, x, y+1);
+    	}
+    }
+    //63-2 dp
+    public int uniquePathsWithObstacles3(int[][] obstacleGrid) {
+        int width = obstacleGrid[0].length;
+        int[] dp = new int[width];
+        dp[0] = 1;
+        for (int[] row : obstacleGrid) {
+            for (int j = 0; j < width; j++) {
+                if (row[j] == 1)
+                    dp[j] = 0;
+                else if (j > 0)
+                    dp[j] += dp[j - 1];
+            }
+        }
+        return dp[width - 1];
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -8466,13 +8710,23 @@ public class Solution {
 		/*System.out.println(simplifyPath("/home////foo/"));*/
 		/*int []s = {1,-5,3,-7,-3,9,2};
 		System.out.println(maxProduct(s));*/
-		Set<String> hash = new HashSet<String>();
+		/*Set<String> hash = new HashSet<String>();
 		hash.add("aaaa");
 		hash.add("aa");
 		hash.add("a");
 		hash.add("sand");
 		hash.add("dog");
-		System.out.println(wordBreak("aaaaaaa",hash));
+		System.out.println(wordBreak("aaaaaaa",hash));*/
+		ListNode root = new ListNode(1);
+		root.next = new ListNode(2);
+		root.next.next = new ListNode(3);
+		root.next.next.next= new ListNode(4);
+		root.next.next.next.next = new ListNode(5);
+		root = rotateRight(root,4);
+		while(root!=null){
+			System.out.println(root.val);
+			root = root.next;
+		}
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
