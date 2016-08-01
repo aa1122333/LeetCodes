@@ -8075,6 +8075,72 @@ public class Solution {
         }
         return dp[width - 1];
     }
+    //85. Maximal Rectangle
+    public static int maximalRectangle(char[][] matrix) {
+        if(matrix.length==0 || matrix[0].length==0) return 0;
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[] left=new int[n];
+        int[] right = new int[n];
+        int[] height = new int[n];
+        Arrays.fill(right, n);
+        int sol = 0;
+        for(int i=0;i<m;i++){
+        	int currleft = 0;
+        	int currright = 0;
+        	for(int j=0;j<n;j++){
+        		if(matrix[i][j]=='1') height[j]++;
+        		else height[j] = 0;
+        	}
+        	for(int j=0;j<n;j++){
+        		if(matrix[i][j]=='1') left[j] = Math.max(left[j], currleft);
+        		else {
+        			left[j]=0;
+        			currleft = j+1;
+        		}
+        	}
+        	for(int j=0;j<n;j++){
+        		if(matrix[i][j]=='1') right[j] = Math.min(right[j], currright);
+        		else {
+        			right[j]=n;
+        			currright = j;
+        		}
+        	}
+        	for(int j=0;j<n;j++){
+        		sol = Math.max((right[j]-left[j])*height[j], sol);
+        	}
+        	
+        }
+        return sol;
+    }
+    //87. Scramble String
+    public boolean isScramble(String s1, String s2) {
+    	char[] v1 = s1.toCharArray();
+        char[] v2 = s2.toCharArray();
+        return isScramble(v1, 0, v1.length - 1, v2, 0, v2.length - 1);
+    }
+    private boolean isScramble(char[] v1, int start1, int end1, char[] v2, int start2, int end2) {
+        int[] letters = new int[26];
+        boolean isSame = true;
+        for (int i = start1, j = start2; i <= end1; i++, j++) {
+            letters[v1[i] -'a']++;
+            letters[v2[j] -'a']--;
+            isSame = isSame && v1[i] == v2[j];
+        }
+        if (isSame) return true;
+        for (int i = 0; i < 26; i++) if (letters[i] != 0) return false;
+        for (int i = start1, j = start2; i < end1; i++, j++) {
+            if (isScramble(v1, start1, i, v2, start2, j) 
+             && isScramble(v1, i + 1, end1, v2, j + 1, end2)) return true;
+            if (isScramble(v1, start1, i, v2, end2 - j + start2, end2) 
+             && isScramble(v1, i + 1, end1, v2, start2, end2 - j + start2 - 1)) return true;
+        }
+        return false;
+    }
+    //90. Subsets II
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -8717,7 +8783,7 @@ public class Solution {
 		hash.add("sand");
 		hash.add("dog");
 		System.out.println(wordBreak("aaaaaaa",hash));*/
-		ListNode root = new ListNode(1);
+		/*ListNode root = new ListNode(1);
 		root.next = new ListNode(2);
 		root.next.next = new ListNode(3);
 		root.next.next.next= new ListNode(4);
@@ -8726,7 +8792,8 @@ public class Solution {
 		while(root!=null){
 			System.out.println(root.val);
 			root = root.next;
-		}
+		}*/
+		
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
