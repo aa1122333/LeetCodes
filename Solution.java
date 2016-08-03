@@ -8138,8 +8138,68 @@ public class Solution {
         return false;
     }
     //90. Subsets II
-    public List<List<Integer>> subsetsWithDup(int[] nums) {
-        
+    
+    public static List<List<Integer>> subsetsWithDup(int[] nums) {
+    	List<List<Integer>> sol = new ArrayList<>();
+    	if(nums.length==0) return sol;
+    	Arrays.sort(nums);
+    	List<Integer> curr = new ArrayList<>();
+    	dfs_90(sol, 0, nums, curr);
+        return sol;
+    }
+    
+    public static void dfs_90(List<List<Integer>> sol,int index,int[] nums,List<Integer> curr){
+    	if(index == nums.length){
+    		sol.add(new ArrayList<Integer>(curr));
+    		return ;
+    	}
+    	curr.add(nums[index]);
+    	dfs_90(sol, index+1, nums, curr);
+    	curr.remove(curr.size()-1);
+    	int next = index+1;
+    	while(next<nums.length && nums[next]==nums[index]){
+    		next++;
+    	}
+    	dfs_90(sol, next, nums, curr);
+    }
+    //92. Reverse Linked List II
+    public static ListNode reverseBetween(ListNode head, int m, int n) {
+    	if(head == null || head.next == null) return head;
+        ListNode thead = new ListNode(-1);
+        thead.next = head;
+        ListNode sol = thead;
+        ListNode tail = thead;
+        ListNode phead = thead;
+        ListNode ptail = thead;
+        for(int i=1;i<m;i++){
+        	thead = thead.next;
+        }
+        phead = thead.next;
+        for(int i=1;i<=n;i++){
+        	ptail = ptail.next;
+        }
+        tail = ptail.next;
+        ptail.next = null;
+        ListNode t = phead.next;
+        phead.next = tail;
+        while(t!=null){
+        	ListNode a = t.next;
+        	t.next = phead;
+        	phead = t;
+        	t = a;
+        }
+        thead.next = phead;
+        return sol.next;
+    }
+    //96. Unique Binary Search Trees
+    public int numTrees(int n) {
+    	int [] dp = new int[n+1];
+        dp[0]= 1;
+        dp[1] = 1;
+        for(int level = 2; level <=n; level++)
+            for(int root = 1; root<=level; root++)
+                dp[level] += dp[level-root]*dp[root-1];
+        return dp[n];
     }
 	public static void main(String[] args) {
 		
@@ -8793,7 +8853,18 @@ public class Solution {
 			System.out.println(root.val);
 			root = root.next;
 		}*/
-		
+		/*int [] s = {1,2,2,2};
+		System.out.println(subsetsWithDup(s));*/
+		ListNode root = new ListNode(1);
+		root.next = new ListNode(2);
+		root.next.next = new ListNode(3);
+		root.next.next.next= new ListNode(4);
+		root.next.next.next.next = new ListNode(5);
+		root = reverseBetween(root,4,5);
+		while(root!=null){
+			System.out.println(root.val);
+			root = root.next;
+		}
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
