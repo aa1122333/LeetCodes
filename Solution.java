@@ -8201,6 +8201,36 @@ public class Solution {
                 dp[level] += dp[level-root]*dp[root-1];
         return dp[n];
     }
+    //98. Validate Binary Search Tree
+    public static boolean isValidBST(TreeNode root) {
+    	if(root==null) return true;
+    	long [] path = new long[2];
+    	path[0] = Long.MIN_VALUE;
+    	path[1] = Long.MAX_VALUE;
+    	return isValidBST(root, path);
+    }
+    
+    public static boolean isValidBST(TreeNode root,long[] path) {
+    	if(root==null) return true;
+    	if(root.val<=path[0]|| root.val>=path[1]){
+    		return false;
+    	}
+    	boolean left = true;
+    	boolean right = true;
+    	if(root.left!=null){
+    		long[] tpath = new long[2];
+    		tpath[0] = path[0];
+    		tpath[1] = root.val;
+    		left = isValidBST(root.left, tpath);
+    	}
+    	if(root.right!=null){
+    		long[] tpath = new long[2];
+    		tpath[0] = root.val;
+    		tpath[1] = path[1];
+    		left = isValidBST(root.left, tpath);
+    	}
+    	return left && right;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
