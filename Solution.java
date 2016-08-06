@@ -8231,6 +8231,28 @@ public class Solution {
     	}
     	return left && right;
     }
+    
+    //109. Convert Sorted List to Binary Search Tree
+    public TreeNode sortedListToBST(ListNode head) {
+        if(head==null ) return null;
+        if(head.next==null) return new TreeNode(head.val);
+        ListNode slow = head;
+        ListNode fast = head;
+        ListNode pre = head;
+        while(fast!=null && fast.next!=null){
+        	fast = fast.next.next;
+        	pre = slow;
+        	slow = slow.next;
+        }
+        TreeNode root = new TreeNode(slow.val);
+        ListNode right = slow.next;
+        pre.next = null;
+        slow.next = null;
+        root.left = sortedListToBST(head);
+        root.right = sortedListToBST(right);
+        return root;
+    }
+    
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
