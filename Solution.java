@@ -8252,7 +8252,123 @@ public class Solution {
         root.right = sortedListToBST(right);
         return root;
     }
+    //124. Binary Tree Maximum Path Sum
+    public static int maxsum = 0;
+    public static int maxPathSum(TreeNode root) {
+    	if(root==null) return 0;
+    	maxsum = 0;
+    	dfsMaxPathSum(root);
+    	return maxsum;
+    }
     
+    public static int dfsMaxPathSum(TreeNode root) {
+    	if(root==null) return 0;
+    	int left = dfsMaxPathSum(root.left);
+    	int right = dfsMaxPathSum(root.right);
+    	int currsum = root.val;
+    	int returnsum = 0;
+    	if(left>0){ 
+    		currsum+=left;
+    		returnsum = left;
+    	}
+    	if(right>0){
+    		currsum+=right;
+    		if(right>left)
+    			returnsum = right;
+    	}
+    	if(currsum > maxsum) maxsum = currsum;
+    	return root.val+returnsum;
+    }
+    //139. Word Break
+    public static boolean wordBreak2(String s, Set<String> wordDict) {
+    	if(s.length()==0 || wordDict.size()==0) return false;
+    	Set<String> visited = new HashSet<String>();
+    	return wordBreak_139(s, wordDict, visited);
+    	
+    }
+    public static boolean wordBreak_139(String s, Set<String> wordDict,Set<String> visited) {
+        if(s.length()==0 || wordDict.size()==0) return false;
+        int start = 0;
+        int end = 1;
+        while(start<s.length() && end<=s.length()){
+        	String t = s.substring(start, end);
+        	if(wordDict.contains(t) && !visited.contains(s.substring(end))){
+        		visited.add(s.substring(end));
+        		if(s.substring(end).equals("") || wordBreak_139(s.substring(end),wordDict,visited)){
+        			return true;
+        		}
+        		else {
+        			end+=1;
+        		}
+        	}
+        	else {
+        		end+=1;
+        	}
+        }
+        if(start==s.length()) return true;
+        /*start = 0;
+        end = 1;
+        while(start<s.length() && end<=s.length()){
+        	String t = s.substring(start, end);
+        	if(wordDict.contains(t)){
+        		start = end;
+        		end +=1;
+        	}
+        	else {
+        		end+=1;
+        	}
+        }
+        if(start==s.length()) return true;*/
+        return false;
+    }
+    //144. Binary Tree Preorder Traversal
+    //Recursive
+    public List<Integer> preorderTraversal(TreeNode root) {
+    	List<Integer> sol = new ArrayList<>();
+        if(root == null) return sol;
+        preorderTraversal(root, sol);
+        return sol;
+    }
+    
+    public void preorderTraversal(TreeNode root,List<Integer> sol) {
+        if(root == null) return ;
+        sol.add(root.val);
+        if(root.left!=null) preorderTraversal(root.left, sol);
+        if(root.right!=null) preorderTraversal(root.right, sol);
+    }
+    //iteratively
+    public List<Integer> preorderTraversal2(TreeNode root) {
+    	List<Integer> sol = new ArrayList<Integer>();
+    	if(root == null) return sol;
+    	Stack<TreeNode> s = new Stack<TreeNode>();
+    	s.add(root);
+    	while(!s.isEmpty()){
+    		TreeNode t = s.pop();
+    		if(t.right!=null) s.push(t.right);
+    		if(t.left!=null) s.push(t.left);
+    		sol.add(t.val);
+    	}
+    	return sol;
+    }
+    //174. Dungeon Game
+    public int calculateMinimumHP(int[][] dungeon) {
+    	int[][] dp = new int[dungeon.length][dungeon[0].length];
+
+        for(int i=dp.length-1; i>=0; i--) {
+            for(int j=dp[0].length-1; j>=0; j--) {
+                if(i == dp.length-1 && j == dp[0].length-1) {
+                    dp[i][j] = 1 - dungeon[i][j] < 1 ? 1 : 1 - dungeon[i][j];
+                } else {
+                    int right = j == dp[0].length-1 ? Integer.MAX_VALUE :
+                            (dp[i][j+1] - dungeon[i][j] < 1 ? 1 : dp[i][j+1] - dungeon[i][j]);
+                    int bottom = i == dp.length-1 ? Integer.MAX_VALUE :
+                            dp[i+1][j] - dungeon[i][j] < 1 ? 1 : dp[i+1][j] - dungeon[i][j];
+                    dp[i][j] = Math.min(right, bottom);
+                }
+            }
+        }
+        return dp[0][0];
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -8907,7 +9023,7 @@ public class Solution {
 		}*/
 		/*int [] s = {1,2,2,2};
 		System.out.println(subsetsWithDup(s));*/
-		ListNode root = new ListNode(1);
+		/*ListNode root = new ListNode(1);
 		root.next = new ListNode(2);
 		root.next.next = new ListNode(3);
 		root.next.next.next= new ListNode(4);
@@ -8916,7 +9032,23 @@ public class Solution {
 		while(root!=null){
 			System.out.println(root.val);
 			root = root.next;
-		}
+		}*/
+		/*System.out.println("abc".substring(1, 2));*/
+		/*Set<String> set = new HashSet<>();
+		set.add("goal");
+		set.add("goals");
+		set.add("go");
+		set.add("special");
+		System.out.println(wordBreak2("goalspecials",set));*/
+		TreeNode t = new TreeNode(4);
+		t.left = new TreeNode(2);
+		t.right = new TreeNode(7);
+		t.left.left = new TreeNode(1);
+		t.left.right = new TreeNode(3);
+		t.right.left = new TreeNode(6);
+		t.right.right = new TreeNode(9);
+		BSTIterator i = new BSTIterator(t);
+		while(i.hasNext()) System.out.println(i.next());
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
