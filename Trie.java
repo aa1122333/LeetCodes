@@ -111,12 +111,24 @@ public class Trie {
 			start = true;
 			return root.isWord;
 		}
-		int index = word.charAt(idx) - 'a';
-		if(root.childNodes[index] == null){
-			start = false;
-			return false;
+		if(word.charAt(idx)=='.'){
+			boolean flag = false;
+			for(int i=0;i<26 && !flag;i++){
+				if(root.childNodes[i]!=null){
+					flag = search(word, root.childNodes[i], idx+1);
+				}
+			}
+			return flag;
 		}
-		return search(word, root.childNodes[index], idx+1);
+		else {
+			int index = word.charAt(idx) - 'a';
+			
+			if(root.childNodes[index] == null){
+				start = false;
+				return false;
+			}
+			return search(word, root.childNodes[index], idx+1);
+		}
 	}
 	public boolean startsWith(String prefix){
 		search(prefix);

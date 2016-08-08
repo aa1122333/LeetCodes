@@ -6907,29 +6907,7 @@ public class Solution {
     		}
         return dp[word1.length()][word2.length()];
     }
-  //174. Dungeon Game
-    public static int calculateMinimumHP(int[][] dungeon) {
-    	
-    	if(dungeon.length==0||dungeon[0].length==0) return 0;
-    	int [][] dp = new int[dungeon.length+1][dungeon[0].length+1];
-    	for(int i=0;i<dungeon.length;i++)
-    		Arrays.fill(dp[i], Integer.MIN_VALUE);
-    	int min = Integer.MAX_VALUE;
-    	for(int i=1;i<=dungeon.length;i++)
-    		for(int j=1;j<=dungeon[0].length;j++){
-    			if(i==0 && j==0) dp[0][0] = dungeon[0][0];
-    			else if(i==0){
-    				dp[0][j]=dp[0][j-1]+dungeon[0][j];
-    			}
-    			else if(j==0){
-    				dp[i][0]=dp[i][0]+dungeon[i][0];
-    			}
-    			else {
-    				dp[i][j] = Math.max(dp[i-1][j]+dungeon[i][j], dp[i][j-1]+dungeon[i][j]);
-    			}
-    		}
-        return min;
-    }
+  
     //102. Binary Tree Level Order Traversal
     public static List<List<Integer>> levelOrder(TreeNode root) {
     	List<List<Integer>> sol = new ArrayList<List<Integer>>();
@@ -8368,6 +8346,31 @@ public class Solution {
             }
         }
         return dp[0][0];
+    }
+    //188. Best Time to Buy and Sell Stock IV
+    public int maxProfit(int k, int[] prices) {
+    	if (prices == null || prices.length < 2) {
+            return 0;
+        }
+        int n = prices.length;
+        int ret = 0;
+        if (k >= n / 2) {
+            for (int i = 1; i < n; i++) {
+                if (prices[i] > prices[i - 1]) {
+                    ret += prices[i] - prices[i - 1];
+                }
+            }
+            return ret;
+        }
+        int[][] dp = new int[k + 1][n];
+        for (int kk = 1; kk <= k; kk++) {
+            int max = Integer.MIN_VALUE;
+            for (int i = 1; i < n; i++) {
+                max = Math.max(max, (i > 1 ? dp[kk - 1][i - 2] : 0) - prices[i - 1]);
+                dp[kk][i] = Math.max(dp[kk][i - 1], prices[i] + max);
+            }
+        }
+        return dp[k][n - 1];
     }
 	public static void main(String[] args) {
 		
