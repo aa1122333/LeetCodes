@@ -8372,6 +8372,43 @@ public class Solution {
         }
         return dp[k][n - 1];
     }
+    //234. Palindrome Linked List
+    public static boolean isPalindrome_234(ListNode head) {
+    	if(head == null || head.next == null) return true;
+    	ListNode fast = head;
+    	ListNode slow = head;
+    	ListNode pre = new ListNode(0);
+    	ListNode p = pre;
+    	pre.next = head;
+    	while(fast!=null && fast.next!=null){
+    		fast = fast.next.next;
+    		slow = slow.next;
+    		pre = pre.next;
+    	}
+    	if(fast == null){
+    		pre.next = null;
+    		head = reverseList(head);
+    		while(head!=null && slow!=null){
+    			if(head.val!=slow.val) return false;
+    			head = head.next;
+    			slow = slow.next;
+    		}
+    		if(head == null && slow == null) return true;
+    		else return false;
+    	}
+    	else {
+    		pre.next = null;
+    		head = reverseList(head);
+    		slow = slow.next;
+    		while(head!=null && slow!=null){
+    			if(head.val!=slow.val) return false;
+    			head = head.next;
+    			slow = slow.next;
+    		}
+    		if(head == null && slow == null) return true;
+    		else return false;
+    	}
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -9043,7 +9080,7 @@ public class Solution {
 		set.add("go");
 		set.add("special");
 		System.out.println(wordBreak2("goalspecials",set));*/
-		TreeNode t = new TreeNode(4);
+		/*TreeNode t = new TreeNode(4);
 		t.left = new TreeNode(2);
 		t.right = new TreeNode(7);
 		t.left.left = new TreeNode(1);
@@ -9051,7 +9088,14 @@ public class Solution {
 		t.right.left = new TreeNode(6);
 		t.right.right = new TreeNode(9);
 		BSTIterator i = new BSTIterator(t);
-		while(i.hasNext()) System.out.println(i.next());
+		while(i.hasNext()) System.out.println(i.next());*/
+		ListNode root = new ListNode(1);
+		/*root.next = new ListNode(1);*/
+		/*root.next.next = new ListNode(3);
+		root.next.next.next= new ListNode(3);
+		root.next.next.next.next = new ListNode(2);
+		root.next.next.next.next.next = new ListNode(1);*/
+		System.out.println(isPalindrome_234(root));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
