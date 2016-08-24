@@ -8433,6 +8433,21 @@ public class Solution {
         }
         return sb.toString().trim();
     }
+    
+    //343. Integer Break
+    public static int integerBreak(int n) {
+    	if(n==2) return 1;
+    	if(n==3) return 2;
+    	int s = n/3;
+        int u = n%3;
+        if(u==2)
+            return (int)Math.pow(3, s)*u;
+        if(u==0)
+            return (int)Math.pow(3, s);
+        if(u==1)
+            return (int)Math.pow(3, s-1)*4;
+        return 1;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -9119,7 +9134,8 @@ public class Solution {
 		root.next.next.next= new ListNode(3);
 		root.next.next.next.next = new ListNode(2);
 		root.next.next.next.next.next = new ListNode(1);*/
-		System.out.println(isPalindrome_234(root));
+		/*System.out.println(isPalindrome_234(root));*/
+		System.out.println(integerBreak(2));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
