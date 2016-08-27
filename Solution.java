@@ -8631,6 +8631,28 @@ public class Solution {
             nums[i]=tmpArr[i];
         }
     }
+    //372. Super Pow
+    public static int superPow(int a, int[] b) {
+    	if(a==0 || a==1337 ||b==null || b.length==0) return 0;
+    	if(a==1) return 1;
+    	if(a>1337) return superPow(a%1337, b);
+    	List<Integer> indexs = new ArrayList<>();
+    	boolean[] visited = new boolean[1337];
+    	int curr = a%1337;
+    	while(!visited[curr]){
+    		visited[curr] = true;
+    		indexs.add(curr);
+    		curr = (curr*a)%1337;
+    	}
+    	int t = 0;
+    	for(int i=0;i<b.length;i++)
+    		t = (t*10+b[i])%indexs.size();
+    	if(t==0) t = indexs.size();
+    	
+        return indexs.get(t-1);
+    }
+    
+    
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
