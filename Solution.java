@@ -8651,7 +8651,32 @@ public class Solution {
     	
         return indexs.get(t-1);
     }
-    
+    //373. Find K Pairs with Smallest Sums
+    public List<int[]> kSmallestPairs(int[] nums1, int[] nums2, int k) {
+    	List<int[]> sol = new ArrayList<>();
+    	if(nums1.length==0 || nums2.length==0 || k==0) return sol;
+    	if(nums1.length*nums2.length<=k){
+    		for(int i=0;i<nums1.length;i++){
+    			for(int j=0;j<nums2.length;j++){
+    				int [] tmp = new int[2];
+    				tmp[0] = nums1[i];
+    				tmp[1] = nums2[j];
+    				sol.add(tmp);
+    			}
+    		}
+    	}
+    	else {
+    		PriorityQueue<int[]> heap = new PriorityQueue<int[]>((a,b)->(a[0]+a[1]-b[0]-b[1]));
+    		for(int i=0;i<nums1.length;i++) heap.offer(new int[]{nums1[0],nums1[1],0});
+    		while(k-->0 && !heap.isEmpty()){
+    			int [] t = heap.poll();
+    			sol.add(new int[]{t[0],t[1]});
+    			if(t[2]==nums2.length-1) continue;
+    			heap.offer(new int[]{t[0],nums2[t[2]+1],t[2]+1});
+    		}
+    	}
+        return sol;
+    }
     
 	public static void main(String[] args) {
 		
