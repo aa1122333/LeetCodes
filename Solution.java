@@ -8677,6 +8677,29 @@ public class Solution {
     	}
         return sol;
     }
+    public static int mmm = 1702766719;
+    public static int guess(int num){
+    	if(num==mmm) return 0;
+    	else if(num>mmm) return -1;
+    	else return 1;
+    }
+    
+    public static int guessNumber(int n) {
+        long s = 1;
+        long e = n;
+        long l = 1+n;
+        int curr = (int)(l>>1);
+        int t ;
+        while((t=guess(curr))!=0){
+            if(t==-1)
+                e = curr-1;
+            else 
+                s = curr+1;
+            l=s+e;
+            curr = (int)(l>>1);
+        }
+        return curr;
+    }
     
 	public static void main(String[] args) {
 		
@@ -9366,14 +9389,16 @@ public class Solution {
 		root.next.next.next.next.next = new ListNode(1);*/
 		/*System.out.println(isPalindrome_234(root));*/
 		/*System.out.println(integerBreak(2));*/
-		int [][]s = {
+		/*int [][]s = {
 				{0,1,0,0,1},
 				{0,1,1,0,1},
 				{0,0,0,1,1},
 				{0,0,0,0,1},
 				{0,0,0,0,1}
 		};
-		gameOfLife(s);
+		gameOfLife(s);*/
+		System.out.println(guessNumber(2126753390
+				));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
