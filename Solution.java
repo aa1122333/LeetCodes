@@ -8683,7 +8683,7 @@ public class Solution {
     	else if(num>mmm) return -1;
     	else return 1;
     }
-    
+    //374
     public static int guessNumber(int n) {
         long s = 1;
         long e = n;
@@ -8700,7 +8700,64 @@ public class Solution {
         }
         return curr;
     }
+    //375. Guess Number Higher or Lower II
+    public int getMoneyAmount(int n) {
+        int[][] dp = new int[n+1][n+1];
+        for(int len=1;len<n;len++){
+            for(int i=1;i+len<=n;i++){
+                int j=i+len;
+                int min = Integer.MAX_VALUE;
+                for(int k=i;k<j;k++){
+                  int tmp = k+Math.max(dp[i][k-1],dp[k+1][j]);
+                  min = Math.min(min,tmp);
+                }
+                dp[i][j] = min;
+            }
+        }
+        return dp[1][n];
+    }
+    //377. Combination Sum IV
+    //TLE
+    public static int sum_377 = 0;
+    public static int combinationSum4_TLE(int[] nums, int target) {
+    	if(target==0) return 1;
+    	if(nums.length==0) return 0;
+    	sum_377 = 0;
+    	Arrays.sort(nums);
+    	combination4(nums, target, 0);
+        return sum_377;
+    }
     
+    public static void combination4(int[] nums,int target,int curr){
+    	for(int i=0;i<nums.length;i++){
+    		if(nums[i]+curr==target){
+    			sum_377++;
+    			return ;
+    		}
+    		else if(nums[i]+curr<target){
+    			combination4(nums, target, nums[i]+curr);
+    		}
+    	}
+    }
+    
+    public static int combinationSum4(int[] nums, int target) {
+    	if(target==0) return 1;
+    	if(nums.length==0) return 0;
+    	Arrays.sort(nums);
+    	int [] currsum = new int[target+1];
+    	for(int i=1;i<currsum.length;i++){
+    		for(int curr:nums){
+    			if(curr>i)
+    				break;
+    			else if(curr == i)
+    				currsum[i] = 1;
+    			else {
+    				currsum[i] += currsum[i-curr];
+    			}
+    		}
+    	}
+    	return currsum[target];
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -9397,8 +9454,10 @@ public class Solution {
 				{0,0,0,0,1}
 		};
 		gameOfLife(s);*/
-		System.out.println(guessNumber(2126753390
-				));
+		/*System.out.println(guessNumber(2126753390
+				));*/
+		int [] s = {1,2,3};
+		System.out.println(combinationSum4(s,35));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
