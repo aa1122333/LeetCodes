@@ -8758,6 +8758,14 @@ public class Solution {
     	}
     	return currsum[target];
     }
+    
+    //365. Water and Jug Problem
+    public static boolean canMeasureWater(int x, int y, int z) {
+    	return z == 0 || (long)x + y >= z && z % gcd(x, y) == 0;
+    }
+    public static int gcd(int x, int y) {
+        return y == 0 ? x : gcd(y, x % y);
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -9456,8 +9464,7 @@ public class Solution {
 		gameOfLife(s);*/
 		/*System.out.println(guessNumber(2126753390
 				));*/
-		int [] s = {1,2,3};
-		System.out.println(combinationSum4(s,35));
+		System.out.println(canMeasureWater(3,10,5));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
