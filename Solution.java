@@ -8766,6 +8766,119 @@ public class Solution {
     public static int gcd(int x, int y) {
         return y == 0 ? x : gcd(y, x % y);
     }
+    
+    //328. Odd Even Linked List
+    public static ListNode oddEvenList(ListNode head) {
+    	if(head == null || head.next == null || head.next.next == null) return head;
+    	ListNode odd = head;
+    	ListNode even = head.next;
+    	ListNode his = head.next;
+    	while(even != null){
+    		ListNode todd = even.next;
+    		if(todd == null){
+    			odd.next = his;
+    			break;
+    		}
+    		else {
+	    		if(todd.next== null){
+	    			odd.next = todd;
+	    			even.next = null;
+	    			todd.next = his;
+	    			break;
+	    		}
+	    		else {
+	    			odd.next = todd;
+	    			even.next = todd.next;
+	    			odd = odd.next;
+	    			even = even.next;
+	    		}
+    		}
+    	}
+        return head;
+    }
+    
+    //357. Count Numbers with Unique Digits
+    public int countNumbersWithUniqueDigits(int n) {
+    	if(n==0) return 1;
+        if(n==1) return 10;
+        int sum = 10;
+        int t = 9;
+        for(int i=2;i<=n;i++){
+            t *= 9-i+2;
+        	sum += t;
+        }
+        return sum;
+    }
+    
+    //367. Valid Perfect Square
+    public static boolean isPerfectSquare(int num) {
+    	if(num == 1) return true;
+    	long i = 0;
+    	long j = num;
+    	while(i<=j){
+    		long half = (i+j)>>1;
+    		long t = half * half;
+    		if(t == num) return true;
+    		else if(t>num) j = half-1;
+    		else i = half+1;
+    	}
+        return false;
+    }
+    
+    //378. Kth Smallest Element in a Sorted Matrix
+    public static int kthSmallest(int[][] matrix, int k) {
+    	if(matrix.length == 0 || matrix[0].length == 0) return 0;
+    	if(k == 0 || k == 1) return matrix[0][0];
+    	if(k == matrix.length*matrix.length) return matrix[matrix.length-1][matrix.length-1];
+    	PriorityQueue<point2> q = new PriorityQueue<point2>(111,new Comparator<point2>() {
+			@Override
+			public int compare(point2 o1, point2 o2) {
+				// TODO Auto-generated method stub
+				if(o1.v<o2.v) return -1;
+				else if(o1.v==o2.v) return 0;
+				else return 1;
+			}
+    		
+    	});
+    	int x = 0;
+    	int y = 0;
+    	int curr = 0;
+    	boolean [][] visited = new boolean [matrix.length][matrix[0].length];
+    	q.add(new point2(0,0,matrix[0][0]));
+    	while(!q.isEmpty()){
+    		curr++;
+    		point2 t = q.poll();
+    		if(curr == k) return t.v;
+    		else {
+    			if(t.x+1<matrix.length && !visited[t.x+1][t.y] ){
+    				visited[t.x+1][t.y] = true;
+    				q.add(new point2(t.x+1,t.y,matrix[t.x+1][t.y]));
+    			}
+    			if(t.y+1<matrix[0].length && !visited[t.x][t.y+1]){
+    				visited[t.x][t.y+1] = true;
+    				q.add(new point2(t.x,t.y+1,matrix[t.x][t.y+1]));
+    			}
+    		}
+    	}
+    	
+        return 0;
+    }
+    
+    public static class point2{
+    	int x;
+    	int y;
+    	int v;
+    	public point2(){
+    		x = 0;
+    		y = 0;
+    		v = 0;
+    	}
+    	public point2(int x,int y,int v){
+    		this.x = x;
+    		this.y = y;
+    		this.v = v;
+    	}
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -9447,11 +9560,8 @@ public class Solution {
 		BSTIterator i = new BSTIterator(t);
 		while(i.hasNext()) System.out.println(i.next());*/
 		ListNode root = new ListNode(1);
-		/*root.next = new ListNode(1);*/
-		/*root.next.next = new ListNode(3);
-		root.next.next.next= new ListNode(3);
-		root.next.next.next.next = new ListNode(2);
-		root.next.next.next.next.next = new ListNode(1);*/
+		root.next = new ListNode(2);
+		root.next.next = new ListNode(3);
 		/*System.out.println(isPalindrome_234(root));*/
 		/*System.out.println(integerBreak(2));*/
 		/*int [][]s = {
@@ -9464,7 +9574,14 @@ public class Solution {
 		gameOfLife(s);*/
 		/*System.out.println(guessNumber(2126753390
 				));*/
-		System.out.println(canMeasureWater(3,10,5));
+		/*System.out.println(isPerfectSquare(Integer.MAX_VALUE));*/
+		int [][] t = {
+				{1,3,5},
+				{6,7,12},
+				{11,14,14}
+		};
+		
+		System.out.println(kthSmallest(t,6));
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
