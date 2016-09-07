@@ -14,6 +14,24 @@ class Pair {
 
 public class Didi{
 	
+	
+	public static int binarySearch(List<Integer> list,int target){
+		int start = 0;
+		int end = list.size()-1;
+		
+		while(start<end){
+			int mid = (start+end)>>1;
+			if(list.get(mid)>=target){
+				end = mid;
+			}
+			else {
+				start = mid+1;
+			}
+		}
+		if(list.get(end)<target) return -1;
+		return end;
+	}
+	
 	public static void main(String args[])
     {
 		Scanner cin = new Scanner(System.in);
@@ -55,13 +73,11 @@ public class Didi{
 			Pair t = queue.poll();
 			if(t.people>maxm) continue;
 			boolean flag = false;
-			for(int i=0;i<tbs.size();i++){
-				if(tbs.get(i)>t.people){
-					flag = true;
-					sumcash+=t.value;
-					tbs.remove(i);
-					break;
-				}
+			int sol = binarySearch(tbs,t.people);
+			if(sol != -1){
+				flag = true;
+				sumcash+=t.value;
+				tbs.remove(sol);
 			}
 			if(flag)
 				used++;
