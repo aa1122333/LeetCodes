@@ -8879,6 +8879,26 @@ public class Solution {
     		this.v = v;
     	}
     }
+    
+    //382. Linked List Random Node
+    
+    ListNode root ;
+    Random ran;
+    public Solution(ListNode head) {
+        this.root = head;
+    }
+    
+    /** Returns a random node's value. */
+    public int getRandom() {
+        int sol = root.val;
+        ListNode curr = root;
+        for(int i=1;curr.next!=null;i++){
+        	curr = curr.next;
+        	if(i==(int)(Math.random()*i+1))
+        		sol = curr.val;
+        }
+        return sol;
+    }
 	public static void main(String[] args) {
 		
 		// TODO Auto-generated method stub
@@ -9575,13 +9595,25 @@ public class Solution {
 		/*System.out.println(guessNumber(2126753390
 				));*/
 		/*System.out.println(isPerfectSquare(Integer.MAX_VALUE));*/
-		int [][] t = {
+		/*int [][] t = {
 				{1,3,5},
 				{6,7,12},
 				{11,14,14}
 		};
 		
-		System.out.println(kthSmallest(t,6));
+		System.out.println(climbStairs(8));*/
+		
+		ListNode roots = new ListNode(1);
+		roots.next = new ListNode(2);
+		roots.next.next = new ListNode(3);
+		roots.next.next.next= new ListNode(4);
+		roots.next.next.next.next = new ListNode(5);
+		Solution s = new Solution(roots);
+		System.out.println(s.getRandom());
+		System.out.println(s.getRandom());
+		System.out.println(s.getRandom());
+		System.out.println(s.getRandom());
+		System.out.println(s.getRandom());
 		System.out.println();
 		System.out.println((System.nanoTime()-time)/1000000+"ms");
 	}
